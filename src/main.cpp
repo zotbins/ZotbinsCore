@@ -3,6 +3,9 @@
 
 #define ZBIN_CORE_VERSION "0.0.1"
 
+#define TASK_STACK_SIZE 1024
+#define TASK_PRIORITY 1
+
 // These tasks will be removed in a later version
 // This is just show how tasks work in FreeRTOS
 void dummy_task1(void *params) {
@@ -24,8 +27,8 @@ void setup() {
     log_i("ZotBins Core Version: %s", ZBIN_CORE_VERSION);
 
     // Create tasks to run
-    xTaskCreate(dummy_task1, "DummyTask1", 1024, nullptr, 1, nullptr);
-    xTaskCreate(dummy_task2, "DummyTask2", 1024, nullptr, 1, nullptr);
+    xTaskCreate(dummy_task1, "DummyTask1", TASK_STACK_SIZE, nullptr, TASK_PRIORITY, nullptr);
+    xTaskCreate(dummy_task2, "DummyTask2", TASK_STACK_SIZE, nullptr, TASK_PRIORITY, nullptr);
 }
 
 void loop() {
