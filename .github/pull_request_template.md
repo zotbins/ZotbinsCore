@@ -7,6 +7,7 @@ Please write description of change
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Code improvement (a non-breaking change that improves the quality of the code)
+- [ ] Documentation Change (update to the documentation with no changes to the code)
 
 ## Testing and Verification Instructions
 
