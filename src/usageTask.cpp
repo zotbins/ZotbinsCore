@@ -2,8 +2,12 @@
 
 using namespace Zotbins;
 
+static const char *name = "usageTask";
+static const int priority = 1;
+static const uint32_t stackSize = 1024;
+
 UsageTask::UsageTask()
-    : Task(mName, mPriority, mStackSize)
+    : Task(name, priority, stackSize)
 {
 }
 

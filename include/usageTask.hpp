@@ -25,10 +25,6 @@ namespace Zotbins
         void start() override;
 
     private:
-        static constexpr char const *mName = "usageTask";
-        static constexpr int mPriority = 1;
-        static constexpr uint32_t mStackSize = 1024;
-
         /**
          * @brief Function to be called by FreeRTOS function xTaskCreate().
          * Calls setup() and loop()
