@@ -2,8 +2,12 @@
 
 using namespace Zotbins;
 
+static const char *name = "weightTask";
+static const int priority = 1;
+static const uint32_t stackSize = 1024;
+
 WeightTask::WeightTask()
-    : Task(mName, mPriority, mStackSize)
+    : Task(name, priority, stackSize)
 {
 }
 
