@@ -13,4 +13,11 @@ The previous iteration was a Raspberry Pi-based system. This system is intended 
 ## Functional Requirements
 Many of the features revolve around the various sensors that the ZotBins Core utilize.
 
-- Breakbeam Sensor: Measure the amount of time a bin is used in a certain time period
+- Breakbeam Sensor: Measure the amount of time a bin is used in a 30 minute time period
+- Load Cell & HX-711: Measure the weight of the trash currently in the bin
+- Ultrasonic sensor: Measure the current fullness of the trash can
+
+Additionally, the system must publish the sensor data to a MQTT broker every 30 minutes.
+
+## Architecture Overview
+
