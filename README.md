@@ -5,7 +5,7 @@
 - [PlatformIO](https://platformio.org/), a cross-platform VSCode-based IDE for embedded system development
 
 ## Compiling and Uploading the Code
-1. First, clone the repo and its dependencies using the command
+1. First, clone the repository using the command
 ```bash
 git clone git@github.com:zotbins/ZotbinsCore.git
 ```
