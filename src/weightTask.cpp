@@ -1,10 +1,11 @@
 #include "weightTask.hpp"
+#include <Arduino.h>
 
 using namespace Zotbins;
 
 static const char *name = "weightTask";
 static const int priority = 1;
-static const uint32_t stackSize = 1024;
+static const uint32_t stackSize = 4096;
 
 WeightTask::WeightTask()
     : Task(name, priority, stackSize)
@@ -31,5 +32,7 @@ void WeightTask::loop()
 {
     while (1)
     {
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 ms
+        log_i("Hello from Weight Task");
     }
 }
