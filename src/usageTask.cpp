@@ -32,7 +32,7 @@ void UsageTask::loop()
 {
     while (1)
     {
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 msn
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         log_i("Hello from Usage Task");
     }
 }
