@@ -10,7 +10,6 @@
  */
 class IWeight 
 {
-
     /**
      * @brief Returns the weight of the sensor.
      * 
