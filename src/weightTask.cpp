@@ -32,7 +32,7 @@ void WeightTask::loop()
 {
     while (1)
     {
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 ms
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         log_i("Hello from Weight Task");
     }
 }

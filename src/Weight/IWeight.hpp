@@ -3,6 +3,11 @@
 
 #include <cstdint>
 
+/**
+ * @brief Interface (abstract) class for mock and real hardware weight sensor.
+ * Used to inherit the getWeight method in derived classes.
+ * 
+ */
 class IWeight 
 {
     /**
@@ -10,7 +15,6 @@ class IWeight
      * 
      * @return int32_t 
      */
-
     virtual int32_t getWeight() = 0;
 };
 
