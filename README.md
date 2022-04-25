@@ -4,7 +4,7 @@
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [PlatformIO](https://platformio.org/), a cross-platform VSCode-based IDE for embedded system development
 
-## Compiling and Uploading the Code
+## How to Build & Upload
 1. First, clone the repository using the command
 ```bash
 git clone git@github.com:zotbins/ZotbinsCore.git

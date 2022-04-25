@@ -32,8 +32,22 @@ namespace Zotbins
         virtual void start() = 0;
 
     protected:
+        /**
+         * @brief Name of task
+         *
+         */
         const char *mName;
+
+        /**
+         * @brief Priority number of task
+         *
+         */
         const int mPriority;
+        
+        /**
+         * @brief Task size of task
+         *
+         */
         const uint32_t mStackSize;
     };
 }

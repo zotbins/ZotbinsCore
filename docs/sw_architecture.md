@@ -1,4 +1,4 @@
-# ZotBins Core Software Architecture
+# Software Architecture
 
 # Introduction
 The purpose of this document is to provide a detailed overview of the software architecture behind the new ZotBins Core, focusing on reliability, maintainability, and efficiency.
@@ -54,8 +54,6 @@ This system of having a task for each sensor makes the system more maintainable 
   I[Setup] --> J
   J[Loop] --> J
   end
-
-```
 
 ## Fullness Task
 The Fullness Task is responsible for measuring the current fullness of the waste bin. This is measured by the following equation. The height of the waste bin should be hard coded for each ZotBins Core deployment as each bin might differ in height.
