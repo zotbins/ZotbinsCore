@@ -8,6 +8,10 @@ namespace Zotbins
     class WiFiTask : public Task
     {
     public:
+        /**
+         * @brief Construct a new Wi Fi Task object
+         *
+         */
         WiFiTask();
 
         /**
