@@ -1,3 +1,11 @@
+/**
+ * @file task.hpp
+ * @brief Header file for Task class
+ * @version 0.1
+ * @date 2022-04-27
+ *
+ */
+
 #ifndef ZOTBINS_TASK_HPP
 #define ZOTBINS_TASK_HPP
 
