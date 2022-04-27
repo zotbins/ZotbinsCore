@@ -11,23 +11,19 @@
 
 #include <cstdint>
 
-namespace Weight
+/**
+ * @brief Interface (abstract) class for mock and real hardware weight sensor.
+ * Used to inherit the getWeight method in derived classes.
+ * 
+ */
+class IWeight 
 {
     /**
-     * @brief Interface (abstract) class for mock and real hardware weight sensor.
-     * Used to inherit the getWeight method in derived classes.
-     *
+     * @brief Returns the weight of the sensor.
+     * 
+     * @return int32_t 
      */
-    class IWeight
-    {
-    public:
-        /**
-         * @brief Returns the weight of the sensor.
-         *
-         * @return int32_t
-         */
-        virtual int32_t getWeight() = 0;
-    };
-} // namespace Weight
+    virtual int32_t getWeight() = 0;
+};
 
 #endif
