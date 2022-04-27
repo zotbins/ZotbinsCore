@@ -2,8 +2,10 @@
 #include "fullnessTask.hpp"
 #include "usageTask.hpp"
 #include "weightTask.hpp"
+#include "wifiTask.hpp"
 
 #define ZBIN_CORE_VERSION "0.0.1"
+#define ZBIN_DISABLE_WIFI
 
 void setup()
 {
@@ -13,12 +15,19 @@ void setup()
     Zotbins::FullnessTask fullnessTask;
     Zotbins::UsageTask usageTask;
     Zotbins::WeightTask weightTask;
+    #ifndef ZBIN_DISABLE_WIFI
+    Zotbins::WiFiTask wifiTask;
+    #endif
+
     // TODO: Create task for MQTT
 
     // Start all tasks
     fullnessTask.start();
     usageTask.start();
     weightTask.start();
+    #ifndef ZBIN_DISABLE_WIFI
+    wifiTask.start();
+    #endif
 }
 
 void loop()
