@@ -1,16 +1,9 @@
 #include "wifiTask.hpp"
-
+#include "config.hpp"
 #include <Arduino.h>
 #include <WiFi.h>
 
 using namespace Zotbins;
-
-// TODO: Move config to separate header file
-namespace WiFiConfig
-{
-    const char *ssid = "";
-    const char *pwd = "";
-}
 
 static const char *name = "WiFiTask";
 static const int priority = 1;
@@ -37,7 +30,7 @@ void WiFiTask::setup()
 {
     if (setupWifi())
     {
-        log_i("WiFi Connected to %s", WiFiConfig::ssid);
+        log_i("WiFi Connected to %s", Config::WIFI_SSID);
     }
     else
     {
@@ -64,7 +57,7 @@ bool WiFiTask::setupWifi()
     uint32_t wifiConnectCount = 0;
 
     WiFi.mode(WIFI_STA);
-    WiFi.begin(WiFiConfig::ssid, WiFiConfig::pwd);
+    WiFi.begin(Config::WIFI_SSID, Config::WIFI_PWD);
 
     while (!WiFi.isConnected())
     {
