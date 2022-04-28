@@ -14,11 +14,10 @@ git clone git@github.com:zotbins/ZotbinsCore.git
 
 3. Fill in the values in `.env` with the appropriate values
 
-3. Build the project by clicking on the ```Build``` button in the PlatformIO tab in VSCode.
-![Build button](docs/build.png)
+![PlatformIO VSCode Toolbar](docs/platformio-ide-vscode-toolbar.png)
 
-4. Upload the application by clicking on the ```Upload``` Button in the PlatformIO tab.
-![Upload button](docs/upload.png)
+4. Build the project by clicking on the ```Build``` button (the checkmark) in the PlatformIO Toolbar, located in the left corner.
 
-5. Verify that the application was successfully uploaded by checking the ```Serial Monitor``` for logs
-![Serial Monitor](docs/serial.png)
+5. Upload the application by clicking on the ```Upload``` Button (the arrow pointing right) in the PlatformIO Toolbar.
+
+6. Verify that the application was successfully uploaded by checking the ```Serial Monitor``` Button (the electical plug) for logs
