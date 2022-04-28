@@ -1,7 +1,7 @@
 #include "MockWeight.hpp"
 
-MockWeight::MockWeight(int32_t mWeight)
-    : mWeight{mWeight}
+MockWeight::MockWeight(int32_t weight)
+    : mWeight{weight}
 {
 }
 

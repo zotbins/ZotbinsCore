@@ -5,8 +5,7 @@
  * Used for unit tests so that actual hardware isn't require to test the ZotBins
  * system.
  */
-
-class MockWeight : IWeight
+class MockWeight final : public IWeight 
 {
 public:
     /**
@@ -14,10 +13,10 @@ public:
      * @param mWeight Represents the current weight of the mock sensor.
      *  
      */
-    MockWeight(int32_t mWeight);
+    MockWeight(int32_t weight);
 
     /** 
-     * @brief Returns the mock weight.
+     * @brief Returns the mock weight in kilograms.
      * @return int32_t
      */
     int32_t getWeight() override;
