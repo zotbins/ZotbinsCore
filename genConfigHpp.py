@@ -32,13 +32,14 @@ namespace Zotbins
 @dataclass
 class Config:
     """Class for environment variables"""
-    WIFI_SSID: str
-    WIFI_PWD: str
+    WIFI_SSID: str = ""
+    WIFI_PWD: str = ""
 
 
 def loadConfig() -> Config:
+    # Return default if .env does not exist
     if not os.path.exists(".env"):
-        raise FileNotFoundError(".env not found")
+        return Config()
 
     # Load enviromental variables
     load_dotenv()
