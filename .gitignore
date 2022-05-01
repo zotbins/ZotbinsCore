@@ -5,6 +5,3 @@
 .vscode/launch.json
 .vscode/ipch
 
-# Doxygen
-.doxygen/html
-*.pu
