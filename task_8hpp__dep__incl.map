@@ -1,0 +1,7 @@
+<map id="task.hpp" name="task.hpp">
+<area shape="rect" id="node1" title="Header file for Task class." alt="" coords="238,5,309,32"/>
+<area shape="rect" id="node2" href="$fullness_task_8hpp.html" title="Header file for Fullness Task for Zotbins Core." alt="" coords="5,80,125,107"/>
+<area shape="rect" id="node3" href="$usage_task_8hpp.html" title="Header file for UsageTask class." alt="" coords="150,80,261,107"/>
+<area shape="rect" id="node4" href="$weight_task_8hpp.html" title="Header file for WeightTask class." alt="" coords="285,80,398,107"/>
+<area shape="rect" id="node5" href="$wifi_task_8hpp.html" title="Header file for WifiTask class." alt="" coords="422,80,517,107"/>
+</map>
