@@ -1,3 +1,11 @@
+/**
+ * @file weightTask.hpp
+ * @brief Header file for WeightTask class
+ * @version 0.1
+ * @date 2022-04-27
+ *
+ */
+
 #ifndef WEIGHT_TASK_HPP
 #define WEIGHT_TASK_HPP
 

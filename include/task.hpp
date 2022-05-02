@@ -1,3 +1,11 @@
+/**
+ * @file task.hpp
+ * @brief Header file for Task class
+ * @version 0.1
+ * @date 2022-04-27
+ *
+ */
+
 #ifndef ZOTBINS_TASK_HPP
 #define ZOTBINS_TASK_HPP
 
@@ -32,8 +40,22 @@ namespace Zotbins
         virtual void start() = 0;
 
     protected:
+        /**
+         * @brief Name of task
+         *
+         */
         const char *mName;
+
+        /**
+         * @brief Priority number of task
+         *
+         */
         const int mPriority;
+        
+        /**
+         * @brief Task size of task
+         *
+         */
         const uint32_t mStackSize;
     };
 }
