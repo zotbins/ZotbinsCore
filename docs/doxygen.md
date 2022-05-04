@@ -79,10 +79,11 @@ public:
 
 ## Running Doxygen Locally
 
-Before proceeding, you nede to install [Doxygen](https://www.doxygen.nl/download.html). It is supported on Windows, Mac, and Linux.
+Before proceeding, you need to install [Doxygen](https://www.doxygen.nl/download.html). It is supported on Windows, Mac, and Linux.
+
+In order to generate the UML diagrams, you need to have [PlantUML](https://plantuml.com/download) installed. Install the PlantUML compiled Jar and update `PLANTUML_JAR_PATH` to the appropriate value. For example, if you are on Windows and the PlantUML jar is located in your Downloads folder, `PLANTUML_JAR_PATH` probably is `C:\Users\{YOUR NAME}\Downloads\plantuml.jar`
 
 After installing, run the `doxygen` command in the `.doxygen/` directory, and this should generate the HTML documentation files for ZotBins Core.
-
 
 ## Doxygen Github Action
 

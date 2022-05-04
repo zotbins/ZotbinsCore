@@ -15,6 +15,14 @@ The previous iteration was a Raspberry Pi-based system. This system is intended 
 git clone git@github.com:zotbins/ZotbinsCore.git
 ```
 
-2. Build the project by clicking on the ```Build``` button in the PlatformIO tab in VSCode.
+2. Create an `.env` file in the project directory following `.env.txt` as a template.
 
-3. Upload the application by clicking on the ```Upload``` Button in the PlatformIO tab.
+3. Fill in the values in `.env` with the appropriate values.
+
+![PlatformIO VSCode Toolbar](docs/images/platformio_toolbar.png)
+
+4. Build the project by clicking on `Build` ✔️ in the PlatformIO Toolbar, located in the left corner.
+
+5. Upload the application by clicking on `Upload` ➡️ in the PlatformIO Toolbar.
+
+6. Verify that the application was successfully uploaded by clicking on the `Serial Monitor` 🔌 for logs.
