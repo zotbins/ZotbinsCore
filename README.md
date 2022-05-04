@@ -19,11 +19,9 @@ git clone git@github.com:zotbins/ZotbinsCore.git
 
 3. Fill in the values in `.env` with the appropriate values.
 
+![PlatformIO VSCode Toolbar](docs/images/platformio_toolbar.png)
+
 4. Build the project by clicking on `Build` ✔️ in the PlatformIO Toolbar, located in the left corner.
-
-![PlatformIO VSCode Toolbar](docs/platformio-ide-vscode-toolbar.png)
-
-Image from [PlatformIO Quick Start](https://docs.platformio.org/en/latest/ide/vscode.html#id2)
 
 5. Upload the application by clicking on `Upload` ➡️ in the PlatformIO Toolbar.
 
