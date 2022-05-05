@@ -13,7 +13,7 @@
 #include <array>
 #include <cstdint>
 
-namespace NFullness
+namespace Fullness
 {
     /**
      * @brief Measures the fullness of the waste bin
@@ -40,9 +40,8 @@ namespace NFullness
         /**
          * @brief
          *
-         * @param distance
-         * @return true
-         * @return false
+         * @param distance Distance given from ultrasonic sensor
+         * @return returns if the distance is valid
          */
         bool isValidDistance(uint32_t distance);
 

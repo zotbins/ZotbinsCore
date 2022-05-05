@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace NFullness
+namespace Fullness
 {
     /**
      * @brief Interface (abstract) class for mock and real hardware ultrasonic (fullness/distance) sensor.
