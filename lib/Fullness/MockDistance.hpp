@@ -4,7 +4,7 @@
  * @brief Mock distance class that inherits from the IDistance interface class.
  * Used for unit tests.
  */
-class MockDistance final : public IDistance::IDistance
+class MockDistance final : public Fullness::IDistance
 {
 public:
     /**
