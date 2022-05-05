@@ -35,7 +35,7 @@ namespace Weight
 
     private:
         /**
-         * @brief IWeight object, uses pointer because virtual function
+         * @brief IWeight object, uses reference because virtual function
          *
          */
         IWeight &mWeightSensor;
