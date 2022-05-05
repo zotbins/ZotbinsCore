@@ -1,26 +1,15 @@
 #include "Fullness.hpp"
 #include "IDistance.hpp"
 
-using namespace NFullness;
-
-#define SENSOR_CALLS 8 // made it a number divisible by 4 for IQM calculations
-
-// using constructor
-Fullness::Fullness(uint32_t binHeight, IDistance &distanceSensor) : mBinHeight(binHeight), mDistanceSensor(distanceSensor)
+Fullness::Fullness::Fullness(uint32_t binHeight, IDistance &distanceSensor) : mBinHeight(binHeight), mDistanceSensor(distanceSensor)
 {
 }
 
-// Fullness::Fullness(int32_t binHeight, IDistance::IDistance &distanceSensor)
-// {
-//     height = binHeight;
-//     sensor = &distanceSensor;
-// }
-
-float Fullness::getFullness()
+float Fullness::Fullness::getFullness()
 {
     // call getDistance on sensor SENSOR_CALLS times to get an array of distances
     std::array<int32_t, distanceBufferSize> distanceBuffer;
-    for (int i = 0; i < SENSOR_CALLS; i++)
+    for (int i = 0; i < distanceBufferSize; i++)
     {
         distanceBuffer[i] = mDistanceSensor.getDistance();
     }
@@ -33,17 +22,15 @@ float Fullness::getFullness()
     return fullness;
 }
 
-bool Fullness::isValidDistance(uint32_t distance)
+bool Fullness::Fullness::isValidDistance(uint32_t distance)
 {
     return (mBinHeight < distance) && (distance >= 0);
 }
 
-float Fullness::IQM(std::array<int32_t, distanceBufferSize> &distanceBuffer)
+float Fullness::Fullness::IQM(std::array<int32_t, distanceBufferSize> &distanceBuffer)
 {
-    // return variable
     int32_t averageDistance = 0;
 
-    // sort the data
     shellSort(distanceBuffer);
 
     // find the average not including the first two and last two indexes
@@ -56,7 +43,7 @@ float Fullness::IQM(std::array<int32_t, distanceBufferSize> &distanceBuffer)
     return averageDistance;
 }
 
-void Fullness::shellSort(std::array<int32_t, distanceBufferSize> &arr)
+void Fullness::Fullness::shellSort(std::array<int32_t, distanceBufferSize> &arr)
 {
     for (size_t gap = arr.size() / 2; gap > 0; gap /= 2)
     {
