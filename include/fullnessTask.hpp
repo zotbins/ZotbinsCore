@@ -1,3 +1,11 @@
+/**
+ * @file fullnessTask.hpp
+ * @brief Header file for Fullness Task for Zotbins Core
+ * @version 0.1
+ * @date 2022-04-25
+ * 
+ */
+
 #ifndef FULLNESS_TASK_HPP
 #define FULLNESS_TASK_HPP
 

@@ -1,6 +1,6 @@
 #include "Weight.hpp"
 
-Weight::Weight(IWeight &weightSensor)
+Weight::Weight(IWeight& weightSensor)
     : m_weightSensor{&weightSensor}
 {
 }

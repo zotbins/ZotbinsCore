@@ -2,6 +2,8 @@
 #define WEIGHT_HPP
 #include "IWeight.hpp"
 
+using namespace nWeight;
+
 /**
  * @brief Acts as main class, taking in weight interface to allow for mock data and real data
  *

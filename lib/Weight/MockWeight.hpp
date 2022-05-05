@@ -3,6 +3,8 @@
 
 #include "IWeight.hpp"
 
+using namespace nWeight;
+
 /**
  * @brief Mock weight class that inherits from the IWeight interface class.
  * Used for unit tests so that actual hardware isn't require to test the ZotBins

@@ -1,3 +1,11 @@
+/**
+ * @file usageTask.hpp
+ * @brief Header file for UsageTask class
+ * @version 0.1
+ * @date 2022-04-27
+ *
+ */
+
 #ifndef USAGE_TASK_HPP
 #define USAGE_TASK_HPP
 

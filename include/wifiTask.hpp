@@ -1,3 +1,11 @@
+/**
+ * @file wifiTask.hpp
+ * @brief Header file for WifiTask class
+ * @version 0.1
+ * @date 2022-04-27
+ *
+ */
+
 #ifndef WIFI_TASK_HPP
 #define WIFI_TASK_HPP
 
@@ -5,6 +13,10 @@
 
 namespace Zotbins
 {
+    /**
+     * @brief Task to send sensor data to MQTT broker
+     * 
+     */
     class WiFiTask : public Task
     {
     public:
