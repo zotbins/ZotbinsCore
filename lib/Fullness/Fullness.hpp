@@ -38,7 +38,7 @@ namespace Fullness
         float getFullness();
 
         /**
-         * @brief
+         * @brief Checks if distance is valid
          *
          * @param distance Distance given from ultrasonic sensor
          * @return returns if the distance is valid
