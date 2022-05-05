@@ -10,37 +10,60 @@
 #define FULLNESS_HPP
 
 #include "IDistance.hpp"
+#include <array>
 #include <cstdint>
 
-namespace Zotbins
+namespace NFullness
 {
+    /**
+     * @brief Measures the fullness of the waste bin
+     *
+     */
     class Fullness
     {
-        /**
-         * @brief The fullness class
-         *
-         * @param height
-         * @param distance
-         */
-
     public:
-        Fullness(int32_t binHeight, IDistance::IDistance &distanceSensor);
+        /**
+         * @brief Construct a new Fullness object
+         *
+         * @param binHeight
+         * @param distanceSensor Ultrasonic sensor that measures distance
+         */
+        Fullness(uint32_t binHeight, IDistance &distanceSensor);
 
+        /**
+         * @brief Returns the fullness percentage of the bin
+         *
+         * @return float Fullness Percentage (0 <= fullness <= 1)
+         */
         float getFullness();
-        bool isValidFullness();
+
+        /**
+         * @brief
+         *
+         * @param distance
+         * @return true
+         * @return false
+         */
+        bool isValidDistance(uint32_t distance);
 
     private:
+        static constexpr std::size_t distanceBufferSize = 8;
+
+        float IQM(std::array<int32_t, distanceBufferSize> &distanceBuffer);
+
+        void shellSort(std::array<int32_t, distanceBufferSize> &arr);
+
         /**
          * @brief bin height
          *
          */
-        int32_t height;
+        uint32_t mBinHeight;
 
         /**
          * @brief bin height of trash to top
          *
          */
-        IDistance::IDistance *sensor;
+        IDistance &mDistanceSensor;
     };
 }
 #endif

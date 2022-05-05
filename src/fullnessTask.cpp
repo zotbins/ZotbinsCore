@@ -1,4 +1,5 @@
 #include "fullnessTask.hpp"
+#include "Fullness.hpp"
 #include <Arduino.h>
 
 using namespace Zotbins;
