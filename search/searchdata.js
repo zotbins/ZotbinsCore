@@ -3,7 +3,7 @@ var indexSectionsWithContent =
   0: "fgimstuwz",
   1: "fituw",
   2: "fituw",
-  3: "fgstuw",
+  3: "fgistuw",
   4: "m",
   5: "isz"
 };

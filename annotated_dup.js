@@ -1,7 +1,8 @@
 var annotated_dup =
 [
-    [ "Fullness", null, [
-      [ "IDistance", "class_fullness_1_1_i_distance.html", "class_fullness_1_1_i_distance" ]
+    [ "NFullness", null, [
+      [ "Fullness", "class_n_fullness_1_1_fullness.html", "class_n_fullness_1_1_fullness" ],
+      [ "IDistance", "class_n_fullness_1_1_i_distance.html", "class_n_fullness_1_1_i_distance" ]
     ] ],
     [ "Weight", null, [
       [ "IWeight", "class_weight_1_1_i_weight.html", "class_weight_1_1_i_weight" ]
