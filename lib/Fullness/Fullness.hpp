@@ -19,17 +19,11 @@ namespace Zotbins
         /**
          * @brief The fullness class
          *
-         * @param height Name of task
-         * @param distance Priority number of task
+         * @param height
+         * @param distance
          */
 
     public:
-        /*constructor*/
-        // Fullness::Fullness(int32_t binHeight, IDistance::IDistance &distanceSensor)
-        //     : height(binHeight), sensor(&distanceSensor) // FIGURE THIS OUT LATER PLS
-        // {
-        // }
-
         Fullness(int32_t binHeight, IDistance::IDistance &distanceSensor);
 
         float getFullness();
