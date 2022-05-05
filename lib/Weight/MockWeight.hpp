@@ -1,3 +1,11 @@
+/**
+ * @file MockWeight.hpp
+ * @brief Header file for MockWeight class
+ * @version 0.1
+ * @date 2022-05-05
+ *
+ */
+
 #ifndef MOCK_WEIGHT_HPP
 #define MOCK_WEIGHT_HPP
 
@@ -21,8 +29,9 @@ namespace Weight
         MockWeight(int32_t weight);
 
         /**
-         * @brief Returns the mock weight in kilograms.
-         * @return int32_t
+         * @brief Returns the mock weight.
+         * @return int32_t Weight in kilograms.
+         * 
          */
         int32_t getWeight() override;
 
