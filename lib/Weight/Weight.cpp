@@ -1,11 +1,11 @@
 #include "Weight.hpp"
 
-Weight::Weight(IWeight& weightSensor)
-    : m_weightSensor{&weightSensor}
+Weight::Weight::Weight(IWeight& weightSensor)
+    : m_weightSensor{weightSensor}
 {
 }
 
-int32_t Weight::getWeight()
+int32_t Weight::Weight::getWeight()
 {
-    return m_weightSensor->getWeight();
+    return m_weightSensor.getWeight();
 }

@@ -2,8 +2,10 @@
 #define WEIGHT_HPP
 #include "IWeight.hpp"
 
-using namespace nWeight;
+//using namespace Weight;
 
+namespace Weight
+{
 /**
  * @brief Acts as main class, taking in weight interface to allow for mock data and real data
  *
@@ -30,7 +32,8 @@ private:
      * @brief IWeight object, uses pointer because virtual function
      *
      */
-    IWeight *m_weightSensor;
+    IWeight &m_weightSensor;
 };
+}
 
 #endif

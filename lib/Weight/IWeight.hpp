@@ -11,7 +11,7 @@
 
 #include <cstdint>
 
-namespace nWeight
+namespace Weight
 {
     /**
      * @brief Interface (abstract) class for mock and real hardware weight sensor.
