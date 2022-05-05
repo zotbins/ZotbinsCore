@@ -31,7 +31,7 @@ namespace Weight
          * @brief IWeight object, uses pointer because virtual function
          *
          */
-        IWeight &m_weightSensor;
+        IWeight &mWeightSensor;
     };
 }
 
