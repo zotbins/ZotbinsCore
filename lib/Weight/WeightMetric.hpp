@@ -8,6 +8,7 @@
 
 #ifndef WEIGHT_HPP
 #define WEIGHT_HPP
+
 #include "IWeight.hpp"
 
 namespace Weight
@@ -16,7 +17,7 @@ namespace Weight
      * @brief Acts as main class, taking in weight interface to allow for mock data and real data
      *
      */
-    class Weight
+    class WeightMetric
     {
     public:
         /**
@@ -24,12 +25,12 @@ namespace Weight
          * @param weightSensor An object that is a weight interface object.
          *
          */
-        Weight(IWeight &weightSensor);
+        WeightMetric(IWeight &weightSensor);
 
         /**
          * @brief Returns the weight.
          * @return int32_t weight in kilograms
-         * 
+         *
          */
         int32_t getWeight();
 

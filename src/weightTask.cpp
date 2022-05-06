@@ -1,4 +1,5 @@
 #include "weightTask.hpp"
+#include "WeightMetric.hpp"
 #include <Arduino.h>
 
 using namespace Zotbins;

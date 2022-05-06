@@ -12,6 +12,7 @@
 #include "IDistance.hpp"
 #include <array>
 #include <cstdint>
+#include <cstddef>
 
 namespace Fullness
 {
@@ -19,47 +20,47 @@ namespace Fullness
      * @brief Measures the fullness of the waste bin
      *
      */
-    class Fullness
+    class FullnessMetric
     {
     public:
         /**
-         * @brief Construct a new Fullness object
+         * @brief Construct a new FullnessMetric object
          *
-         * @param binHeight
-         * @param distanceSensor Ultrasonic sensor that measures distance
+         * @param binHeight Height of bin in mm
+         * @param distanceSensor Interface to distance sensor
          */
-        Fullness(uint32_t binHeight, IDistance &distanceSensor);
+        FullnessMetric(uint32_t binHeight, IDistance &distanceSensor);
 
         /**
          * @brief Returns the fullness percentage of the bin
          *
-         * @return float Fullness Percentage (0 <= fullness <= 1)
+         * @return float Fullness % of the bin (0 <= fullness <= 1)
          */
         float getFullness();
 
         /**
          * @brief Checks if distance is valid
          *
-         * @param distance Distance given from ultrasonic sensor
-         * @return returns if the distance is valid
+         * @param distance Distance given from distance sensor
+         * @return true/false if distance is valid
          */
         bool isValidDistance(uint32_t distance);
 
     private:
-        static constexpr std::size_t distanceBufferSize = 8;
+        static constexpr size_t mDistanceBufferSize = 8;
 
-        float IQM(std::array<int32_t, distanceBufferSize> &distanceBuffer);
+        float IQM(std::array<int32_t, mDistanceBufferSize> &distanceBuffer);
 
-        void shellSort(std::array<int32_t, distanceBufferSize> &arr);
+        void shellSort(std::array<int32_t, mDistanceBufferSize> &arr);
 
         /**
-         * @brief bin height
+         * @brief Height of bin in mm
          *
          */
         uint32_t mBinHeight;
 
         /**
-         * @brief bin height of trash to top
+         * @brief Distance sensor
          *
          */
         IDistance &mDistanceSensor;
