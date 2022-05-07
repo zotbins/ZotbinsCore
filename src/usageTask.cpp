@@ -7,8 +7,8 @@ static const char *name = "usageTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 
-UsageTask::UsageTask()
-    : Task(name, priority, stackSize)
+UsageTask::UsageTask(QueueHandle_t &messageQueue)
+    : Task(name, priority, stackSize), mMessageQueue(messageQueue)
 {
 }
 

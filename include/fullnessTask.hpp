@@ -3,7 +3,7 @@
  * @brief Header file for Fullness Task for Zotbins Core
  * @version 0.1
  * @date 2022-04-25
- * 
+ *
  */
 
 #ifndef FULLNESS_TASK_HPP
@@ -24,7 +24,7 @@ namespace Zotbins
          * @brief Construct a new Fullness Task object
          *
          */
-        FullnessTask();
+        explicit FullnessTask(QueueHandle_t &messageQueue);
 
         /**
          * @brief Start execution of Fullness Task
@@ -54,6 +54,12 @@ namespace Zotbins
          *
          */
         void loop();
+
+        /**
+         * @brief Message queue to WiFi Task
+         *
+         */
+        QueueHandle_t &mMessageQueue;
     };
 }
 

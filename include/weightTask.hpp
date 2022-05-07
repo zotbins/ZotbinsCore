@@ -24,8 +24,9 @@ namespace Zotbins
         /**
          * @brief Construct a new Weight Task object
          *
+         * @param messageQueue Message queue to WiFi Task
          */
-        WeightTask();
+        explicit WeightTask(QueueHandle_t &messageQueue);
 
         /**
          * @brief Start execution of Weight Task
@@ -55,6 +56,12 @@ namespace Zotbins
          *
          */
         void loop();
+
+        /**
+         * @brief Message queue to WiFi task
+         *
+         */
+        QueueHandle_t &mMessageQueue;
     };
 }
 
