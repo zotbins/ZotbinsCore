@@ -15,7 +15,7 @@ void setup()
 {
     log_i("ZotBins Core Version: %s", ZBIN_CORE_VERSION);
 
-    // Create queues for inter-task communication
+    // Create message queue for inter-task communication
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 
