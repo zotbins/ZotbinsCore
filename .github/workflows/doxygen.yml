@@ -12,7 +12,7 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v1
       - name: Generate docs
-        uses: patrickanguyen/doxygen-action@v1.9-plantuml
+        uses: zotbins/doxygen-action@v1.9.3-plantuml
         with:
           working-directory: '.doxygen/'
       - name: Deploy to GitHub Pages
