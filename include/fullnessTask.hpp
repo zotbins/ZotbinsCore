@@ -3,7 +3,7 @@
  * @brief Header file for Fullness Task for Zotbins Core
  * @version 0.1
  * @date 2022-04-25
- * 
+ *
  */
 
 #ifndef FULLNESS_TASK_HPP
@@ -14,7 +14,7 @@
 namespace Zotbins
 {
     /**
-     * @brief Task to measure fullness of the bin by using the ultrasonic sensor
+     * @brief Task to measure fullness of the bin by using the distance sensor
      *
      */
     class FullnessTask : public Task

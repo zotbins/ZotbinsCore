@@ -1,5 +1,5 @@
 #include <unity.h>
-#include "Weight.hpp"
+#include "WeightMetric.hpp"
 #include "MockWeight.hpp"
 
 // TODO: Add more tests

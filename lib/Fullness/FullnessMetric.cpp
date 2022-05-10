@@ -1,15 +1,17 @@
-#include "Fullness.hpp"
+#include "FullnessMetric.hpp"
 #include "IDistance.hpp"
 
-Fullness::Fullness::Fullness(uint32_t binHeight, IDistance &distanceSensor) : mBinHeight(binHeight), mDistanceSensor(distanceSensor)
+using namespace Fullness;
+
+FullnessMetric::FullnessMetric(uint32_t binHeight, IDistance &distanceSensor) : mBinHeight(binHeight), mDistanceSensor(distanceSensor)
 {
 }
 
-float Fullness::Fullness::getFullness()
+float FullnessMetric::getFullness()
 {
-    // call getDistance on sensor SENSOR_CALLS times to get an array of distances
-    std::array<int32_t, distanceBufferSize> distanceBuffer;
-    for (int i = 0; i < distanceBufferSize; i++)
+    // call getDistance on sensor mDistanceBufferSize times to get an array of distances
+    std::array<int32_t, mDistanceBufferSize> distanceBuffer;
+    for (size_t i = 0; i < distanceBuffer.size(); i++)
     {
         distanceBuffer[i] = mDistanceSensor.getDistance();
     }
@@ -22,28 +24,28 @@ float Fullness::Fullness::getFullness()
     return fullness;
 }
 
-bool Fullness::Fullness::isValidDistance(uint32_t distance)
+bool FullnessMetric::isValidDistance(uint32_t distance)
 {
     return (mBinHeight < distance) && (distance >= 0);
 }
 
-float Fullness::Fullness::IQM(std::array<int32_t, distanceBufferSize> &distanceBuffer)
+float FullnessMetric::IQM(std::array<int32_t, mDistanceBufferSize> &distanceBuffer)
 {
     int32_t averageDistance = 0;
 
     shellSort(distanceBuffer);
 
     // find the average not including the first two and last two indexes
-    for (size_t i = 2; i < distanceBufferSize - 2; i++)
+    for (size_t i = 2; i < mDistanceBufferSize - 2; i++)
     {
         averageDistance += distanceBuffer[i];
     }
-    averageDistance /= (distanceBufferSize - 4);
+    averageDistance /= (mDistanceBufferSize - 4);
 
     return averageDistance;
 }
 
-void Fullness::Fullness::shellSort(std::array<int32_t, distanceBufferSize> &arr)
+void FullnessMetric::shellSort(std::array<int32_t, mDistanceBufferSize> &arr)
 {
     for (size_t gap = arr.size() / 2; gap > 0; gap /= 2)
     {
