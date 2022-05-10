@@ -117,11 +117,17 @@ Architecture Overview</h1>
 <p >This system of having a task for each sensor makes the system more maintainable due to separation of concerns. The fullness task does not need to worry about the state of the weight task and can just focus on itself. In addition, the system is more extensible since a new task can be easily added to the system without interfering with the other features.</p>
 <h3><a class="anchor" id="autotoc_md13"></a>
 Overall System Diagram (more detail on each task is shown down below)</h3>
+<div class="plantumlgraph">
+<img src="inline_umlgraph_1.png" />
+</div>
 <h2><a class="anchor" id="autotoc_md14"></a>
 Fullness Task</h2>
 <p >The Fullness Task is responsible for measuring the current fullness of the waste bin. This is measured by the following equation. The height of the waste bin should be hard coded for each ZotBins Core deployment as each bin might differ in height.</p>
 <div class="fragment"><div class="line">Fullness % = (Height of Bin - Distance measured from ultrasonic sensor) / Height of Bin</div>
 </div><!-- fragment --><p >If the ultrasonic sensor reads an invalid value, it should log the error and return a error value like <code>-1</code> so the MQTT thread is not blocked waiting for the fullness value.</p>
+<div class="plantumlgraph">
+<img src="inline_umlgraph_2.png" />
+</div>
 <h2><a class="anchor" id="autotoc_md15"></a>
 Weight Task</h2>
 <p >TODO</p>

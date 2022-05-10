@@ -1,0 +1,57 @@
+@startuml inline_umlgraph_1.png
+:Start;
+->
+:Initialize sensors;
+fork
+  group Fullness
+  :Setup fullness task;
+  while (Loop forever)
+    :Process;
+  endwhile
+  detach
+  -[hidden]->
+  end group
+fork again
+  group Weight
+  :Setup weight task;
+  while (Loop forever)
+    :Process;
+  endwhile
+  detach
+  -[hidden]->
+  end group
+fork again
+  group Usage
+  :Setup usage task;
+  while (Loop forever)
+    :Process;
+  endwhile
+  detach
+  -[hidden]->
+  end group
+fork again
+  group WiFi
+  :Setup WiFi task;
+  while (Loop forever)
+    :Process;
+  endwhile
+  detach
+  -[hidden]->
+  end group
+@enduml
+@startuml inline_umlgraph_2.png
+group Fullness Task
+  :Initialize task;
+  while (Loop forever)
+    :Measure Distance;
+    if (Distance valid?) then (yes)
+      :Smooth value;
+      :Push value to queue;
+    else (no)
+      :Push error value to queue;
+    endif
+  :Wait 30 mins;
+  endwhile
+  -[hidden]->
+endgroup
+@enduml
