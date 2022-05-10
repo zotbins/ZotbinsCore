@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['isvaliddistance_0',['isValidDistance',['../class_fullness_1_1_fullness.html#a2ff98accd886f5b09caa595d037b9fc6',1,'Fullness::Fullness']]]
+  ['isvaliddistance_0',['isValidDistance',['../class_fullness_1_1_fullness_metric.html#aa73bbbba1a8b7a56a57df8565d58e01b',1,'Fullness::FullnessMetric']]]
 ];
