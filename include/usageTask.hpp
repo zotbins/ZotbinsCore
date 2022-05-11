@@ -23,8 +23,9 @@ namespace Zotbins
         /**
          * @brief Construct a new Usage Task object
          *
+         * @param messageQueue Message queue to WiFi Task
          */
-        UsageTask();
+        explicit UsageTask(QueueHandle_t &messageQueue);
 
         /**
          * @brief Start execution of Usage Task
@@ -54,6 +55,12 @@ namespace Zotbins
          *
          */
         void loop();
+
+        /**
+         * @brief Message queue to WiFi task
+         *
+         */
+        QueueHandle_t &mMessageQueue;
     };
 }
 

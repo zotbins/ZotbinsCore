@@ -1,5 +1,6 @@
 #include "wifiTask.hpp"
 #include "config.hpp"
+#include "message.hpp"
 #include <Arduino.h>
 #include <WiFi.h>
 
@@ -9,8 +10,8 @@ static const char *name = "WiFiTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 
-WiFiTask::WiFiTask()
-    : Task(name, priority, stackSize)
+WiFiTask::WiFiTask(QueueHandle_t &messageQueue)
+    : Task(name, priority, stackSize), mMessageQueue(messageQueue)
 {
 }
 
@@ -48,6 +49,8 @@ void WiFiTask::loop()
     {
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         log_i("Hello from WiFi Task");
+
+        // Receive incoming messages
     }
 }
 
