@@ -1,5 +1,5 @@
 /**
- * @file Weight.hpp
+ * @file WeightMetric.hpp
  * @brief Header file for Weight class
  * @version 0.1
  * @date 2022-05-05

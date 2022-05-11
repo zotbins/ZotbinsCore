@@ -23,7 +23,7 @@ namespace Weight
     public:
         /**
          * @brief Constructs an instance of the MockWeight class.
-         * @param mWeight Represents the current weight of the mock sensor.
+         * @param weight Represents the current weight of the mock sensor.
          *
          */
         MockWeight(int32_t weight);
