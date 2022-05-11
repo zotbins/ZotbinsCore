@@ -1,4 +1,5 @@
 #include "weightTask.hpp"
+#include "WeightMetric.hpp"
 #include <Arduino.h>
 
 using namespace Zotbins;
@@ -7,8 +8,8 @@ static const char *name = "weightTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 
-WeightTask::WeightTask()
-    : Task(name, priority, stackSize)
+WeightTask::WeightTask(QueueHandle_t &messageQueue)
+    : Task(name, priority, stackSize), mMessageQueue(messageQueue)
 {
 }
 

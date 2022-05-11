@@ -1,23 +1,17 @@
 #include "wifiTask.hpp"
-
+#include "config.hpp"
+#include "message.hpp"
 #include <Arduino.h>
 #include <WiFi.h>
 
 using namespace Zotbins;
 
-// TODO: Move config to separate header file
-namespace WiFiConfig
-{
-    const char *ssid = "";
-    const char *pwd = "";
-}
-
 static const char *name = "WiFiTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 
-WiFiTask::WiFiTask()
-    : Task(name, priority, stackSize)
+WiFiTask::WiFiTask(QueueHandle_t &messageQueue)
+    : Task(name, priority, stackSize), mMessageQueue(messageQueue)
 {
 }
 
@@ -37,7 +31,7 @@ void WiFiTask::setup()
 {
     if (setupWifi())
     {
-        log_i("WiFi Connected to %s", WiFiConfig::ssid);
+        log_i("WiFi Connected to %s", Config::WIFI_SSID);
     }
     else
     {
@@ -55,6 +49,8 @@ void WiFiTask::loop()
     {
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         log_i("Hello from WiFi Task");
+
+        // Receive incoming messages
     }
 }
 
@@ -64,7 +60,7 @@ bool WiFiTask::setupWifi()
     uint32_t wifiConnectCount = 0;
 
     WiFi.mode(WIFI_STA);
-    WiFi.begin(WiFiConfig::ssid, WiFiConfig::pwd);
+    WiFi.begin(Config::WIFI_SSID, Config::WIFI_PWD);
 
     while (!WiFi.isConnected())
     {

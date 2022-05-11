@@ -1,3 +1,11 @@
+/**
+ * @file weightTask.hpp
+ * @brief Header file for WeightTask class
+ * @version 0.1
+ * @date 2022-04-27
+ *
+ */
+
 #ifndef WEIGHT_TASK_HPP
 #define WEIGHT_TASK_HPP
 
@@ -16,8 +24,9 @@ namespace Zotbins
         /**
          * @brief Construct a new Weight Task object
          *
+         * @param messageQueue Message queue to WiFi Task
          */
-        WeightTask();
+        explicit WeightTask(QueueHandle_t &messageQueue);
 
         /**
          * @brief Start execution of Weight Task
@@ -47,6 +56,12 @@ namespace Zotbins
          *
          */
         void loop();
+
+        /**
+         * @brief Message queue to WiFi task
+         *
+         */
+        QueueHandle_t &mMessageQueue;
     };
 }
 

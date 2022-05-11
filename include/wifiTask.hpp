@@ -1,3 +1,11 @@
+/**
+ * @file wifiTask.hpp
+ * @brief Header file for WifiTask class
+ * @version 0.1
+ * @date 2022-04-27
+ *
+ */
+
 #ifndef WIFI_TASK_HPP
 #define WIFI_TASK_HPP
 
@@ -5,14 +13,19 @@
 
 namespace Zotbins
 {
+    /**
+     * @brief Task to send sensor data to MQTT broker
+     *
+     */
     class WiFiTask : public Task
     {
     public:
         /**
          * @brief Construct a new Wi Fi Task object
          *
+         * @param messageQueue Message queue from sensor tasks
          */
-        WiFiTask();
+        explicit WiFiTask(QueueHandle_t &messageQueue);
 
         /**
          * @brief Start execution of WiFi Task
@@ -49,6 +62,12 @@ namespace Zotbins
          * @return true/false if successfully connected to WiFi or not
          */
         bool setupWifi();
+
+        /**
+         * @brief Message queue
+         *
+         */
+        QueueHandle_t &mMessageQueue;
     };
 
 }
