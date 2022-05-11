@@ -104,7 +104,7 @@ $(document).ready(function(){initNavTree('fullness_task_8hpp_source.html',''); i
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="class_zotbins_1_1_fullness_task.html">   20</a></span>    <span class="keyword">class </span><a class="code hl_class" href="class_zotbins_1_1_fullness_task.html">FullnessTask</a> : <span class="keyword">public</span> <a class="code hl_class" href="class_zotbins_1_1_task.html">Task</a></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    {</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <a class="code hl_function" href="class_zotbins_1_1_fullness_task.html#a95a44faca2aa1a6abcd97f6a585ae91a">FullnessTask</a>();</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <span class="keyword">explicit</span> <a class="code hl_function" href="class_zotbins_1_1_fullness_task.html#a7c0f867ff950d9c9ae92ae22a5e25858">FullnessTask</a>(QueueHandle_t &amp;messageQueue);</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="class_zotbins_1_1_fullness_task.html#aff5e585c18462393aa5c8464edf40c36">start</a>() <span class="keyword">override</span>;</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
@@ -114,12 +114,14 @@ $(document).ready(function(){initNavTree('fullness_task_8hpp_source.html',''); i
 <div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keywordtype">void</span> setup();</div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keywordtype">void</span> loop();</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    };</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>}</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        QueueHandle_t &amp;mMessageQueue;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    };</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>}</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclass_zotbins_1_1_fullness_task_html"><div class="ttname"><a href="class_zotbins_1_1_fullness_task.html">Zotbins::FullnessTask</a></div><div class="ttdoc">Task to measure fullness of the bin by using the distance sensor.</div><div class="ttdef"><b>Definition:</b> fullnessTask.hpp:21</div></div>
-<div class="ttc" id="aclass_zotbins_1_1_fullness_task_html_a95a44faca2aa1a6abcd97f6a585ae91a"><div class="ttname"><a href="class_zotbins_1_1_fullness_task.html#a95a44faca2aa1a6abcd97f6a585ae91a">Zotbins::FullnessTask::FullnessTask</a></div><div class="ttdeci">FullnessTask()</div><div class="ttdoc">Construct a new Fullness Task object.</div><div class="ttdef"><b>Definition:</b> fullnessTask.cpp:11</div></div>
+<div class="ttc" id="aclass_zotbins_1_1_fullness_task_html_a7c0f867ff950d9c9ae92ae22a5e25858"><div class="ttname"><a href="class_zotbins_1_1_fullness_task.html#a7c0f867ff950d9c9ae92ae22a5e25858">Zotbins::FullnessTask::FullnessTask</a></div><div class="ttdeci">FullnessTask(QueueHandle_t &amp;messageQueue)</div><div class="ttdoc">Construct a new Fullness Task object.</div><div class="ttdef"><b>Definition:</b> fullnessTask.cpp:11</div></div>
 <div class="ttc" id="aclass_zotbins_1_1_fullness_task_html_aff5e585c18462393aa5c8464edf40c36"><div class="ttname"><a href="class_zotbins_1_1_fullness_task.html#aff5e585c18462393aa5c8464edf40c36">Zotbins::FullnessTask::start</a></div><div class="ttdeci">void start() override</div><div class="ttdoc">Start execution of Fullness Task.</div><div class="ttdef"><b>Definition:</b> fullnessTask.cpp:16</div></div>
 <div class="ttc" id="aclass_zotbins_1_1_task_html"><div class="ttname"><a href="class_zotbins_1_1_task.html">Zotbins::Task</a></div><div class="ttdoc">Abstract class for tasks to inherit from.</div><div class="ttdef"><b>Definition:</b> task.hpp:22</div></div>
 <div class="ttc" id="atask_8hpp_html"><div class="ttname"><a href="task_8hpp.html">task.hpp</a></div><div class="ttdoc">Header file for Task class.</div></div>

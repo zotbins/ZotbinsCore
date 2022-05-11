@@ -104,27 +104,29 @@ $(document).ready(function(){initNavTree('wifi_task_8hpp_source.html',''); initR
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="class_zotbins_1_1_wi_fi_task.html">   20</a></span>    <span class="keyword">class </span><a class="code hl_class" href="class_zotbins_1_1_wi_fi_task.html">WiFiTask</a> : <span class="keyword">public</span> <a class="code hl_class" href="class_zotbins_1_1_task.html">Task</a></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    {</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <a class="code hl_function" href="class_zotbins_1_1_wi_fi_task.html#a39b68cba9c049a7cee25986fc05f3306">WiFiTask</a>();</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span> </div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="class_zotbins_1_1_wi_fi_task.html#ab2d7f556b1cf1d57bec9744510e8117e">start</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        <span class="keyword">static</span> <span class="keywordtype">void</span> taskFunction(<span class="keywordtype">void</span> *task);</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keywordtype">void</span> setup();</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span> </div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keywordtype">void</span> loop();</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span> </div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        <span class="keywordtype">bool</span> setupWifi();</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    };</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keyword">explicit</span> <a class="code hl_function" href="class_zotbins_1_1_wi_fi_task.html#a2c8f87103f1b6ec65444fd7584ad66a2">WiFiTask</a>(QueueHandle_t &amp;messageQueue);</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="class_zotbins_1_1_wi_fi_task.html#ab2d7f556b1cf1d57bec9744510e8117e">start</a>() <span class="keyword">override</span>;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span> </div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keyword">static</span> <span class="keywordtype">void</span> taskFunction(<span class="keywordtype">void</span> *task);</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        <span class="keywordtype">void</span> setup();</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span> </div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keywordtype">void</span> loop();</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        <span class="keywordtype">bool</span> setupWifi();</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span> </div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>}</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        QueueHandle_t &amp;mMessageQueue;</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>    };</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>}</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclass_zotbins_1_1_task_html"><div class="ttname"><a href="class_zotbins_1_1_task.html">Zotbins::Task</a></div><div class="ttdoc">Abstract class for tasks to inherit from.</div><div class="ttdef"><b>Definition:</b> task.hpp:22</div></div>
 <div class="ttc" id="aclass_zotbins_1_1_wi_fi_task_html"><div class="ttname"><a href="class_zotbins_1_1_wi_fi_task.html">Zotbins::WiFiTask</a></div><div class="ttdoc">Task to send sensor data to MQTT broker.</div><div class="ttdef"><b>Definition:</b> wifiTask.hpp:21</div></div>
-<div class="ttc" id="aclass_zotbins_1_1_wi_fi_task_html_a39b68cba9c049a7cee25986fc05f3306"><div class="ttname"><a href="class_zotbins_1_1_wi_fi_task.html#a39b68cba9c049a7cee25986fc05f3306">Zotbins::WiFiTask::WiFiTask</a></div><div class="ttdeci">WiFiTask()</div><div class="ttdoc">Construct a new Wi Fi Task object.</div><div class="ttdef"><b>Definition:</b> wifiTask.cpp:12</div></div>
-<div class="ttc" id="aclass_zotbins_1_1_wi_fi_task_html_ab2d7f556b1cf1d57bec9744510e8117e"><div class="ttname"><a href="class_zotbins_1_1_wi_fi_task.html#ab2d7f556b1cf1d57bec9744510e8117e">Zotbins::WiFiTask::start</a></div><div class="ttdeci">void start() override</div><div class="ttdoc">Start execution of WiFi Task.</div><div class="ttdef"><b>Definition:</b> wifiTask.cpp:17</div></div>
+<div class="ttc" id="aclass_zotbins_1_1_wi_fi_task_html_a2c8f87103f1b6ec65444fd7584ad66a2"><div class="ttname"><a href="class_zotbins_1_1_wi_fi_task.html#a2c8f87103f1b6ec65444fd7584ad66a2">Zotbins::WiFiTask::WiFiTask</a></div><div class="ttdeci">WiFiTask(QueueHandle_t &amp;messageQueue)</div><div class="ttdoc">Construct a new Wi Fi Task object.</div><div class="ttdef"><b>Definition:</b> wifiTask.cpp:13</div></div>
+<div class="ttc" id="aclass_zotbins_1_1_wi_fi_task_html_ab2d7f556b1cf1d57bec9744510e8117e"><div class="ttname"><a href="class_zotbins_1_1_wi_fi_task.html#ab2d7f556b1cf1d57bec9744510e8117e">Zotbins::WiFiTask::start</a></div><div class="ttdeci">void start() override</div><div class="ttdoc">Start execution of WiFi Task.</div><div class="ttdef"><b>Definition:</b> wifiTask.cpp:18</div></div>
 <div class="ttc" id="atask_8hpp_html"><div class="ttname"><a href="task_8hpp.html">task.hpp</a></div><div class="ttdoc">Header file for Task class.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

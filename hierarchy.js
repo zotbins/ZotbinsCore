@@ -5,6 +5,8 @@ var hierarchy =
     [ "Weight::IWeight", "class_weight_1_1_i_weight.html", [
       [ "Weight::MockWeight", "class_weight_1_1_mock_weight.html", null ]
     ] ],
+    [ "Zotbins::Message", "struct_zotbins_1_1_message.html", null ],
+    [ "Zotbins::MessagePayload", "union_zotbins_1_1_message_payload.html", null ],
     [ "Zotbins::Task", "class_zotbins_1_1_task.html", [
       [ "Zotbins::FullnessTask", "class_zotbins_1_1_fullness_task.html", null ],
       [ "Zotbins::UsageTask", "class_zotbins_1_1_usage_task.html", null ],

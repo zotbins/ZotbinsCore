@@ -112,10 +112,9 @@ Inheritance diagram for Zotbins::UsageTask:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:acb55da97ea10ba4185fa2bdf051a01df"><td class="memItemLeft" align="right" valign="top"><a id="acb55da97ea10ba4185fa2bdf051a01df" name="acb55da97ea10ba4185fa2bdf051a01df"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>UsageTask</b> ()</td></tr>
-<tr class="memdesc:acb55da97ea10ba4185fa2bdf051a01df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Usage <a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a> object. <br /></td></tr>
-<tr class="separator:acb55da97ea10ba4185fa2bdf051a01df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6afdf86ee3f064685a52ab0c9c7aeea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_zotbins_1_1_usage_task.html#ae6afdf86ee3f064685a52ab0c9c7aeea">UsageTask</a> (QueueHandle_t &amp;messageQueue)</td></tr>
+<tr class="memdesc:ae6afdf86ee3f064685a52ab0c9c7aeea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Usage <a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a> object.  <a href="class_zotbins_1_1_usage_task.html#ae6afdf86ee3f064685a52ab0c9c7aeea">More...</a><br /></td></tr>
+<tr class="separator:ae6afdf86ee3f064685a52ab0c9c7aeea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3bb884dc2548f464386855914030bba6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_zotbins_1_1_usage_task.html#a3bb884dc2548f464386855914030bba6">start</a> () override</td></tr>
 <tr class="memdesc:a3bb884dc2548f464386855914030bba6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start execution of Usage <a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a>.  <a href="class_zotbins_1_1_usage_task.html#a3bb884dc2548f464386855914030bba6">More...</a><br /></td></tr>
 <tr class="separator:a3bb884dc2548f464386855914030bba6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -145,7 +144,42 @@ const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>mStackSize<
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a> to measure the usage rate of the bin using the breakbeam sensor. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="ae6afdf86ee3f064685a52ab0c9c7aeea" name="ae6afdf86ee3f064685a52ab0c9c7aeea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6afdf86ee3f064685a52ab0c9c7aeea">&#9670;&nbsp;</a></span>UsageTask()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">UsageTask::UsageTask </td>
+          <td>(</td>
+          <td class="paramtype">QueueHandle_t &amp;&#160;</td>
+          <td class="paramname"><em>messageQueue</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct a new Usage <a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">messageQueue</td><td><a class="el" href="struct_zotbins_1_1_message.html" title="Message for WiFi message queue.">Message</a> queue to WiFi <a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="a3bb884dc2548f464386855914030bba6" name="a3bb884dc2548f464386855914030bba6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3bb884dc2548f464386855914030bba6">&#9670;&nbsp;</a></span>start()</h2>
 

@@ -112,10 +112,9 @@ Inheritance diagram for Zotbins::WiFiTask:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a39b68cba9c049a7cee25986fc05f3306"><td class="memItemLeft" align="right" valign="top"><a id="a39b68cba9c049a7cee25986fc05f3306" name="a39b68cba9c049a7cee25986fc05f3306"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>WiFiTask</b> ()</td></tr>
-<tr class="memdesc:a39b68cba9c049a7cee25986fc05f3306"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Wi Fi <a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a> object. <br /></td></tr>
-<tr class="separator:a39b68cba9c049a7cee25986fc05f3306"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c8f87103f1b6ec65444fd7584ad66a2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_zotbins_1_1_wi_fi_task.html#a2c8f87103f1b6ec65444fd7584ad66a2">WiFiTask</a> (QueueHandle_t &amp;messageQueue)</td></tr>
+<tr class="memdesc:a2c8f87103f1b6ec65444fd7584ad66a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new Wi Fi <a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a> object.  <a href="class_zotbins_1_1_wi_fi_task.html#a2c8f87103f1b6ec65444fd7584ad66a2">More...</a><br /></td></tr>
+<tr class="separator:a2c8f87103f1b6ec65444fd7584ad66a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2d7f556b1cf1d57bec9744510e8117e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_zotbins_1_1_wi_fi_task.html#ab2d7f556b1cf1d57bec9744510e8117e">start</a> () override</td></tr>
 <tr class="memdesc:ab2d7f556b1cf1d57bec9744510e8117e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start execution of WiFi <a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a>.  <a href="class_zotbins_1_1_wi_fi_task.html#ab2d7f556b1cf1d57bec9744510e8117e">More...</a><br /></td></tr>
 <tr class="separator:ab2d7f556b1cf1d57bec9744510e8117e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -145,7 +144,42 @@ const uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>mStackSize<
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a> to send sensor data to MQTT broker. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a2c8f87103f1b6ec65444fd7584ad66a2" name="a2c8f87103f1b6ec65444fd7584ad66a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c8f87103f1b6ec65444fd7584ad66a2">&#9670;&nbsp;</a></span>WiFiTask()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">WiFiTask::WiFiTask </td>
+          <td>(</td>
+          <td class="paramtype">QueueHandle_t &amp;&#160;</td>
+          <td class="paramname"><em>messageQueue</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct a new Wi Fi <a class="el" href="class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from.">Task</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">messageQueue</td><td><a class="el" href="struct_zotbins_1_1_message.html" title="Message for WiFi message queue.">Message</a> queue from sensor tasks </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="ab2d7f556b1cf1d57bec9744510e8117e" name="ab2d7f556b1cf1d57bec9744510e8117e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab2d7f556b1cf1d57bec9744510e8117e">&#9670;&nbsp;</a></span>start()</h2>
 
