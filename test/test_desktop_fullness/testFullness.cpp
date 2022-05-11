@@ -1,4 +1,4 @@
-#include "Fullness.hpp"
+#include "FullnessMetric.hpp"
 #include <unity.h>
 
 // TODO: Add more tests

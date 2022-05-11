@@ -14,7 +14,7 @@
 namespace Zotbins
 {
     /**
-     * @brief Task to measure fullness of the bin by using the ultrasonic sensor
+     * @brief Task to measure fullness of the bin by using the distance sensor
      *
      */
     class FullnessTask : public Task

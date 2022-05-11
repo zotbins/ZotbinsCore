@@ -12,9 +12,10 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v1
       - name: Generate docs
-        uses: patrickanguyen/doxygen-action@v1.9-plantuml
+        uses: zotbins/doxygen-action@v1.9.3-plantuml
         with:
           working-directory: '.doxygen/'
+          additional-packages: plantuml
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.ref == 'refs/heads/main' }}
