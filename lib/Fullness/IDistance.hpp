@@ -26,7 +26,7 @@ namespace Fullness
          *
          * @return int32_t Distance in millimeters
          */
-        virtual uint32_t getDistance() = 0;
+        virtual int32_t getDistance() = 0;
     };
 }
 

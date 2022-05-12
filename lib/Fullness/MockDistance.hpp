@@ -18,15 +18,15 @@ public:
      * @param int32_t Distance in millimeters
      *
      */
-    MockDistance(std::vector<uint32_t> distance);
+    MockDistance(std::vector<int32_t> distance);
 
     /**
      * @brief returns distance
-     * @return uint32_t
+     * @return int32_t mDistanceBuffer
      */
-    uint32_t getDistance() override;
+    int32_t getDistance() override;
 
 private:
-    std::vector<uint32_t> mDistanceBuffer;
+    std::vector<int32_t> mDistanceBuffer;
     size_t mDistanceBufferIdx;
 };
