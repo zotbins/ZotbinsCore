@@ -1,5 +1,5 @@
 /**
- * @file Fullness.hpp
+ * @file FullnessMetric.hpp
  * @brief Header file for Fullness class
  * @version 0.1
  * @date 2022-05-04
