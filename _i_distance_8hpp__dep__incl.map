@@ -1,4 +1,5 @@
 <map id="IDistance.hpp" name="IDistance.hpp">
-<area shape="rect" id="node1" title="Header file for IDistance class." alt="" coords="20,5,121,32"/>
+<area shape="rect" id="node1" title="Header file for IDistance class." alt="" coords="96,5,197,32"/>
 <area shape="rect" id="node2" href="$_fullness_metric_8hpp_source.html" title=" " alt="" coords="5,80,136,107"/>
+<area shape="rect" id="node3" href="$_mock_distance_8hpp.html" title="Mock distance class that inherits from IDistance interface class. Used for unit testing." alt="" coords="159,80,289,107"/>
 </map>

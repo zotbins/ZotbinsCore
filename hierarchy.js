@@ -1,7 +1,9 @@
 var hierarchy =
 [
     [ "Fullness::FullnessMetric", "class_fullness_1_1_fullness_metric.html", null ],
-    [ "Fullness::IDistance", "class_fullness_1_1_i_distance.html", null ],
+    [ "Fullness::IDistance", "class_fullness_1_1_i_distance.html", [
+      [ "MockDistance", "class_mock_distance.html", null ]
+    ] ],
     [ "Weight::IWeight", "class_weight_1_1_i_weight.html", [
       [ "Weight::MockWeight", "class_weight_1_1_mock_weight.html", null ]
     ] ],

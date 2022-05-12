@@ -17,5 +17,6 @@ var annotated_dup =
       [ "UsageTask", "class_zotbins_1_1_usage_task.html", "class_zotbins_1_1_usage_task" ],
       [ "WeightTask", "class_zotbins_1_1_weight_task.html", "class_zotbins_1_1_weight_task" ],
       [ "WiFiTask", "class_zotbins_1_1_wi_fi_task.html", "class_zotbins_1_1_wi_fi_task" ]
-    ] ]
+    ] ],
+    [ "MockDistance", "class_mock_distance.html", "class_mock_distance" ]
 ];
