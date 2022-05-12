@@ -1,25 +1,32 @@
-#include "IDistance.hpp"
-
 /**
- * @brief Mock distance class that inherits from the IDistance interface class.
- * Used for unit tests.
+ * @file MockDistance.hpp
+ * @brief Mock distance class that inherits from IDistance interface class. Used for unit testing.
+ * @version 0.1
+ * @date 2022-05-11
  */
+
+#include "IDistance.hpp"
+#include <cstdint>
+#include <stdlib.h>
+#include <vector>
+
 class MockDistance final : public Fullness::IDistance
 {
 public:
     /**
-     * @brief Constructs an instance of the MockDistance class.
-     * @param mDistance Current distance of mock sensor.
+     * @brief Returns the distance from the mock sensor
+     * @param int32_t Distance in millimeters
      *
      */
-    MockDistance(int32_t distance);
+    MockDistance(std::vector<uint32_t> distance);
 
     /**
      * @brief returns distance
-     * @return int32_t
+     * @return uint32_t
      */
-    int32_t getDistance() override;
+    uint32_t getDistance() override;
 
 private:
-    int32_t mDistance;
+    std::vector<uint32_t> mDistanceBuffer;
+    size_t mDistanceBufferIdx;
 };

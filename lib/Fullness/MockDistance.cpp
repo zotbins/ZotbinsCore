@@ -1,11 +1,21 @@
 #include "MockDistance.hpp"
+#include <vector>
 
-MockDistance::MockDistance(int32_t distance)
-    : mDistance{distance}
+MockDistance::MockDistance(std::vector<uint32_t> distance) : mDistanceBuffer{distance}, mDistanceBufferIdx{0}
 {
 }
 
-int32_t MockDistance::getDistance()
+uint32_t MockDistance::getDistance()
 {
-    return mDistance;
+    uint32_t distance = mDistanceBuffer[mDistanceBufferIdx];
+    if (mDistanceBufferIdx < mDistanceBuffer.size())
+    {
+        mDistanceBufferIdx++;
+    }
+    else
+    {
+        mDistanceBufferIdx = 0;
+    }
+
+    return distance;
 }
