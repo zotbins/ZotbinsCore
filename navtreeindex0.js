@@ -1,5 +1,6 @@
 var NAVTREEINDEX0 =
 {
+"_fullness_metric_8hpp.html":[5,0,1,0,0],
 "_fullness_metric_8hpp_source.html":[5,0,1,0,0],
 "_i_distance_8hpp.html":[5,0,1,0,1],
 "_i_distance_8hpp_source.html":[5,0,1,0,1],
@@ -9,6 +10,7 @@ var NAVTREEINDEX0 =
 "_mock_distance_8hpp_source.html":[5,0,1,0,2],
 "_mock_weight_8hpp.html":[5,0,1,1,1],
 "_mock_weight_8hpp_source.html":[5,0,1,1,1],
+"_weight_metric_8hpp.html":[5,0,1,1,2],
 "_weight_metric_8hpp_source.html":[5,0,1,1,2],
 "annotated.html":[4,0],
 "class_fullness_1_1_fullness_metric.html":[4,0,0,0],
