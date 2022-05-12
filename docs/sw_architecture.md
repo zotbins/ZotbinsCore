@@ -96,7 +96,25 @@ endgroup
 \enduml
 
 ## Weight Task
-TODO
+The Weight Task is responsible for measuring the current weight in kilograms of the waste bin. This is measured using load cells and the HX711 load cell amplifier for the MCU to read. 
+
+If an invalid weight is read from the HX711, or if the weight sensor is not performing as expected, we will log the error and send a corresponding error value to the queue, so the MQTT thread is not blocked waiting for the weight value.
+
+\startuml   
+group Weight Task 
+  :Initialize task;
+  while (Loop forever)
+    :Measure Weight;
+    if (Valid Weight AND Sensor Working) then (yes) 
+      :Push value to queue; 
+    else (no) 
+      :Push error value to queue;
+    endif 
+  :Wait 30 mins; 
+  endwhile 
+  -[hidden]->
+endgroup 
+\enduml
 
 ## Usage Task
 TODO
