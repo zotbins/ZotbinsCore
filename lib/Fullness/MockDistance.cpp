@@ -1,7 +1,10 @@
 #include "MockDistance.hpp"
 #include <vector>
 
-MockDistance::MockDistance(std::vector<int32_t> distance) : mDistanceBuffer{distance}, mDistanceBufferIdx{0}
+using namespace Fullness;
+
+MockDistance::MockDistance(std::vector<int32_t> distance)
+    : mDistanceBuffer{distance}, mDistanceBufferIdx{0}
 {
 }
 
