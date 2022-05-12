@@ -55,3 +55,18 @@ group Fullness Task
   -[hidden]->
 endgroup
 @enduml
+@startuml inline_umlgraph_3.png
+group Weight Task 
+  :Initialize task;
+  while (Loop forever)
+    :Measure Weight;
+    if (Valid Weight AND Sensor Working) then (yes) 
+      :Push value to queue; 
+    else (no) 
+      :Push error value to queue;
+    endif 
+  :Wait 30 mins; 
+  endwhile 
+  -[hidden]->
+endgroup 
+@enduml

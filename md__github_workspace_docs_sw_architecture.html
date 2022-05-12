@@ -130,7 +130,11 @@ Fullness Task</h2>
 </div>
 <h2><a class="anchor" id="autotoc_md15"></a>
 Weight Task</h2>
-<p >TODO</p>
+<p >The Weight Task is responsible for measuring the current weight in kilograms of the waste bin. This is measured using load cells and the HX711 load cell amplifier for the MCU to read.</p>
+<p >If an invalid weight is read from the HX711, or if the weight sensor is not performing as expected, we will log the error and send a corresponding error value to the queue, so the MQTT thread is not blocked waiting for the weight value.</p>
+<div class="plantumlgraph">
+<img src="inline_umlgraph_3.png" />
+</div>
 <h2><a class="anchor" id="autotoc_md16"></a>
 Usage Task</h2>
 <p >TODO</p>
