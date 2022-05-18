@@ -3,10 +3,7 @@
 #include <unity.h>
 #include <vector>
 
-void test_can_construct_mock_distance_sensor()
-{
-    Fullness::MockDistance mockDistanceSensor({3, -6, 27, 114, 9});
-}
+// to-do: add more unit tests
 
 void test_mock_distance_sensor_returns_correct_distances()
 {
@@ -39,13 +36,13 @@ void test_mock_distance_sensor_returns_correct_distances_and_loops()
 
 void test_returns_correct_fullness()
 {
-    uint32_t binHeight = 10;
-    int32_t calculatedAverageDistance = 5; // should be 5.5
+    const uint32_t binHeight = 10;
+    const float calculatedAverageDistance = 5.5;
     std::vector<int32_t> distances = {7, 8, 3, 2, 10, 4, 20, 0};
     Fullness::MockDistance mockDistanceSensor(distances);
 
     Fullness::FullnessMetric mockFullness(binHeight, mockDistanceSensor);
-    TEST_ASSERT_EQUAL_INT(calculatedAverageDistance, (mockFullness.getFullness()));
+    TEST_ASSERT_EQUAL_FLOAT(calculatedAverageDistance, (mockFullness.getFullness()));
 
     for (int i = 0; i < distances.size(); i++)
     {
@@ -56,7 +53,6 @@ void test_returns_correct_fullness()
 int main(int argc, char **argv)
 {
     UNITY_BEGIN();
-    RUN_TEST(test_can_construct_mock_distance_sensor);
     RUN_TEST(test_mock_distance_sensor_returns_correct_distances);
     RUN_TEST(test_mock_distance_sensor_returns_correct_distances_and_loops);
     RUN_TEST(test_returns_correct_fullness);
