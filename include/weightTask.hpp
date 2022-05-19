@@ -10,7 +10,7 @@
 #define WEIGHT_TASK_HPP
 
 #include "task.hpp"
-
+#include "../lib/Weight/RealWeight.hpp"
 namespace Zotbins
 {
     /**
@@ -62,6 +62,11 @@ namespace Zotbins
          *
          */
         QueueHandle_t &mMessageQueue;
+
+        /**
+         * @brief RealWeight class that represents the weight sensor
+         */
+        Weight::RealWeight mSensor;
     };
 }
 
