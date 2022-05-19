@@ -5,7 +5,7 @@ var searchData=
   ['messagepayload_2',['MessagePayload',['../union_zotbins_1_1_message_payload.html',1,'Zotbins']]],
   ['messagetype_3',['MessageType',['../message_8hpp.html#ab79e6dc7a2afd435b6d6be8d0d349863',1,'Zotbins']]],
   ['mname_4',['mName',['../class_zotbins_1_1_task.html#a66bd8c1720804bce64146ccfc0446a78',1,'Zotbins::Task']]],
-  ['mockdistance_5',['MockDistance',['../class_mock_distance.html',1,'MockDistance'],['../class_mock_distance.html#a3a5d997e0f3543bcd6837f4d5e7d9af3',1,'MockDistance::MockDistance()']]],
+  ['mockdistance_5',['MockDistance',['../class_fullness_1_1_mock_distance.html',1,'Fullness::MockDistance'],['../class_fullness_1_1_mock_distance.html#a3a5d997e0f3543bcd6837f4d5e7d9af3',1,'Fullness::MockDistance::MockDistance()']]],
   ['mockdistance_2ehpp_6',['MockDistance.hpp',['../_mock_distance_8hpp.html',1,'']]],
   ['mockweight_7',['MockWeight',['../class_weight_1_1_mock_weight.html#afc6ae2508b89dc75b0187593d6910d13',1,'Weight::MockWeight::MockWeight()'],['../class_weight_1_1_mock_weight.html',1,'Weight::MockWeight']]],
   ['mockweight_2ehpp_8',['MockWeight.hpp',['../_mock_weight_8hpp.html',1,'']]],
