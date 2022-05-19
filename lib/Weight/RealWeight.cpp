@@ -1,4 +1,5 @@
 #include "RealWeight.hpp"
+#include <Arduino.h>
 
 using namespace Weight;
 
@@ -16,6 +17,15 @@ int32_t RealWeight::getWeight()
     mSensor.power_up();
     // MAYBE: add a delay... vTaskDelay(...)
     // requires testing...
+
+    bool is_sensor_ready = mSensor.wait_ready_timeout(2000, 10);
+
+    if (!is_sensor_ready)
+    {
+        log_e("Sensor timed out :(");
+        return -1;
+    }
+
     int32_t reading = mSensor.get_units(10);
     mSensor.power_down();
     return reading; // returns the (avg of 10 raw readings from the ADC) - tare
