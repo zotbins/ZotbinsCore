@@ -10,23 +10,26 @@
 #include <stdlib.h>
 #include <vector>
 
-class MockDistance final : public Fullness::IDistance
+namespace Fullness
 {
-public:
-    /**
-     * @brief Returns the distance from the mock sensor
-     * @param int32_t Distance in millimeters
-     *
-     */
-    MockDistance(std::vector<int32_t> distance);
+    class MockDistance final : public IDistance
+    {
+    public:
+        /**
+         * @brief Returns the distance from the mock sensor
+         * @param int32_t Distance in millimeters
+         *
+         */
+        MockDistance(std::vector<int32_t> distance);
 
-    /**
-     * @brief returns distance
-     * @return int32_t mDistanceBuffer
-     */
-    int32_t getDistance() override;
+        /**
+         * @brief returns distance
+         * @return int32_t mDistanceBuffer
+         */
+        int32_t getDistance() override;
 
-private:
-    std::vector<int32_t> mDistanceBuffer;
-    size_t mDistanceBufferIdx;
-};
+    private:
+        std::vector<int32_t> mDistanceBuffer;
+        size_t mDistanceBufferIdx;
+    };
+}
