@@ -34,6 +34,8 @@ namespace Weight
          */
         int32_t getWeight() override;
 
+        void setup();
+
     private:
 
         HX711 mSensor;

@@ -28,8 +28,8 @@ void setup()
 #endif
 
     // Start all tasks
-    fullnessTask.start();
-    usageTask.start();
+    //fullnessTask.start();
+    //usageTask.start();
     weightTask.start();
 #ifndef ZBIN_DISABLE_WIFI
     wifiTask.start();

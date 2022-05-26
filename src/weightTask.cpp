@@ -29,6 +29,7 @@ void WeightTask::setup()
 {
     log_i("Weight task setting up!");
     // do nothing... no setup needed
+    mSensor.setup();
 }
 
 void WeightTask::loop()
