@@ -1,0 +1,12 @@
+#ifndef CONFIG_HPP
+#define CONFIG_HPP
+
+namespace Zotbins
+{
+    namespace Config
+    {
+        const char *WIFI_SSID = "";
+        const char *WIFI_PWD = "";
+    }
+}
+#endif
