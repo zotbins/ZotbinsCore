@@ -15,9 +15,9 @@ The previous iteration was a Raspberry Pi-based system. This system is intended 
 git clone git@github.com:zotbins/ZotbinsCore.git
 ```
 
-2. Create an `.env` file in the project directory following `.env.txt` as a template.
+2. Create an `config.hpp` file in the `include` directory following `config.hpp.txt` as a template.
 
-3. Fill in the values in `.env` with the appropriate values.
+3. Fill in the values in `config.hpp` with the appropriate values.
 
 ![PlatformIO VSCode Toolbar](docs/images/platformio_toolbar.png)
 
