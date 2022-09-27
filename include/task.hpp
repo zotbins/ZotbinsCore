@@ -9,7 +9,7 @@
 #ifndef ZOTBINS_TASK_HPP
 #define ZOTBINS_TASK_HPP
 
-#include <FreeRTOS.h>
+#include "freertos/FreeRTOS.h"
 #include <cstdint>
 
 namespace Zotbins

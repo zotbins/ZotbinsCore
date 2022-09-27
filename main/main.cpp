@@ -1,19 +1,28 @@
-#include <Arduino.h>
-
 #include "fullnessTask.hpp"
 #include "message.hpp"
 #include "usageTask.hpp"
 #include "weightTask.hpp"
 #include "wifiTask.hpp"
+#include "esp_log.h"
 
 #define ZBIN_CORE_VERSION "0.0.1"
 #define ZBIN_DISABLE_WIFI
 
 constexpr size_t messageQueueSize = 20;
+static const char *TAG = "Main";
+
+void setup();
+void loop();
+
+extern "C" void app_main(void)
+{
+   setup();
+   loop();
+}
 
 void setup()
 {
-    log_i("ZotBins Core Version: %s", ZBIN_CORE_VERSION);
+    ESP_LOGI(TAG, "ZotBins Core Version: %s", ZBIN_CORE_VERSION);
 
     // Create message queue for inter-task communication
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
