@@ -1,6 +1,7 @@
 #include "fullnessTask.hpp"
 #include "FullnessMetric.hpp"
-#include <Arduino.h>
+#include "esp_log.h"
+
 
 using namespace Zotbins;
 
@@ -34,6 +35,6 @@ void FullnessTask::loop()
     while (1)
     {
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-        log_i("Hello from Fullness Task");
+        ESP_LOGI(name, "Hello from Fullness Task");
     }
 }

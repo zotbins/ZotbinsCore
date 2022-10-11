@@ -40,5 +40,6 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "utility": "cpp"
-    }
+    },
+    "idf.adapterTargetName": "esp32"
 }
