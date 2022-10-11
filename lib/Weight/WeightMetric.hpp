@@ -10,6 +10,7 @@
 #define WEIGHT_HPP
 
 #include "IWeight.hpp"
+#include "hx711.h"
 
 namespace Weight
 {
@@ -25,7 +26,7 @@ namespace Weight
          * @param weightSensor An object that is a weight interface object.
          *
          */
-        WeightMetric(IWeight &weightSensor);
+        WeightMetric();
 
         /**
          * @brief Returns the weight.
@@ -39,7 +40,7 @@ namespace Weight
          * @brief IWeight object, uses reference because virtual function
          *
          */
-        IWeight &mWeightSensor;
+        hx711_t mWeightSensor;
     };
 }
 

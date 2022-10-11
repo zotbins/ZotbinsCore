@@ -22,6 +22,7 @@ extern "C" void app_main(void)
    loop();
 }
 
+/*
 void testFunc(void* param)
 {
 
@@ -55,10 +56,11 @@ void testFunc(void* param)
         vTaskDelay(pdMS_TO_TICKS(500));
     }
 }
+*/
 
 void setup()
 {
-    xTaskCreate(testFunc, "Test", 4096, nullptr, 1, nullptr);
+    //xTaskCreate(testFunc, "Test", 4096, nullptr, 1, nullptr);
     ESP_LOGI(TAG, "ZotBins Core Version: %s", ZBIN_CORE_VERSION);
 
     // Create message queue for inter-task communication

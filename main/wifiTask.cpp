@@ -20,7 +20,7 @@
 #include "lwip/sys.h"
 
 #include "wifiTask.hpp"
-#include "config.hpp"
+//#include "config.hpp"
 #include "message.hpp"
 
 /* The examples use WiFi configuration that you can set via project configuration menu
@@ -93,7 +93,7 @@ void WiFiTask::setup()
 {
     if (setupWifi())
     {
-        ESP_LOGI(name, "WiFi Connected to %s", Config::WIFI_SSID);
+        //ESP_LOGI(name, "WiFi Connected to %s", Config::WIFI_SSID);
     }
     else
     {

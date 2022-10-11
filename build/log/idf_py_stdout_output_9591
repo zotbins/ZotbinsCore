@@ -1,0 +1,16 @@
+[1/10] Performing build step for 'bootloader'
+[1/1] cd /home/emil/Documents/Code/Zotbins/ZotbinsCore/build/bootloader/esp-idf/esptool_py && /home/emil/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/emil/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/emil/Documents/Code/Zotbins/ZotbinsCore/build/bootloader/bootloader.bin
+Bootloader binary size 0x66c0 bytes. 0x940 bytes (8%) free.
+[2/8] Building CXX object esp-idf/main/CMakeFiles/__idf_main.dir/wifiTask.cpp.obj
+[3/8] Linking C static library esp-idf/main/libmain.a
+[4/8] Generating ld/sections.ld
+[5/8] Building C object CMakeFiles/zotbins-core.elf.dir/project_elf_src_esp32.c.obj
+[6/8] Linking CXX executable zotbins-core.elf
+[7/8] Generating binary image from built executable
+esptool.py v4.3
+Creating esp32 image...
+Merged 2 ELF sections
+Successfully created esp32 image.
+Generated /home/emil/Documents/Code/Zotbins/ZotbinsCore/build/zotbins-core.bin
+[8/8] cd /home/emil/Documents/Code/Zotbins/ZotbinsCore/build/esp-idf/esptool_py && /home/emil/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/emil/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/emil/Documents/Code/Zotbins/ZotbinsCore/build/partition_table/partition-table.bin /home/emil/Documents/Code/Zotbins/ZotbinsCore/build/zotbins-core.bin
+zotbins-core.bin binary size 0x2b000 bytes. Smallest app partition is 0x100000 bytes. 0xd5000 bytes (83%) free.
