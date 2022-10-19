@@ -1,7 +1,7 @@
 #include "weightTask.hpp"
 #include "WeightMetric.hpp"
-
 #include "esp_log.h"
+#include "RealWeight.hpp"
 
 using namespace Zotbins;
 
@@ -32,9 +32,11 @@ void WeightTask::setup()
 
 void WeightTask::loop()
 {
+    Weight::RealWeight weight_source;
+    Weight::WeightMetric wm(weight_source);
     while (1)
     {
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-        ESP_LOGI(name, "Hello from Weight Task");
+        ESP_LOGI(name, "Hello from Weight Task : %d", static_cast<int>(wm.getWeight()));
     }
 }
