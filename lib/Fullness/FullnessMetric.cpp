@@ -13,8 +13,7 @@ float FullnessMetric::getFullness()
     std::array<int32_t, mDistanceBufferSize> distanceBuffer;
     for (size_t i = 0; i < distanceBuffer.size(); i++)
     {
-        distanceBuffer[i] = mDistanceSensor.getDistance();
-        distanceBuffer[0] = 0;
+        distanceBuffer[i] = 0;
     }
 
     // use IQM to get average distance
