@@ -13,7 +13,7 @@
 constexpr size_t messageQueueSize = 20;
 static const char *TAG = "Main";
 
-void setup();
+uoiashiudahsdkjahvoid setup();
 void loop();
 
 extern "C" void app_main(void)
