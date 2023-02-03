@@ -1,4 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_weight_1_1_i_weight.html" title="Interface (abstract) class for mock and real hardware weight sensor. Used to inherit the getWeight me..." alt="" coords="5,5,117,32"/>
-<area shape="rect" id="node2" href="$class_weight_1_1_mock_weight.html" title="Mock weight class that inherits from the IWeight interface class. Used for unit tests so that actual ..." alt="" coords="165,5,305,32"/>
-</map>

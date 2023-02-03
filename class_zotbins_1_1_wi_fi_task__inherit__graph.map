@@ -1,4 +1,0 @@
-<map id="Zotbins::WiFiTask" name="Zotbins::WiFiTask">
-<area shape="rect" id="node1" title="Task to send sensor data to MQTT broker." alt="" coords="5,175,132,267"/>
-<area shape="rect" id="node2" href="$class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from." alt="" coords="17,5,120,127"/>
-</map>
