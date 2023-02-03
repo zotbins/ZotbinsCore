@@ -1,11 +1,12 @@
 #include "usageTask.hpp"
-#include <Arduino.h>
+#include "esp_log.h"
 
 using namespace Zotbins;
 
 static const char *name = "usageTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+
 
 UsageTask::UsageTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -33,6 +34,6 @@ void UsageTask::loop()
     while (1)
     {
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-        log_i("Hello from Usage Task");
+        ESP_LOGI(name, "Hello from Usage Task");
     }
 }
