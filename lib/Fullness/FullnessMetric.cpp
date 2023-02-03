@@ -14,6 +14,7 @@ float FullnessMetric::getFullness()
     for (size_t i = 0; i < distanceBuffer.size(); i++)
     {
         distanceBuffer[i] = mDistanceSensor.getDistance();
+        distanceBuffer[0] = 0;
     }
 
     // use IQM to get average distance
