@@ -1,5 +1,5 @@
 #include "RealWeight.hpp"
-
+#include <cmath>
 using namespace Weight;
 
 RealWeight::RealWeight()
@@ -15,11 +15,14 @@ RealWeight::RealWeight()
     hx711_init(&mRealSensor);
 }
 
+// 1.4kg = 27550 in raw data.
+// 1kg = 19680 in raw data.
+
+
 int32_t RealWeight::getWeight()
 {
     int32_t data = 0;
     esp_err_t r = hx711_read_average(&mRealSensor, 10, &data);
-    //esp_err_t r = hx711_read_data(&mRealSensor, &data);
     if (r == ESP_OK) {
         return data;
     }

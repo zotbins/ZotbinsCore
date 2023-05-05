@@ -7,3 +7,4 @@
 build
 config.hpp
 .env
+components/WifiComponent/include/WifiConfig.hpp

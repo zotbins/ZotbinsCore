@@ -34,9 +34,19 @@ void WeightTask::loop()
 {
     Weight::RealWeight weight_source;
     Weight::WeightMetric wm(weight_source);
+
+    int32_t normalization = 1004700;
+    double kg_measurement;
+    int32_t diff;
+    int32_t data;
+
     while (1)
     {
+        data = wm.getWeight();
+        diff = abs(data - normalization);
+        kg_measurement = static_cast<double>(diff) / 19680.0;
+
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-        ESP_LOGI(name, "Hello from Weight Task : %d", static_cast<int>(wm.getWeight()));
+        ESP_LOGI(name, "Hello from Weight Task : %.2f kg", kg_measurement);
     }
 }
