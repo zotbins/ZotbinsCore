@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include "Client.hpp"
 #include "MockDistance.hpp"
 #include "MockWeight.hpp"
 #include "RealWeight.hpp"
