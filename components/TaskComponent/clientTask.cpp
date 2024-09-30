@@ -1,6 +1,8 @@
-#include "Client.hpp"
+// #include "Client.hpp"
+#include "clientTask.hpp"
 #include "esp_log.h"
 
+// namespace Zotbins {}
 
 using namespace Zotbins;
 
@@ -8,8 +10,7 @@ static const char *name = "clientTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 
-ClientTask::ClientTask(QueueHandle_t &messageQueue)
-    : Task(name, priority, stackSize), mMessageQueue(messageQueue)
+ClientTask::ClientTask(QueueHandle_t &messageQueue): Task(name, priority, stackSize)
 {
 }
 

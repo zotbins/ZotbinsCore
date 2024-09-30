@@ -39,6 +39,13 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "utility": "cpp"
-    }
+        "utility": "cpp",
+        "hx711.h": "c"
+    },
+    "idf.adapterTargetName": "esp32",
+    "idf.port": "/dev/tty.usbserial-0001",
+    "idf.openOcdConfigs": [
+        "board/esp32-wrover-kit-3.3v.cfg"
+    ],
+    "idf.flashType": "UART"
 }

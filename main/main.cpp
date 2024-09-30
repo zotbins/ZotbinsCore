@@ -5,6 +5,7 @@
 #include "MockWeight.hpp"
 #include "RealWeight.hpp"
 #include "weightTask.hpp"
+#include "usageTask.hpp"
 #include "message.hpp"
 
 constexpr size_t messageQueueSize = 20;
@@ -22,6 +23,8 @@ extern "C" void app_main(void)
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 
-    Zotbins::WeightTask weightTask(messageQueue);
-	weightTask.start();
+    // Zotbins::WeightTask weightTask(messageQueue);
+	// weightTask.start();
+	Zotbins::UsageTask usageTask(messageQueue);
+	usageTask.start();
 }
