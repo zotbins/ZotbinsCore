@@ -13,6 +13,7 @@
 
 #include "esp_http_server.h"
 #include "esp_camera.h"
+#include "esp_timer.h"
 #include "esp_mac.h"
 #include "esp_spiffs.h"
 #include "esp_wifi.h"
@@ -25,8 +26,8 @@
 #include <nvs_flash.h>
 #include <sys/param.h>
 
-#define WIFI_SSID      "VDCNorte-MyCampusNet-Legacy"   //or  or VDCNorte-MyCampusNet
-#define WIFI_PASS      "Sunday-CotedIvoire-8$"
+#define WIFI_SSID      "UCInet Mobile Access"   //or  or VDCNorte-MyCampusNet
+#define WIFI_PASS      ""
 
 #ifndef portTICK_RATE_MS
 #define portTICK_RATE_MS portTICK_PERIOD_MS
@@ -47,6 +48,7 @@
 #define Y4_GPIO_NUM 19
 #define Y3_GPIO_NUM 18
 #define Y2_GPIO_NUM 5
+#define LED_GPIO_NUM 4
 #define VSYNC_GPIO_NUM 25
 #define HREF_GPIO_NUM 23
 #define PCLK_GPIO_NUM 22
@@ -96,7 +98,7 @@ static esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, fr
         .pixel_format = pixel_format, //YUV422,GRAYSCALE,RGB565,JPEG
         .frame_size = frame_size,    //QQVGA-UXGAQQVGA-UXGA, For ESP32, do not use sizes above QVGA when not JPEG. The performance of the ESP32-S series has improved a lot, but JPEG mode always gives better frame rates.
 
-        .jpeg_quality = 12, //0-63, for OV series camera sensors, lower number means higher quality
+        .jpeg_quality = 0, //0-63, for OV series camera sensors, lower number means higher quality
         .fb_count = fb_count,       //When jpeg mode is used, if fb_count more than one, the driver will work in continuous mode.
         .grab_mode = CAMERA_GRAB_WHEN_EMPTY
     };
@@ -108,6 +110,13 @@ static esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, fr
         ESP_LOGE(TAG, "Camera Init Failed with error 0x%x", err);
         return err;
     }
+
+    sensor_t *s = esp_camera_sensor_get();
+
+    // TODO: these filters are not working properly, keeps tinting the camera yellow
+    s->set_whitebal(s, 1); // 1 enables auto white balance
+    s->set_colorbar(s, 0); // Disable color bar
+    s->set_exposure_ctrl(s, 1); // Set to auto exposure
 
     if (ESP_OK == err && PIXFORMAT_JPEG == pixel_format && FRAMESIZE_SVGA > size_bak) {
         sensor_t *s = esp_camera_sensor_get();
@@ -238,63 +247,128 @@ void save_image_to_json(const char *encoded_image) {
     cJSON_Delete(json);
 }
 
-void init_spiffs() {
-    esp_vfs_spiffs_conf_t conf = {
-        .base_path = "/spiffs",
-        .partition_label = NULL,
-        .max_files = 5,
-        .format_if_mount_failed = true
-    };
+// void init_spiffs() {
+//     esp_vfs_spiffs_conf_t conf = {
+//         .base_path = "/spiffs",
+//         .partition_label = NULL,
+//         .max_files = 5,
+//         .format_if_mount_failed = true
+//     };
     
-    esp_err_t ret = esp_vfs_spiffs_register(&conf);
-    if (ret != ESP_OK) {
-        if (ret == ESP_FAIL) {
-            ESP_LOGE("SPIFFS", "Failed to mount or format filesystem");
-        } else if (ret == ESP_ERR_NOT_FOUND) {
-            ESP_LOGE("SPIFFS", "Failed to find SPIFFS partition");
-        } else {
-            ESP_LOGE("SPIFFS", "Failed to initialize SPIFFS (%s)", esp_err_to_name(ret));
-        }
-        return;
-    }
+//     esp_err_t ret = esp_vfs_spiffs_register(&conf);
+//     if (ret != ESP_OK) {
+//         if (ret == ESP_FAIL) {
+//             ESP_LOGE("SPIFFS", "Failed to mount or format filesystem");
+//         } else if (ret == ESP_ERR_NOT_FOUND) {
+//             ESP_LOGE("SPIFFS", "Failed to find SPIFFS partition");
+//         } else {
+//             ESP_LOGE("SPIFFS", "Failed to initialize SPIFFS (%s)", esp_err_to_name(ret));
+//         }
+//         return;
+//     }
 
-    size_t total = 0, used = 0;
-    ret = esp_spiffs_info(NULL, &total, &used);
-    if (ret != ESP_OK) {
-        ESP_LOGE("SPIFFS", "Failed to get SPIFFS partition information");
-    } else {
-        ESP_LOGI("SPIFFS", "Partition size: total: %d, used: %d", total, used);
+//     size_t total = 0, used = 0;
+//     ret = esp_spiffs_info(NULL, &total, &used);
+//     if (ret != ESP_OK) {
+//         ESP_LOGE("SPIFFS", "Failed to get SPIFFS partition information");
+//     } else {
+//         ESP_LOGI("SPIFFS", "Partition size: total: %d, used: %d", total, used);
+//     }
+// }
+
+//EVERYTHING BELOW THIS are http fxns (except app_main is simply to view image for quality check)
+
+
+
+
+
+#include "esp_camera.h"
+#include "esp_http_server.h"
+
+typedef struct {
+        httpd_req_t *req;
+        size_t len;
+} jpg_chunking_t;
+
+static size_t jpg_encode_stream(void * arg, size_t index, const void* data, size_t len){
+    jpg_chunking_t *j = (jpg_chunking_t *)arg;
+    if(!index){
+        j->len = 0;
     }
+    if(httpd_resp_send_chunk(j->req, (const char *)data, len) != ESP_OK){
+        return 0;
+    }
+    j->len += len;
+    return len;
 }
 
-//EVERYTHING BELOW THIS (except app_main is simply to view image for quality check)
+esp_err_t jpg_httpd_handler(httpd_req_t *req){
+    camera_fb_t * fb = NULL;
+    esp_err_t res = ESP_OK;
+    size_t fb_len = 0;
+    int64_t fr_start = esp_timer_get_time();
 
-// HTTP GET handler for serving the captured image
-esp_err_t capture_handler(httpd_req_t *req) {
-    // Capture image from camera
-    camera_fb_t *fb = esp_camera_fb_get();
+    fb = esp_camera_fb_get();
     if (!fb) {
-        ESP_LOGE(TAG, "Failed to capture image");
+        ESP_LOGE(TAG, "Camera capture failed");
         httpd_resp_send_500(req);
         return ESP_FAIL;
     }
-
-    // Send response headers
-    httpd_resp_set_type(req, "image/jpeg");
-    httpd_resp_set_hdr(req, "Content-Disposition", "inline; filename=capture.jpg");
-
-    // Send the image as the HTTP response
-    esp_err_t res = httpd_resp_send(req, (const char *)fb->buf, fb->len);
-
-    // Return the frame buffer back to the driver
-    esp_camera_fb_return(fb);
-
-    if (res != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to send the image");
+    res = httpd_resp_set_type(req, "image/jpeg");
+    if(res == ESP_OK){
+        res = httpd_resp_set_hdr(req, "Content-Disposition", "inline; filename=capture.jpg");
     }
 
+    if(res == ESP_OK){
+        if(fb->format == PIXFORMAT_JPEG){
+            fb_len = fb->len;
+            res = httpd_resp_send(req, (const char *)fb->buf, fb->len);
+        } else {
+            jpg_chunking_t jchunk = {req, 0};
+            res = frame2jpg_cb(fb, 80, jpg_encode_stream, &jchunk)?ESP_OK:ESP_FAIL;
+            httpd_resp_send_chunk(req, NULL, 0);
+            fb_len = jchunk.len;
+        }
+    }
+    esp_camera_fb_return(fb);
+    int64_t fr_end = esp_timer_get_time();
+    // ESP_LOGI(TAG, "JPG: %uKB %ums", (uint32_t)(fb_len/1024), (uint32_t)((fr_end - fr_start)/1000));
     return res;
 }
+
+
+
+
+
+
+// // HTTP GET handler for serving the captured image
+// esp_err_t capture_handler(httpd_req_t *req) {
+//     // Capture image from camera
+//     camera_fb_t *fb = esp_camera_fb_get();
+//     if (!fb) {
+//         ESP_LOGE(TAG, "Failed to capture image");
+//         httpd_resp_send_500(req);
+//         return ESP_FAIL;
+//     }
+
+//     // Send response headers
+//     httpd_resp_set_type(req, "image/jpeg");
+//     httpd_resp_set_hdr(req, "Content-Disposition", "inline; filename=capture.jpg");
+
+//     // Send the image as the HTTP response
+//     esp_err_t res = httpd_resp_send(req, (const char *)fb->buf, fb->len);
+
+//     // Return the frame buffer back to the driver
+//     esp_camera_fb_return(fb);
+
+//     if (res != ESP_OK) {
+//         ESP_LOGE(TAG, "Failed to send the image");
+//     }
+
+//     return res;
+// }
+
+
 
 // Start the HTTP server and set up URI handler
 void start_camera_server() {
@@ -307,7 +381,7 @@ void start_camera_server() {
         httpd_uri_t capture_uri = {
             .uri       = "/capture",
             .method    = HTTP_GET,
-            .handler   = capture_handler,
+            .handler   = jpg_httpd_handler,
             .user_ctx  = NULL
         };
 
@@ -333,6 +407,12 @@ void print_mac_address() {
 }
 
 void app_main() {
+    // turn on camera flash
+    esp_rom_gpio_pad_select_gpio(LED_GPIO_NUM);
+    gpio_set_direction(LED_GPIO_NUM, GPIO_MODE_OUTPUT);
+    gpio_set_level(LED_GPIO_NUM, 1);
+
+    
     // Initialize the camera
     TEST_ESP_OK(init_camera(20000000, PIXFORMAT_RGB565, FRAMESIZE_QVGA, 2, SIOD_GPIO_NUM, -1));
 
@@ -343,13 +423,17 @@ void app_main() {
         nvs_flash_init();
     }
 
-    //print_mac_address();
+    // print_mac_address();
 
     // Initialize the Wi-Fi station
     wifi_init_sta();
 
     // Start the HTTP server to serve images
     start_camera_server();
+
+    // turn off flash
+    vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1 second
+    gpio_set_level(LED_GPIO_NUM, 0);
 }
 
 /*void app_main(void)
