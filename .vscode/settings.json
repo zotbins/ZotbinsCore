@@ -40,5 +40,8 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "utility": "cpp"
-    }
+    },
+    "idf.adapterTargetName": "esp32",
+    "idf.portWin": "COM3",
+    "idf.flashType": "UART"
 }
