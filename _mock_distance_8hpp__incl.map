@@ -1,0 +1,12 @@
+<map id="MockDistance.hpp" name="MockDistance.hpp">
+<area shape="rect" id="Node000001" title="Mock distance class that inherits from IDistance interface class. Used for unit testing." alt="" coords="113,5,241,31"/>
+<area shape="rect" id="Node000002" href="$_i_distance_8hpp.html" title="Header file for IDistance class." alt="" coords="5,79,106,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="158,34,91,73,88,68,155,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="69,153,130,178"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="173,33,115,140,111,138,168,30"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="180,79,243,105"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="185,30,201,64,197,66,180,32"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="267,79,324,105"/>
+<area shape="poly" id="edge5_Node000001_Node000005" title=" " alt="" coords="198,29,264,68,261,73,196,34"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="65,103,86,138,82,141,60,106"/>
+</map>

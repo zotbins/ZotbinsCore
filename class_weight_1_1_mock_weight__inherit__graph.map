@@ -1,0 +1,5 @@
+<map id="Weight::MockWeight" name="Weight::MockWeight">
+<area shape="rect" id="Node000001" title="Mock weight class that inherits from the IWeight interface class. Used for unit tests so that actual ..." alt="" coords="5,119,136,204"/>
+<area shape="rect" id="Node000002" href="$class_weight_1_1_i_weight.html" title="Interface (abstract) class for mock and real hardware weight sensor. Used to inherit the getWeight me..." alt="" coords="19,5,122,71"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,85,73,119,68,119,68,85"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="IWeight.hpp" name="IWeight.hpp">
+<area shape="rect" id="Node000001" title="Header file for IWeight class." alt="" coords="158,5,247,31"/>
+<area shape="rect" id="Node000002" href="$_mock_weight_8hpp.html" title="Header file for MockWeight class." alt="" coords="5,79,123,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="167,41,89,81,86,76,164,36"/>
+<area shape="rect" id="Node000003" href="$_real_weight_8hpp.html" title="Header file for RealWeight class." alt="" coords="147,79,258,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="205,46,205,79,200,79,200,46"/>
+<area shape="rect" id="Node000004" href="$_weight_metric_8hpp.html" title="Header file for Weight class." alt="" coords="282,79,403,105"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="241,36,320,76,318,81,239,41"/>
+</map>

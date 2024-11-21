@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['software_20architecture_0',['Software Architecture',['../md__github_workspace_docs_sw_architecture.html',1,'']]]
+  ['background_0',['Background',['../md__2github_2workspace_2docs_2sw__architecture.html#autotoc_md10',1,'']]],
+  ['below_1',['Overall System Diagram (more detail on each task is shown down below)',['../md__2github_2workspace_2docs_2sw__architecture.html#autotoc_md13',1,'']]],
+  ['build_20upload_2',['How to Build &amp; Upload',['../index.html#autotoc_md2',1,'']]]
 ];

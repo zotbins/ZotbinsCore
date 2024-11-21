@@ -1,0 +1,5 @@
+<map id="Zotbins::WeightTask" name="Zotbins::WeightTask">
+<area shape="rect" id="Node000001" title="Task to measure current weight of the trash inside the bin using the HX711 and load cell." alt="" coords="5,179,136,264"/>
+<area shape="rect" id="Node000002" href="$class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from." alt="" coords="24,5,117,131"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,146,73,179,68,179,68,146"/>
+</map>
