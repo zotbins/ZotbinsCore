@@ -26,7 +26,7 @@ namespace Fullness
          * @brief Pushes a distance value to the buffer
          * @param int32_t Distance in millimeters
          */
-        void recordDistance(int32_t distance);
+        void recordDistance(float distance);
 
         /**
          * @brief Clears the distance buffer
@@ -34,7 +34,7 @@ namespace Fullness
         void clearBuffer();
 
     private:
-        std::vector<int32_t> mDistanceBuffer;
+        std::vector<int32_t> buffer;
 
     };
 }

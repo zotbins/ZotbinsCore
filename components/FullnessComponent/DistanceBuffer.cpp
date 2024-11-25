@@ -14,3 +14,15 @@
 #include "ultrasonic.h"
 
 using namespace Fullness;
+
+DistanceBuffer::DistanceBuffer() : buffer {
+
+}
+
+void DistanceBuffer::recordDistance(float distance) {
+    this->buffer.push_back(distance);
+}
+
+void DistanceBuffer::clearBuffer() {
+    this->buffer.clear();
+}
