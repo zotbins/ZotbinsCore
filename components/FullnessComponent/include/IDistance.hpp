@@ -65,7 +65,7 @@ namespace Fullness
     protected:
         gpio_num_t pin_trigger;
         gpio_num_t pin_echo;
-        std::vector<int64_t> handler_timestamps;
+        // std::vector<int64_t> handler_timestamps;
 
     };
 }

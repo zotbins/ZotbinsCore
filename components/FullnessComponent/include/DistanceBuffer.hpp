@@ -50,6 +50,6 @@ namespace Fullness
         void clearBuffer();
 
     private:
-
+        std::vector<int32_t> mDistanceBuffer;
     };
 }

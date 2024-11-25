@@ -9,7 +9,6 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include <ultrasonic.h>
 #include <esp_err.h>
 
 #include "ultrasonic.h"
@@ -58,6 +57,7 @@ float DistanceBuffer::getDistance()
 {
 
     int max_distance_cm_temp = 100;
+    float temp_distance = 0;
 
     // int64_t start_time, end_time;
     // float measured_distance = -1; // getDistance in a try / catch block, error type is -Werror=return-type (return-type)
@@ -80,6 +80,8 @@ float DistanceBuffer::getDistance()
     // // TODO: needs better data types later on
 
     // return measured_distance;
+
+    return temp_distance;
 
 }
 
