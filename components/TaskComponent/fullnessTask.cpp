@@ -4,12 +4,12 @@
 #include "DistanceBuffer.hpp"
 #include "esp_log.h"
 
-#define PIN_TRIGGER GPIO_NUM_2
-#define PIN_ECHO GPIO_NUM_4
-
 #define BIN_HEIGHT 1000
 
 using namespace Zotbins;
+
+const gpio_num_t PIN_TRIGGER = GPIO_NUM_2;
+const gpio_num_t PIN_ECHO = GPIO_NUM_16;
 
 static const char *name = "fullnessTask";
 static const int priority = 1;
@@ -32,7 +32,7 @@ void FullnessTask::taskFunction(void *task)
     fullnessTask->loop();
 }
 
-void FullnessTask::setup()
+void FullnessTask::setup() // could refactor into setup later but there are a lot of issues with scope
 {
     
 }
@@ -41,30 +41,25 @@ void FullnessTask::loop()
 {
 
     uint32_t bin_height = BIN_HEIGHT;
+    float distance;
 
-    Fullness::DistanceBuffer buffer; // initialize distance buffer (with IDistance interface for interfacing with ultrasonic)
-    Fullness::FullnessMetric bin(bin_height, buffer); // init fullness metric containing . takes a reference of the buffer, so values can be added to the buffer and the fullness metric will have access to that
-
-    buffer.setTriggerPin(PIN_TRIGGER); // set trigger pin
-    buffer.setEchoPin(PIN_ECHO); // set echo pin
-
-    // int distance_temp; // change to consistent type later on (uint32_t, needed to print for testing and format specifiers are weird)
+    Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
+    // gpio_set_direction(PIN_TRIGGER, GPIO_MODE_OUTPUT);
+    // gpio_set_direction(PIN_ECHO, GPIO_MODE_OUTPUT);
 
     while (1)
     {
+
+        // gpio_set_level(PIN_TRIGGER, 1);
+        // gpio_set_level(PIN_ECHO, 1);
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-        ESP_LOGI(name, "Hello from Fullness Task");
+        distance = ultrasonic.getDistance();
 
-        // distance_temp = buffer.getDistance();
-        // if(distance_temp > 0) {
-        //     buffer.recordDistance(distance_temp);
-        // }
-
-        // // TODO: call get distance
-        // // TODO: after x number of calls (or when about to enqueue to the mqtt message queue), run a calculation using fullness metric on the distance buffer to get a single fullness percentage
-        // // TODO: clear the buffer, repeat 
-
-        // ESP_LOGI(name, "Hello from Fullness Task, %d", distance_temp);
+        ESP_LOGI(name, "Hello from Fullness Task %f", distance);
+        // ESP_LOGI(name, "Hello from Fullness Task");
+        // gpio_set_level(PIN_TRIGGER, 0);
+        // gpio_set_level(PIN_ECHO, 0);
+        // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
 
     }
 }

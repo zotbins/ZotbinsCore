@@ -5,7 +5,7 @@
  * @date 2022-05-11
  */
 
-#include "IDistance.hpp"
+#include "Distance.hpp"
 #include <cstdint>
 #include <stdlib.h>
 #include <vector>
@@ -13,30 +13,14 @@
 
 namespace Fullness
 {
-    class DistanceBuffer final : public IDistance
+    class DistanceBuffer final : public Distance
     {
+
     public:
-
         /**
-         * @brief Buffer containing a window of distance readings from the sensor
-         * @param int32_t Distance in millimeters
-         *
+         * @brief Create buffer object containing a window of distance readings from the sensor
          */
-        // DistanceBuffer(gpio_num_t trigger, gpio_num_t echo, std::vector<int32_t> distance);
-
         DistanceBuffer();
-
-        void setTriggerPin(gpio_num_t trigger) override;
-
-        void setEchoPin(gpio_num_t echo) override;
-
-        // void IRAM_ATTR echoHandler(void* arg) override;
-
-        /**
-         * @brief Returns distance
-         * @return float mDistanceBuffer
-         */
-        float getDistance() override;
 
         /**
          * @brief Pushes a distance value to the buffer
@@ -51,5 +35,6 @@ namespace Fullness
 
     private:
         std::vector<int32_t> mDistanceBuffer;
+
     };
 }

@@ -6,11 +6,11 @@
  */
 
 #include "FullnessMetric.hpp"
-#include "IDistance.hpp"
+#include "Distance.hpp"
 
 using namespace Fullness;
 
-FullnessMetric::FullnessMetric(uint32_t binHeight, IDistance &distanceSensor) : mBinHeight{binHeight}, mDistanceSensor{distanceSensor}
+FullnessMetric::FullnessMetric(uint32_t binHeight, Distance &distanceSensor) : mBinHeight{binHeight}, mDistanceSensor{distanceSensor}
 {
 }
 

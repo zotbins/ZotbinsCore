@@ -9,7 +9,7 @@
 #ifndef FULLNESS_HPP
 #define FULLNESS_HPP
 
-#include "IDistance.hpp"
+#include "Distance.hpp"
 #include <array>
 #include <cstdint>
 #include <cstddef>
@@ -29,7 +29,7 @@ namespace Fullness
          * @param binHeight Height of bin in mm
          * @param distanceSensor Interface to distance sensor
          */
-        FullnessMetric(uint32_t binHeight, IDistance &distanceSensor);
+        FullnessMetric(uint32_t binHeight, Distance &distanceSensor);
 
         /**
          * @brief Returns the fullness percentage of the bin
@@ -63,7 +63,7 @@ namespace Fullness
          * @brief Distance sensor
          *
          */
-        IDistance &mDistanceSensor;
+        Distance &mDistanceSensor;
     };
 }
 #endif

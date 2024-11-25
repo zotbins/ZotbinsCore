@@ -8,9 +8,9 @@
 #include <ets_sys.h>
 #include <esp_idf_lib_helpers.h>
 
-#define PIN_BREAKBEAM GPIO_NUM_34
-
 using namespace Zotbins;
+
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_34;
 
 static const char *name = "usageTask";
 static const int priority = 1;
