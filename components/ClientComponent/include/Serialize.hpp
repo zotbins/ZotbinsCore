@@ -10,13 +10,16 @@ namespace Client {
      *
      * The current shape of the JSON object returned is the following:
      * {
-     *   "fullness": 1,
-     *   "weight": 1
+     *   "bin_id": 18838586676582,
+     *   "fullness": 0.5,
+     *   "usage": 44,
+     *   "overflow": false,
+     *   "weight": 50
      * }
      *
      * @return cJSON* root of a JSON object containing sensor data. Make sure to free this after you are done using it.
      */
-    cJSON* serialize(float fullness, int32_t weight);
+    cJSON* serialize(float fullness, uint32_t usage, bool overflow, int32_t weight);
 }
 
 #endif
