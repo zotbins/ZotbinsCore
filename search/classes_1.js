@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['hx711_5ft_0',['hx711_t',['../structhx711__t.html',1,'']]]
+  ['fullnessmetric_0',['FullnessMetric',['../class_fullness_1_1_fullness_metric.html',1,'Fullness']]],
+  ['fullnesstask_1',['FullnessTask',['../class_zotbins_1_1_fullness_task.html',1,'Zotbins']]]
 ];

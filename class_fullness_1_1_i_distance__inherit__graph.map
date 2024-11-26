@@ -1,5 +1,5 @@
 <map id="Fullness::IDistance" name="Fullness::IDistance">
-<area shape="rect" id="Node000001" title="Interface (abstract) class for mock and real hardware ultrasonic (fullness/distance) sensor...." alt="" coords="19,5,142,71"/>
-<area shape="rect" id="Node000002" href="$class_fullness_1_1_mock_distance.html" title=" " alt="" coords="5,119,156,204"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="83,85,83,119,78,119,78,85"/>
+<area shape="rect" id="Node000001" title="Interface (abstract) class for mock and real hardware ultrasonic (fullness/distance) sensor...." alt="" coords="19,5,140,72"/>
+<area shape="rect" id="Node000002" href="$class_fullness_1_1_mock_distance.html" title=" " alt="" coords="5,120,154,206"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="82,86,82,120,77,120,77,86"/>
 </map>

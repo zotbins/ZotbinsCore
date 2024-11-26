@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['idistance_0',['IDistance',['../class_fullness_1_1_i_distance.html',1,'Fullness']]],
-  ['iweight_1',['IWeight',['../class_weight_1_1_i_weight.html',1,'Weight']]]
+  ['hx711_5ft_0',['hx711_t',['../structhx711__t.html',1,'']]]
 ];

@@ -1,5 +1,5 @@
 <map id="Zotbins::UsageTask" name="Zotbins::UsageTask">
-<area shape="rect" id="Node000001" title="Task to measure the usage rate of the bin using the breakbeam sensor." alt="" coords="5,179,135,264"/>
-<area shape="rect" id="Node000002" href="$class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from." alt="" coords="23,5,117,131"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,146,73,179,67,179,67,146"/>
+<area shape="rect" id="Node000001" title="Task to measure the usage rate of the bin using the breakbeam sensor." alt="" coords="5,181,132,267"/>
+<area shape="rect" id="Node000002" href="$class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from." alt="" coords="22,5,116,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="71,147,71,181,66,181,66,147"/>
 </map>

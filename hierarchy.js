@@ -12,6 +12,7 @@ var hierarchy =
     [ "Zotbins::Message", "struct_zotbins_1_1_message.html", null ],
     [ "Zotbins::MessagePayload", "union_zotbins_1_1_message_payload.html", null ],
     [ "Zotbins::Task", "class_zotbins_1_1_task.html", [
+      [ "Zotbins::ClientTask", "class_zotbins_1_1_client_task.html", null ],
       [ "Zotbins::FullnessTask", "class_zotbins_1_1_fullness_task.html", null ],
       [ "Zotbins::UsageTask", "class_zotbins_1_1_usage_task.html", null ],
       [ "Zotbins::WeightTask", "class_zotbins_1_1_weight_task.html", null ]
