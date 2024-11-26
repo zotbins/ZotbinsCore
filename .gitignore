@@ -7,6 +7,9 @@
 build
 config.hpp
 .env
+flake.nix
+flake.lock
+.cache/
 .DS_Store
 .vscode/settings.json
 components/.DS_Store
