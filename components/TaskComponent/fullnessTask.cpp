@@ -1,9 +1,15 @@
+#include <driver/gpio.h>
 #include "fullnessTask.hpp"
 #include "FullnessMetric.hpp"
+#include "DistanceBuffer.hpp"
 #include "esp_log.h"
 
+#define BIN_HEIGHT 1000
 
 using namespace Zotbins;
+
+const gpio_num_t PIN_TRIGGER = GPIO_NUM_2;
+const gpio_num_t PIN_ECHO = GPIO_NUM_16;
 
 static const char *name = "fullnessTask";
 static const int priority = 1;
@@ -26,15 +32,34 @@ void FullnessTask::taskFunction(void *task)
     fullnessTask->loop();
 }
 
-void FullnessTask::setup()
+void FullnessTask::setup() // could refactor into setup later but there are a lot of issues with scope
 {
+    
 }
 
 void FullnessTask::loop()
 {
+
+    uint32_t bin_height = BIN_HEIGHT;
+    float distance;
+
+    Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
+    // gpio_set_direction(PIN_TRIGGER, GPIO_MODE_OUTPUT);
+    // gpio_set_direction(PIN_ECHO, GPIO_MODE_OUTPUT);
+
     while (1)
     {
+
+        // gpio_set_level(PIN_TRIGGER, 1);
+        // gpio_set_level(PIN_ECHO, 1);
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-        ESP_LOGI(name, "Hello from Fullness Task");
+        distance = ultrasonic.getDistance();
+
+        ESP_LOGI(name, "Hello from Fullness Task %f", distance);
+        // ESP_LOGI(name, "Hello from Fullness Task");
+        // gpio_set_level(PIN_TRIGGER, 0);
+        // gpio_set_level(PIN_ECHO, 0);
+        // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+
     }
 }

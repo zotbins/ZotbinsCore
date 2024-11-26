@@ -10,3 +10,8 @@ config.hpp
 flake.nix
 flake.lock
 .cache/
+.DS_Store
+.vscode/settings.json
+components/.DS_Store
+components/ClientComponent/.DS_Store
+dependencies.lock

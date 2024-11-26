@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <iostream>
 #include "Client.hpp"
-#include "MockDistance.hpp"
 #include "MockWeight.hpp"
 #include "RealWeight.hpp"
+#include "fullnessTask.hpp"
 #include "weightTask.hpp"
 #include "usageTask.hpp"
 #include "message.hpp"
@@ -27,4 +27,7 @@ extern "C" void app_main(void)
 	// weightTask.start();
 	Zotbins::UsageTask usageTask(messageQueue);
 	usageTask.start();
+
+	Zotbins::FullnessTask fullnessTask(messageQueue);
+	fullnessTask.start();
 }

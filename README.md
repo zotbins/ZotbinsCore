@@ -5,11 +5,14 @@ ZotBins Core is a IoT Smart Bin to keep track of waste data metrics like bin ful
 The previous iteration was a Raspberry Pi-based system. This system is intended to a replacement for the Raspberry Pi system, while being more reliable, maintainable, efficient, and testable.
 
 ## Prerequisites
+
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [PlatformIO](https://platformio.org/), a cross-platform VSCode-based IDE for embedded system development
+- [ESP-IDF](https://idf.espressif.com) (OPTIONAL alternative to PlatformIO) development framework for ESP devices, which also includes a VSCode extension - Version 5.3.1
 - [CP210x USB to UART Bridge VCP Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers), only needed if drivers are not already installed
 
-## How to Build & Upload
+## How to Build & Upload w/ PlatformIO
+
 1. First, clone the repository using the command
 ```bash
 git clone git@github.com:zotbins/ZotbinsCore.git
