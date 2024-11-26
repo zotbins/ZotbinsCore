@@ -1,393 +1,264 @@
-#define BOARD_WROVER_KIT
-#define BOARD_ESP32CAM_AITHINKER
+#include "esp_camera.h"
+#include "esp_event.h"
+#include "esp_http_server.h"
+#include "esp_netif.h"
+#include "esp_timer.h"
+#include "esp_wifi.h"
+#include <esp_log.h>
+#include <esp_system.h>
+#include <nvs_flash.h>
+#include <string.h>
 
-#include <stdio.h>
+// FreeRTOS headers
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "freertos/task.h"
-#include "driver/gpio.h"
-#include <string.h>
-#include "driver/i2c.h"
-#include "unity.h"
-#include <mbedtls/base64.h>
 
-#include "esp_http_server.h"
-#include "esp_camera.h"
-#include "esp_mac.h"
-#include "esp_spiffs.h"
-#include "esp_wifi.h"
-#include "esp_netif.h"
-#include "esp_event.h"
-#include <esp_system.h>
-#include <esp_log.h>
-#include <cJSON.h>
+#define BOARD_ESP32CAM_AITHINKER
 
-#include <nvs_flash.h>
-#include <sys/param.h>
+#ifdef BOARD_ESP32CAM_AITHINKER
+// ESP32Cam (AiThinker) PIN Map
+#define CAM_PIN_PWDN 32
+#define CAM_PIN_RESET -1
+#define CAM_PIN_XCLK 0
+#define CAM_PIN_SIOD 26
+#define CAM_PIN_SIOC 27
 
-#define WIFI_SSID      "VDCNorte-MyCampusNet-Legacy"   //or  or VDCNorte-MyCampusNet
-#define WIFI_PASS      "Sunday-CotedIvoire-8$"
-
-#ifndef portTICK_RATE_MS
-#define portTICK_RATE_MS portTICK_PERIOD_MS
+#define CAM_PIN_D7 35
+#define CAM_PIN_D6 34
+#define CAM_PIN_D5 39
+#define CAM_PIN_D4 36
+#define CAM_PIN_D3 21
+#define CAM_PIN_D2 19
+#define CAM_PIN_D1 18
+#define CAM_PIN_D0 5
+#define CAM_PIN_VSYNC 25
+#define CAM_PIN_HREF 23
+#define CAM_PIN_PCLK 22
 #endif
 
-// ESP32Cam (AiThinker) PIN Map
-#define PWDN_GPIO_NUM 32
-#define RESET_GPIO_NUM -1 //software reset will be performed
-#define XCLK_GPIO_NUM 0
-#define SIOD_GPIO_NUM 26
-#define SIOC_GPIO_NUM 27
+#define PART_BOUNDARY "123456789000000000000987654321"
 
-#define Y9_GPIO_NUM 35
-#define Y8_GPIO_NUM 34
-#define Y7_GPIO_NUM 39
-#define Y6_GPIO_NUM 36
-#define Y5_GPIO_NUM 21
-#define Y4_GPIO_NUM 19
-#define Y3_GPIO_NUM 18
-#define Y2_GPIO_NUM 5
-#define VSYNC_GPIO_NUM 25
-#define HREF_GPIO_NUM 23
-#define PCLK_GPIO_NUM 22
+static const char *TAG = "example:take_picture";
+static const char *_STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
+static const char *_STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
+static const char *_STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
 
-#define I2C_MASTER_SCL_IO           4      /*!< GPIO number used for I2C master clock */
-#define I2C_MASTER_SDA_IO           5      /*!< GPIO number used for I2C master data  */
-#define I2C_MASTER_NUM              0      /*!< I2C master i2c port number, the number of i2c peripheral interfaces available will depend on the chip */
-#define I2C_MASTER_FREQ_HZ          100000 /*!< I2C master clock frequency */
-
-static const char *TAG = "wifi_station";
 static EventGroupHandle_t s_wifi_event_group;
-esp_netif_t *sta_netif = NULL;
+static esp_ip4_addr_t s_ip_addr;
 
-typedef void (*decode_func_t)(uint8_t *jpegbuffer, uint32_t size, uint8_t *outbuffer);
+#define WIFI_CONNECTED_BIT BIT0
 
-static esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, framesize_t frame_size, uint8_t fb_count, int sccb_sda_gpio_num, int sccb_port)
+static camera_config_t camera_config = {
+    .pin_pwdn = CAM_PIN_PWDN,
+    .pin_reset = CAM_PIN_RESET,
+    .pin_xclk = CAM_PIN_XCLK,
+    .pin_sccb_sda = CAM_PIN_SIOD,
+    .pin_sccb_scl = CAM_PIN_SIOC,
+
+    .pin_d7 = CAM_PIN_D7,
+    .pin_d6 = CAM_PIN_D6,
+    .pin_d5 = CAM_PIN_D5,
+    .pin_d4 = CAM_PIN_D4,
+    .pin_d3 = CAM_PIN_D3,
+    .pin_d2 = CAM_PIN_D2,
+    .pin_d1 = CAM_PIN_D1,
+    .pin_d0 = CAM_PIN_D0,
+    .pin_vsync = CAM_PIN_VSYNC,
+    .pin_href = CAM_PIN_HREF,
+    .pin_pclk = CAM_PIN_PCLK,
+
+    // XCLK 20MHz or 10MHz for OV2640 double FPS (Experimental)
+    .xclk_freq_hz = 20000000,
+    .ledc_timer = LEDC_TIMER_0,
+    .ledc_channel = LEDC_CHANNEL_0,
+
+    .pixel_format = PIXFORMAT_JPEG,
+    .frame_size = FRAMESIZE_QVGA,
+    .jpeg_quality = 12,
+    .fb_count = 2,
+    .fb_location = CAMERA_FB_IN_PSRAM,
+    .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
+};
+
+esp_err_t jpg_stream_httpd_handler(httpd_req_t *req)
 {
-    framesize_t size_bak = frame_size;
-    if (PIXFORMAT_JPEG == pixel_format && FRAMESIZE_SVGA > frame_size) {
-        frame_size = FRAMESIZE_HD;
-    }
-    camera_config_t camera_config = {
-        .pin_pwdn = PWDN_GPIO_NUM,
-        .pin_reset = RESET_GPIO_NUM,
-        .pin_xclk = XCLK_GPIO_NUM,
-        .pin_sccb_sda = sccb_sda_gpio_num, // If pin_sccb_sda is -1, sccb will use the already initialized i2c port specified by `sccb_i2c_port`.
-        .pin_sccb_scl = SIOC_GPIO_NUM,
-        .sccb_i2c_port = sccb_port,
-
-        .pin_d7 = Y9_GPIO_NUM,
-        .pin_d6 = Y8_GPIO_NUM,
-        .pin_d5 = Y7_GPIO_NUM,
-        .pin_d4 = Y6_GPIO_NUM,
-        .pin_d3 = Y5_GPIO_NUM,
-        .pin_d2 = Y4_GPIO_NUM,
-        .pin_d1 = Y3_GPIO_NUM,
-        .pin_d0 = Y2_GPIO_NUM,
-        .pin_vsync = VSYNC_GPIO_NUM,
-        .pin_href = HREF_GPIO_NUM,
-        .pin_pclk = PCLK_GPIO_NUM,
-
-        //EXPERIMENTAL: Set to 16MHz on ESP32-S2 or ESP32-S3 to enable EDMA mode
-        .xclk_freq_hz = xclk_freq_hz,
-        .ledc_timer = LEDC_TIMER_0,
-        .ledc_channel = LEDC_CHANNEL_0,
-
-        .pixel_format = pixel_format, //YUV422,GRAYSCALE,RGB565,JPEG
-        .frame_size = frame_size,    //QQVGA-UXGAQQVGA-UXGA, For ESP32, do not use sizes above QVGA when not JPEG. The performance of the ESP32-S series has improved a lot, but JPEG mode always gives better frame rates.
-
-        .jpeg_quality = 12, //0-63, for OV series camera sensors, lower number means higher quality
-        .fb_count = fb_count,       //When jpeg mode is used, if fb_count more than one, the driver will work in continuous mode.
-        .grab_mode = CAMERA_GRAB_WHEN_EMPTY
-    };
-
-    //initialize the camera
-    esp_err_t err = esp_camera_init(&camera_config);
-    if (err != ESP_OK)
+    camera_fb_t *fb = NULL;
+    esp_err_t res = ESP_OK;
+    size_t _jpg_buf_len;
+    uint8_t *_jpg_buf;
+    char part_buf[128];
+    static int64_t last_frame = 0;
+    if (!last_frame)
     {
-        ESP_LOGE(TAG, "Camera Init Failed with error 0x%x", err);
-        return err;
+        last_frame = esp_timer_get_time();
     }
 
-    if (ESP_OK == err && PIXFORMAT_JPEG == pixel_format && FRAMESIZE_SVGA > size_bak) {
-        sensor_t *s = esp_camera_sensor_get();
-        if (s->id.PID != OV2640_PID) {
-            ESP_LOGE(TAG, "Unsupported camera sensor detected");
-            return !err;
+    res = httpd_resp_set_type(req, _STREAM_CONTENT_TYPE);
+    if (res != ESP_OK)
+    {
+        return res;
+    }
+
+    while (true)
+    {
+        fb = esp_camera_fb_get();
+        if (!fb)
+        {
+            ESP_LOGE(TAG, "Camera capture failed");
+            res = ESP_FAIL;
+            break;
         }
-        s->set_framesize(s, size_bak);
-    }
-
-    return err;
-}
-
-void wifi_event_handler(void *arg, esp_event_base_t event_base, int32_t event_id, void *event_data) {
-    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
-        esp_wifi_connect();
-    } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-        ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
-        ESP_LOGI(TAG, "Got IP Address: " IPSTR, IP2STR(&event->ip_info.ip));
-    } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        esp_wifi_connect();
-        ESP_LOGI(TAG, "Retrying connection to the AP...");
-    }
-}
-
-void wifi_init_sta() {
-    s_wifi_event_group = xEventGroupCreate();
-
-    // Initialize NVS (Non-Volatile Storage) for Wi-Fi settings
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(ret);
-    
-    // Initialize Wi-Fi with default settings
-    ESP_ERROR_CHECK(esp_netif_init());
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
-
-    // Create a default Wi-Fi station (STA) network interface
-    sta_netif = esp_netif_create_default_wifi_sta();
-    if (sta_netif == NULL) {
-        ESP_LOGE(TAG, "Failed to create default Wi-Fi STA");
-        return;
-    }
-
-    // Initialize the Wi-Fi driver
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
-
-    // Register event handler
-    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &wifi_event_handler, NULL));
-    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &wifi_event_handler, NULL));
-
-    // Configure Wi-Fi in station mode
-    wifi_config_t wifi_config = {
-        .sta = {
-            .ssid = WIFI_SSID,
-            .password = WIFI_PASS,
-        },
-    };
-
-    // Start Wi-Fi
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
-    ESP_ERROR_CHECK(esp_wifi_set_config(ESP_IF_WIFI_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_start());
-
-    ESP_LOGI(TAG, "Wi-Fi Station initialized");
-}
-
-char *encode_image_to_base64(const camera_fb_t *fb) {
-    size_t encoded_length = 0;
-    size_t output_buffer_size = (fb->len * 4 / 3) + 4; // Base64 encoding increases size by ~33%
-
-    // Allocate memory for Base64 encoded output
-    char *encoded_output = (char *)malloc(output_buffer_size);
-    if (!encoded_output) {
-        ESP_LOGE("BASE64", "Failed to allocate memory for Base64 encoding");
-        return NULL;
-    }
-
-    // Encode the image data to Base64
-    int ret = mbedtls_base64_encode((unsigned char *)encoded_output, output_buffer_size, &encoded_length, fb->buf, fb->len);
-    if (ret != 0) {
-        ESP_LOGE("BASE64", "Failed to encode image to Base64");
-        free(encoded_output);
-        return NULL;
-    }
-
-    return encoded_output;
-}
-
-void save_image_to_json(const char *encoded_image) {
-    // Create a JSON object
-    cJSON *json = cJSON_CreateObject();
-    if (!json) {
-        ESP_LOGE("cJSON", "Failed to create JSON object");
-        return;
-    }
-
-    // Add the Base64-encoded image to the JSON object
-    cJSON_AddStringToObject(json, "image", encoded_image);
-
-    // Convert the JSON object to a string
-    char *json_string = cJSON_Print(json);
-    if (!json_string) {
-        ESP_LOGE("cJSON", "Failed to print JSON object");
-        cJSON_Delete(json);
-        return;
-    }
-
-    // Save the JSON string to a file (assuming SPIFFS or other filesystem is mounted)
-    FILE *file = fopen("/spiffs/image.json", "w");
-    if (!file) {
-        ESP_LOGE("File", "Failed to open file for writing");
-        free(json_string);
-        cJSON_Delete(json);
-        return;
-    }
-
-    //ESP_LOGI(TAG,"%s\n", json_string);
-    fprintf(file,"%s", json_string);
-    fclose(file);
-
-    // Cleanup
-    free(json_string);
-    cJSON_Delete(json);
-}
-
-void init_spiffs() {
-    esp_vfs_spiffs_conf_t conf = {
-        .base_path = "/spiffs",
-        .partition_label = NULL,
-        .max_files = 5,
-        .format_if_mount_failed = true
-    };
-    
-    esp_err_t ret = esp_vfs_spiffs_register(&conf);
-    if (ret != ESP_OK) {
-        if (ret == ESP_FAIL) {
-            ESP_LOGE("SPIFFS", "Failed to mount or format filesystem");
-        } else if (ret == ESP_ERR_NOT_FOUND) {
-            ESP_LOGE("SPIFFS", "Failed to find SPIFFS partition");
-        } else {
-            ESP_LOGE("SPIFFS", "Failed to initialize SPIFFS (%s)", esp_err_to_name(ret));
+        if (fb->format != PIXFORMAT_JPEG)
+        {
+            bool jpeg_converted = frame2jpg(fb, camera_config.jpeg_quality, &_jpg_buf, &_jpg_buf_len);
+            if (!jpeg_converted)
+            {
+                ESP_LOGE(TAG, "JPEG compression failed");
+                esp_camera_fb_return(fb);
+                res = ESP_FAIL;
+                break;
+            }
         }
-        return;
+        else
+        {
+            _jpg_buf_len = fb->len;
+            _jpg_buf = fb->buf;
+        }
+
+        if (res == ESP_OK)
+        {
+            res = httpd_resp_send_chunk(req, _STREAM_BOUNDARY, strlen(_STREAM_BOUNDARY));
+        }
+        if (res == ESP_OK)
+        {
+            size_t hlen = snprintf(part_buf, sizeof(part_buf), _STREAM_PART, _jpg_buf_len);
+            res = httpd_resp_send_chunk(req, part_buf, hlen);
+        }
+        if (res == ESP_OK)
+        {
+            res = httpd_resp_send_chunk(req, (const char *)_jpg_buf, _jpg_buf_len);
+        }
+        if (fb->format != PIXFORMAT_JPEG)
+        {
+            free(_jpg_buf);
+        }
+        esp_camera_fb_return(fb);
+        if (res != ESP_OK)
+        {
+            break;
+        }
+        int64_t frame_time = (esp_timer_get_time() - last_frame) / 1000;
+        last_frame = esp_timer_get_time();
     }
 
-    size_t total = 0, used = 0;
-    ret = esp_spiffs_info(NULL, &total, &used);
-    if (ret != ESP_OK) {
-        ESP_LOGE("SPIFFS", "Failed to get SPIFFS partition information");
-    } else {
-        ESP_LOGI("SPIFFS", "Partition size: total: %d, used: %d", total, used);
-    }
-}
-
-//EVERYTHING BELOW THIS (except app_main is simply to view image for quality check)
-
-// HTTP GET handler for serving the captured image
-esp_err_t capture_handler(httpd_req_t *req) {
-    // Capture image from camera
-    camera_fb_t *fb = esp_camera_fb_get();
-    if (!fb) {
-        ESP_LOGE(TAG, "Failed to capture image");
-        httpd_resp_send_500(req);
-        return ESP_FAIL;
-    }
-
-    // Send response headers
-    httpd_resp_set_type(req, "image/jpeg");
-    httpd_resp_set_hdr(req, "Content-Disposition", "inline; filename=capture.jpg");
-
-    // Send the image as the HTTP response
-    esp_err_t res = httpd_resp_send(req, (const char *)fb->buf, fb->len);
-
-    // Return the frame buffer back to the driver
-    esp_camera_fb_return(fb);
-
-    if (res != ESP_OK) {
-        ESP_LOGE(TAG, "Failed to send the image");
-    }
-
+    last_frame = 0;
     return res;
 }
 
-// Start the HTTP server and set up URI handler
-void start_camera_server() {
+static esp_err_t init_camera(void)
+{
+    // initialize the camera
+    esp_err_t err = esp_camera_init(&camera_config);
+    if (err != ESP_OK)
+    {
+        ESP_LOGE(TAG, "Camera Init Failed");
+        return err;
+    }
+
+    return ESP_OK;
+}
+
+static void event_handler(void *arg, esp_event_base_t event_base,
+                          int32_t event_id, void *event_data)
+{
+    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START)
+    {
+        esp_wifi_connect();
+    }
+    else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
+    {
+        ESP_LOGI(TAG, "Disconnected from Wi-Fi");
+        esp_wifi_connect();
+    }
+    else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
+    {
+        ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
+        s_ip_addr = event->ip_info.ip;
+        ESP_LOGI(TAG, "Got IP Address: " IPSTR, IP2STR(&s_ip_addr));
+        xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
+    }
+}
+
+void wifi_init_sta(void)
+{
+    s_wifi_event_group = xEventGroupCreate();
+
+    esp_netif_init();
+    esp_event_loop_create_default();
+    esp_netif_create_default_wifi_sta();
+
+    esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
+    esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL);
+
+    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    esp_wifi_init(&cfg);
+
+    wifi_config_t wifi_config = {
+        .sta = {
+            .ssid = "UCInet Mobile Access",
+            .password = "",
+        },
+    };
+
+    esp_wifi_set_mode(WIFI_MODE_STA);
+    esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
+    esp_wifi_start();
+
+    ESP_LOGI(TAG, "Connecting to Wi-Fi...");
+
+    /* Wait for the connection to establish */
+    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
+                                           WIFI_CONNECTED_BIT,
+                                           pdFALSE,
+                                           pdFALSE,
+                                           portMAX_DELAY);
+}
+
+void start_camera_server()
+{
     httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+
     httpd_handle_t server = NULL;
-
-    // Start the server
-    if (httpd_start(&server, &config) == ESP_OK) {
-        // URI handler to capture and serve the image
-        httpd_uri_t capture_uri = {
-            .uri       = "/capture",
-            .method    = HTTP_GET,
-            .handler   = capture_handler,
-            .user_ctx  = NULL
-        };
-
-        httpd_register_uri_handler(server, &capture_uri);
-        ESP_LOGI(TAG, "Server started, you can access the image at /capture");
-    } else {
-        ESP_LOGE(TAG, "Failed to start the server");
+    if (httpd_start(&server, &config) == ESP_OK)
+    {
+        httpd_uri_t stream_uri = {
+            .uri = "/stream",
+            .method = HTTP_GET,
+            .handler = jpg_stream_httpd_handler,
+            .user_ctx = NULL};
+        httpd_register_uri_handler(server, &stream_uri);
+    }
+    else
+    {
+        ESP_LOGI(TAG, "Error starting server!");
     }
 }
 
-//ONLY NEEDED FOR CONNECTING TO OTHER WIFI SPOTS
-void print_mac_address() {
-    uint8_t mac[6];
-    // Get the MAC address for the Wi-Fi station interface
-    //esp_err_t ret = esp_wifi_get_mac(WIFI_IF_STA, mac);
-    esp_err_t ret = esp_efuse_mac_get_default(mac);
-    if (ret == ESP_OK) {
-        ESP_LOGI(TAG, "MAC Address (STA): %02x:%02x:%02x:%02x:%02x:%02x", 
-                 mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-    } else {
-        ESP_LOGE(TAG, "Failed to get MAC address");
-    }
-}
+void app_main(void)
+{
+    // Initialize NVS
+    ESP_ERROR_CHECK(nvs_flash_init());
 
-void app_main() {
     // Initialize the camera
-    TEST_ESP_OK(init_camera(20000000, PIXFORMAT_RGB565, FRAMESIZE_QVGA, 2, SIOD_GPIO_NUM, -1));
-
-    // Initialize NVS (non-volatile storage) flash memory
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        nvs_flash_erase();
-        nvs_flash_init();
+    if (ESP_OK != init_camera())
+    {
+        return;
     }
 
-    //print_mac_address();
-
-    // Initialize the Wi-Fi station
+    // Initialize Wi-Fi
     wifi_init_sta();
 
-    // Start the HTTP server to serve images
+    // Start the HTTP Server
     start_camera_server();
 }
-
-/*void app_main(void)
-{
-
-    #if ESP_CAMERA_SUPPORTED
-
-    TEST_ESP_OK(init_camera(20000000, PIXFORMAT_RGB565, FRAMESIZE_QVGA, 2, SIOD_GPIO_NUM, -1));
-    vTaskDelay(500 / portTICK_RATE_MS);
-    //while (1)
-    //{
-    init_spiffs();
-
-    ESP_LOGI(TAG, "Taking picture...");
-    camera_fb_t *pic = esp_camera_fb_get();
-    if (!pic) {
-        ESP_LOGE("CAMERA", "Camera capture failed");
-        return;
-    }
-
-    // Convert image to Base64
-    char *encoded_image = encode_image_to_base64(pic);
-    if (!encoded_image) {
-        ESP_LOGE("BASE64", "Failed to encode image");
-        return;
-    }
-
-    save_image_to_json(encoded_image);
-
-    ESP_LOGI(TAG, "Picture taken! Its size was: %zu bytes", pic->len);
-    esp_camera_fb_return(pic);
-
-    vTaskDelay(5000 / portTICK_RATE_MS);
-    //}
-#else
-    ESP_LOGE(TAG, "Camera support is not available for this chip");
-    return;
-#endif
-}*/
-
-//HI
