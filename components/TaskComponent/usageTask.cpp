@@ -6,6 +6,7 @@ using namespace Zotbins;
 static const char *name = "usageTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+static const SemaphorHandle_t = usageSem;
 
 
 UsageTask::UsageTask(QueueHandle_t &messageQueue)
@@ -27,6 +28,9 @@ void UsageTask::taskFunction(void *task)
 
 void UsageTask::setup()
 {
+    usageSem = xSemaphorCreateBinary();
+    
+    
 }
 
 void UsageTask::loop()
