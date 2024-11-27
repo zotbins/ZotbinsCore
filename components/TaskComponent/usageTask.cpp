@@ -62,16 +62,17 @@ void UsageTask::loop()
 
     // Setup GPIO pin sensors
     gpio_set_direction(DETECT_PIN, GPIO_MODE_INPUT);
-    while (1)
+    for (;;)
     {
         if (xSemaphoreTake(usageSem, portMAX_DELAY) == pdTRUE){
             // Read in signal from breakbeam
             int detect = gpio_get_level(DETECT_PIN);
-            if (detect == 0) {  // If breakbeam is disconnected
+            if (detect == 1) {  // If breakbeam is disconnected
                 ESP_LOGI(name, "Detecting item");
             } else {
                 ESP_LOGI(name, "No longer detected");
             }
         }
     }
+    vTaskDelete( NULL );
 }
