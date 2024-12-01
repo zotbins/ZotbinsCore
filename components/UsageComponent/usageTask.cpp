@@ -1,12 +1,4 @@
 #include "usageTask.hpp"
-#include "esp_log.h"
-
-#include <driver/gpio.h>
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-#include <esp_timer.h>
-#include <ets_sys.h>
-#include <esp_idf_lib_helpers.h>
 
 using namespace Zotbins;
 
