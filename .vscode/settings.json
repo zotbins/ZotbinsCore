@@ -40,5 +40,7 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "utility": "cpp"
-    }
+    },
+    "idf.adapterTargetName": "esp32",
+    "idf.flashType": "UART"
 }

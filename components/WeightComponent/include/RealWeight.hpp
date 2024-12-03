@@ -39,7 +39,7 @@ namespace Weight
          * @brief HX711 struct.
          *
          */
-        hx711_t mRealSensor;
+        hx711_t mRealSensor[4];
     };
 }
 #endif
