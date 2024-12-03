@@ -247,18 +247,24 @@ void start_camera_server()
 
 void app_main(void)
 {
-    // Initialize NVS
-    ESP_ERROR_CHECK(nvs_flash_init());
-
-    // Initialize the camera
-    if (ESP_OK != init_camera())
+    // Segment for button press prototype
+    // Detect pin high on 14, then turn high on 4
+    gpio_num_t DETECT_PIN = GPIO_NUM_14;
+    gpio_set_level(DETECT_PIN, 0);
+    gpio_set_direction(DETECT_PIN, GPIO_MODE_INPUT);
+    ESP_LOGI("push", "Testing appmain");
+    while (1)
     {
-        return;
+        // Read in signal from breakbeam
+        int detect = gpio_get_level(DETECT_PIN);
+        if (detect == 0) {  // If breakbeam is disconnected
+            ESP_LOGI("push", "Detecting item");
+        } else {
+            ESP_LOGI("push", "No longer detected");
+            // TODO: make this flash board pin 4
+        }
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
     }
 
-    // Initialize Wi-Fi
-    wifi_init_sta();
 
-    // Start the HTTP Server
-    start_camera_server();
 }
