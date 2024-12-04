@@ -25,10 +25,15 @@ namespace Fullness
     {
 
     public:
+        // /**
+        //  * @brief Construct a new Distance object (init with trigger and echo)
+        //  */
+        // Distance(gpio_num_t trigger, gpio_num_t echo, float max_distance_cm); // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE 
+
         /**
          * @brief Construct a new Distance object (init with trigger and echo)
          */
-        Distance(gpio_num_t trigger, gpio_num_t echo, float max_distance_cm);
+        Distance(gpio_num_t trigger, gpio_num_t echo);
 
         /**
          * @brief Returns the distance of the sensor.

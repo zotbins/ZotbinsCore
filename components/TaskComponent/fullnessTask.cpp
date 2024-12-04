@@ -8,8 +8,8 @@
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_TRIGGER = GPIO_NUM_2;
-const gpio_num_t PIN_ECHO = GPIO_NUM_16;
+const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
+const gpio_num_t PIN_ECHO = GPIO_NUM_13;
 
 static const char *name = "fullnessTask";
 static const int priority = 1;
@@ -39,8 +39,9 @@ void FullnessTask::setup() // could refactor into setup later but there are a lo
 
 void FullnessTask::loop()
 {
-
-    uint32_t bin_height = BIN_HEIGHT;
+    
+    // TODO: use distance buffer to get averages and discard outliers
+    // uint32_t bin_height = BIN_HEIGHT; // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE
     float distance;
 
     Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
