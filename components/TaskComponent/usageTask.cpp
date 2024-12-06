@@ -10,6 +10,8 @@
 
 using namespace Zotbins;
 
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
+
 static const char *name = "usageTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
@@ -40,17 +42,18 @@ void UsageTask::loop()
 {
     // From https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf#iomuxgpio
     // GPIO pads 34-39 are input-only.
-    ESP_LOGI(name, "Hello from Usage Task");
+    ESP_LOGI(name, "Hello from Usage Task"); // init
 
     // Setup GPIO pin sensors
-    gpio_num_t DETECT_PIN = GPIO_NUM_34;
-    gpio_set_level(DETECT_PIN, 0);
-    gpio_set_direction(DETECT_PIN, GPIO_MODE_INPUT);
+    gpio_num_t pin_breakbeam = PIN_BREAKBEAM;
+    gpio_set_level(pin_breakbeam, 0); // drive pin low
+    gpio_set_direction(pin_breakbeam, GPIO_MODE_INPUT); // set pin as input
+    
     while (1)
     {
         // Read in signal from breakbeam
-        int detect = gpio_get_level(DETECT_PIN);
-        if (detect == 0) {  // If breakbeam is disconnected
+        int breakbeam_level = gpio_get_level(pin_breakbeam);
+        if (breakbeam_level == 0) {  // If breakbeam is disconnected
             ESP_LOGI(name, "Detecting item");
         } else {
             ESP_LOGI(name, "No longer detected");

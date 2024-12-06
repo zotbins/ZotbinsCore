@@ -878,8 +878,6 @@ INPUT                  = ../src/ \
                          ../lib/ \
                          ../include/ \
                          ../README.md \
-                         ../components/ \
-                         ../main/ \
                          ../docs
 
 # This tag can be used to specify the character encoding of the source files

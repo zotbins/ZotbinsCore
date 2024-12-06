@@ -58,7 +58,12 @@ static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain)
 
     // read data
     uint32_t data = 0;
-    for (size_t i = 0; i < 24; i++)
+    /* 
+    Alex: applies clock pulses to pd_sck as mentioned in the datasheet 
+    ("When DOUT goes to low, it indicates data is ready for retrieval. By applying 25~27 positive clock pulses at the PD_SCK pin, data is shifted out from the DOUT output pin. Each PD_SCK pulse shifts out one bit, starting with the MSB bit first, until all 24 bits are shifted out.") 
+    to shift the data out of the hx711
+    */ 
+    for (size_t i = 0; i < 24; i++) 
     {
         gpio_set_level(pd_sck, 1);
         ets_delay_us(1);
@@ -68,6 +73,9 @@ static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain)
     }
 
     // config gain + channel for next read
+    /* 
+    Alex: pulses the 25th, 26th, and/or 27th pulses needed to bring dout high, and configure gain, where gain is defined in an enum and the constants correspond to the number of additional pulses
+    */
     for (size_t i = 0; i <= gain; i++)
     {
         gpio_set_level(pd_sck, 1);
@@ -121,6 +129,7 @@ esp_err_t hx711_set_gain(hx711_t *dev, hx711_gain_t gain)
     return ESP_OK;
 }
 
+/* Alex: user needs to call this and check ready before reading */
 esp_err_t hx711_is_ready(hx711_t *dev, bool *ready)
 {
     CHECK_ARG(dev && ready);
@@ -148,8 +157,8 @@ esp_err_t hx711_read_data(hx711_t *dev, int32_t *data)
     CHECK_ARG(dev && data);
 
     uint32_t raw = read_raw(dev->dout, dev->pd_sck, dev->gain);
-    if (raw & 0x800000)
-        raw |= 0xff000000;
+    if (raw & 0x800000) // bitmask for sign extension
+        raw |= 0xff000000; // sign extension
     *data = *((int32_t *)&raw);
 
     return ESP_OK;
