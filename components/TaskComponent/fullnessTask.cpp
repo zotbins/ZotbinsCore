@@ -11,6 +11,22 @@ using namespace Zotbins;
 const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
 const gpio_num_t PIN_ECHO = GPIO_NUM_13;
 
+const gpio_config_t PIN_TRIGGER_CONFIG = {
+    .pin_bit_mask = 0x00001000,
+    .mode = GPIO_MODE_OUTPUT,
+    .pull_up_en = GPIO_PULLUP_DISABLE,
+    .pull_down_en = GPIO_PULLDOWN_ENABLE,
+    .intr_type = GPIO_INTR_DISABLE
+};
+
+const gpio_config_t PIN_ECHO_CONFIG = {
+    .pin_bit_mask = 0x00002000,
+    .mode = GPIO_MODE_INPUT,
+    .pull_up_en = GPIO_PULLUP_DISABLE,
+    .pull_down_en = GPIO_PULLDOWN_DISABLE,
+    .intr_type = GPIO_INTR_DISABLE
+};
+
 static const char *name = "fullnessTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
@@ -40,6 +56,9 @@ void FullnessTask::setup() // could refactor into setup later but there are a lo
 void FullnessTask::loop()
 {
     
+    gpio_config(&PIN_TRIGGER_CONFIG);
+    gpio_config(&PIN_ECHO_CONFIG);
+
     // TODO: use distance buffer to get averages and discard outliers
     // uint32_t bin_height = BIN_HEIGHT; // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE
     float distance;

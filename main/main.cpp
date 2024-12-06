@@ -7,11 +7,14 @@
 #include "weightTask.hpp"
 #include "usageTask.hpp"
 #include "message.hpp"
+#include <driver/gpio.h>
 
 constexpr size_t messageQueueSize = 20;
 
 extern "C" void app_main(void)
 {
+
+	// PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[xx], PIN_FUNC_GPIO);
 	/*
 	Fullness::MockDistance md{std::vector<int32_t>{1, 2}};
 	md.getDistance();
@@ -25,12 +28,12 @@ extern "C" void app_main(void)
 
     // Zotbins::WeightTask weightTask(messageQueue);
 	// weightTask.start();
-	// Zotbins::UsageTask usageTask(messageQueue);
-	// usageTask.start();
+	Zotbins::UsageTask usageTask(messageQueue);
+	usageTask.start();
 
-	// Zotbins::FullnessTask fullnessTask(messageQueue);
-	// fullnessTask.start();
+	Zotbins::FullnessTask fullnessTask(messageQueue);
+	fullnessTask.start();
 
-	Zotbins::WeightTask weightTask(messageQueue);
-	weightTask.start();
+	// Zotbins::WeightTask weightTask(messageQueue);
+	// weightTask.start();
 }
