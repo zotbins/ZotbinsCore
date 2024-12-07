@@ -39,11 +39,11 @@ void UsageTask::setup()
 void UsageTask::loop()
 {
     // From https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf#iomuxgpio
-    // GPIO pads 34-39 are input-only.
+    // Use I/O ports
     ESP_LOGI(name, "Hello from Usage Task");
 
     // Setup GPIO pin sensors
-    gpio_num_t DETECT_PIN = GPIO_NUM_34;
+    gpio_num_t DETECT_PIN = GPIO_NUM_16;
     gpio_set_level(DETECT_PIN, 0);
     gpio_set_direction(DETECT_PIN, GPIO_MODE_INPUT);
     while (1)

@@ -9,6 +9,7 @@ static const char *name = "weightTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 
+
 WeightTask::WeightTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
 {
