@@ -20,6 +20,7 @@ extern "C" void app_main(void)
 	Weight::RealWeight rw;
 	rw.getWeight();
 	*/
+    Client::clientStart();
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 

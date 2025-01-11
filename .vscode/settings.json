@@ -1,5 +1,10 @@
 {
+<<<<<<< HEAD
     "idf.adapterTargetName": "esp32",
     "idf.port": "/dev/tty.usbserial-0001",
     "idf.flashType": "UART"
+=======
+    "idf.flashType": "UART",
+    "idf.port": "/dev/tty.usbserial-0001"
+>>>>>>> upstream/mqtt_client
 }
