@@ -112,17 +112,17 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = (const char *)AWS_IOT_ENDPOINT,
+                .uri = AWS_URL,
             },
             .verification = {
-                .certificate = (const char *)AWS_CERT_CA,
+                .certificate = AWS_CA_CRT,
             },
         },
         .credentials = {
             .client_id = "SensorBin",
             .authentication = {
-                .certificate = (const char *)AWS_CERT_CRT,
-                .key = (const char *)AWS_CERT_PRIVATE,
+                .certificate = AWS_CLIENT_CRT,
+                .key = AWS_CLIENT_KEY,
             }
         }
     };
