@@ -5,11 +5,11 @@
 // To make sure compilation succeeds, ensure ca.crt, cert.pem, aws.url and private.key exist!
 // https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/build-system.html#embedding-binary-data
 // AWS root CA certificate
-extern const char* AWS_CERT_CA     asm("_binary_ca_crt");
+extern const char* AWS_CA_CRT      asm("_binary_ca_crt");
 // Device-local certificate
-extern const char* AWS_CERT_CRT    asm("_binary_cert_pem");
+extern const char* AWS_CLIENT_CRT  asm("_binary_client_crt");
 // Device-local private key
-extern const char* AWS_PRIVATE_KEY asm("_binary_private_key");
+extern const char* AWS_CLIENT_KEY  asm("_binary_client_key");
 extern const char* AWS_URL         asm("_binary_aws_url");
 
 #endif
