@@ -112,20 +112,22 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = AWS_URL,
+                .uri = (const char*)AWS_URL,
             },
             .verification = {
-                .certificate = AWS_CA_CRT,
+                .certificate = (const char*)AWS_CA_CRT,
             },
         },
         .credentials = {
             .client_id = "SensorBin",
             .authentication = {
-                .certificate = AWS_CLIENT_CRT,
-                .key = AWS_CLIENT_KEY,
+                .certificate = (const char*)AWS_CLIENT_CRT,
+                .key = (const char*)AWS_CLIENT_KEY,
             }
         }
     };
+
+    ESP_LOGI(TAG, "Connecting to AWS server %s", AWS_URL);
 
     ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes", esp_get_free_heap_size());
     esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
