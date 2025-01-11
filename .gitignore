@@ -10,3 +10,4 @@ config.hpp
 flake.nix
 flake.lock
 .cache/
+components/ClientComponent/include/Credentials.hpp

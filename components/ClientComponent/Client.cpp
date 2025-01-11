@@ -31,7 +31,7 @@ static const char *TAG = "mqtts_example";
 
 static void publish(esp_mqtt_client_handle_t client, char data[])
 {
-    int msg_id = esp_mqtt_client_publish(client, "zotbins/binid", data, 0, 0, 0);
+    int msg_id = esp_mqtt_client_publish(client, "binData", data, 0, 1, 0);
     ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
 }
 
@@ -56,6 +56,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
         // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+        publish(client, "Test");
 
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
         // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
@@ -69,7 +70,8 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     case MQTT_EVENT_SUBSCRIBED:
         ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
         // msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
-        // ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+        // publish(client, "Hello world!");
+        ESP_LOGI(TAG, "sent publish successful");
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
         ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
@@ -110,13 +112,14 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = "", // input manually
+                .uri = (const char *)AWS_IOT_ENDPOINT,
             },
             .verification = {
                 .certificate = (const char *)AWS_CERT_CA,
             },
         },
         .credentials = {
+            .client_id = "SensorBin",
             .authentication = {
                 .certificate = (const char *)AWS_CERT_CRT,
                 .key = (const char *)AWS_CERT_PRIVATE,
