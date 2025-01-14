@@ -7,7 +7,11 @@ dependencies:
   protocol_examples_common:
     component_hash: null
     source:
+<<<<<<< Updated upstream
       path: /Users/anthonychen/esp/esp-idf/examples/common_components/protocol_examples_common
+=======
+      path: /Users/anthonychen/esp/v5.3.1/esp-idf/examples/common_components/protocol_examples_common
+>>>>>>> Stashed changes
       type: local
     version: '*'
 manifest_hash: 7acf1289e5282279bbee647a7b9bfba26618216eeb68c34753712075ffca56b4
