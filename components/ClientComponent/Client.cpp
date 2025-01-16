@@ -112,7 +112,7 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = (const char*)AWS_URL,
+                .uri = strcat("mqtts://", (const char*)AWS_URL),
             },
             .verification = {
                 .certificate = (const char*)AWS_CA_CRT,
