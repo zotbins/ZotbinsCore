@@ -14,7 +14,7 @@ const gpio_num_t PIN_PD_SCK = GPIO_NUM_16;
 static const char *name = "weightTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
-
+static TaskHandle_t xTaskToNotify = NULL;
 
 WeightTask::WeightTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -23,7 +23,7 @@ WeightTask::WeightTask(QueueHandle_t &messageQueue)
 
 void WeightTask::start()
 {
-    xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
 }
 
 void WeightTask::taskFunction(void *task)
