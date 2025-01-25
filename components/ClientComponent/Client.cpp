@@ -7,31 +7,31 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
-#include "esp_system.h"
-#include "esp_partition.h"
-#include "nvs_flash.h"
 #include "esp_event.h"
 #include "esp_netif.h"
+#include "esp_partition.h"
+#include "esp_system.h"
+#include "nvs_flash.h"
 #include "protocol_examples_common.h"
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "esp_log.h"
-#include "mqtt_client.h"
-#include "esp_tls.h"
 #include "esp_ota_ops.h"
+#include "esp_tls.h"
+#include "mqtt_client.h"
 #include <sys/param.h>
 
-#include "Credentials.hpp"
 #include "Client.hpp"
+#include "Credentials.hpp"
 
 static const char *TAG = "mqtts_example";
 
-static void publish(esp_mqtt_client_handle_t client, char data[])
+static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
-    int msg_id = esp_mqtt_client_publish(client, "binData", data, 0, 1, 0);
+    int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 1, 0);
     ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
 }
 
@@ -45,18 +45,21 @@ static void publish(esp_mqtt_client_handle_t client, char data[])
  * @param event_id The id for the received event.
  * @param event_data The data for the event, esp_mqtt_event_handle_t.
  */
+esp_mqtt_client_handle_t test_client;
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32, base, event_id);
     esp_mqtt_event_handle_t event = (esp_mqtt_event_handle_t)event_data;
     esp_mqtt_client_handle_t client = event->client;
+    test_client = client;
     int msg_id;
-    switch ((esp_mqtt_event_id_t)event_id) {
+    switch ((esp_mqtt_event_id_t)event_id)
+    {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
         // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
-        publish(client, "Test");
+        // publish(client, "Test");
 
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
         // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
@@ -90,14 +93,19 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
-        if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT) {
+        if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT)
+        {
             ESP_LOGI(TAG, "Last error code reported from esp-tls: 0x%x", event->error_handle->esp_tls_last_esp_err);
             ESP_LOGI(TAG, "Last tls stack error number: 0x%x", event->error_handle->esp_tls_stack_err);
-            ESP_LOGI(TAG, "Last captured errno : %d (%s)",  event->error_handle->esp_transport_sock_errno,
+            ESP_LOGI(TAG, "Last captured errno : %d (%s)", event->error_handle->esp_transport_sock_errno,
                      strerror(event->error_handle->esp_transport_sock_errno));
-        } else if (event->error_handle->error_type == MQTT_ERROR_TYPE_CONNECTION_REFUSED) {
+        }
+        else if (event->error_handle->error_type == MQTT_ERROR_TYPE_CONNECTION_REFUSED)
+        {
             ESP_LOGI(TAG, "Connection refused error: 0x%x", event->error_handle->connect_return_code);
-        } else {
+        }
+        else
+        {
             ESP_LOGW(TAG, "Unknown error type: 0x%x", event->error_handle->error_type);
         }
         break;
@@ -112,20 +120,17 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = (const char*)AWS_URL,
+                .uri = (const char *)AWS_URL,
             },
             .verification = {
-                .certificate = (const char*)AWS_CA_CRT,
+
+                .certificate = (const char *)AWS_CA_CRT,
             },
         },
-        .credentials = {
-            .client_id = "SensorBin",
-            .authentication = {
-                .certificate = (const char*)AWS_CLIENT_CRT,
-                .key = (const char*)AWS_CLIENT_KEY,
-            }
-        }
-    };
+        .credentials = {.client_id = "SensorBin", .authentication = {
+                                                      .certificate = (const char *)AWS_CLIENT_CRT,
+                                                      .key = (const char *)AWS_CLIENT_KEY,
+                                                  }}};
 
     ESP_LOGI(TAG, "Connecting to AWS server %s", AWS_URL);
 
@@ -134,6 +139,16 @@ static void mqtt_app_start(void)
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);
+}
+
+void Client::clientPublish(const void *message, size_t len)
+{
+    publish(test_client, message, len);
+}
+
+void Client::clientPublishStr(const char *message)
+{
+    Client::clientPublish(message, strlen(message));
 }
 
 void Client::clientStart(void)
