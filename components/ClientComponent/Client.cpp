@@ -7,25 +7,25 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <stddef.h>
-#include <string.h>
-#include "esp_system.h"
-#include "esp_partition.h"
-#include "nvs_flash.h"
 #include "esp_event.h"
 #include "esp_netif.h"
+#include "esp_partition.h"
+#include "esp_system.h"
+#include "nvs_flash.h"
 #include "protocol_examples_common.h"
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "esp_log.h"
-#include "mqtt_client.h"
-#include "esp_tls.h"
 #include "esp_ota_ops.h"
+#include "esp_tls.h"
+#include "mqtt_client.h"
 #include <sys/param.h>
 
-#include "Credentials.hpp"
 #include "Client.hpp"
+#include "Credentials.hpp"
 
 static const char *TAG = "mqtts_example";
 
@@ -53,7 +53,8 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     esp_mqtt_client_handle_t client = event->client;
     test_client = client;
     int msg_id;
-    switch ((esp_mqtt_event_id_t)event_id) {
+    switch ((esp_mqtt_event_id_t)event_id)
+    {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
@@ -92,14 +93,19 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
-        if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT) {
+        if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT)
+        {
             ESP_LOGI(TAG, "Last error code reported from esp-tls: 0x%x", event->error_handle->esp_tls_last_esp_err);
             ESP_LOGI(TAG, "Last tls stack error number: 0x%x", event->error_handle->esp_tls_stack_err);
-            ESP_LOGI(TAG, "Last captured errno : %d (%s)",  event->error_handle->esp_transport_sock_errno,
+            ESP_LOGI(TAG, "Last captured errno : %d (%s)", event->error_handle->esp_transport_sock_errno,
                      strerror(event->error_handle->esp_transport_sock_errno));
-        } else if (event->error_handle->error_type == MQTT_ERROR_TYPE_CONNECTION_REFUSED) {
+        }
+        else if (event->error_handle->error_type == MQTT_ERROR_TYPE_CONNECTION_REFUSED)
+        {
             ESP_LOGI(TAG, "Connection refused error: 0x%x", event->error_handle->connect_return_code);
-        } else {
+        }
+        else
+        {
             ESP_LOGW(TAG, "Unknown error type: 0x%x", event->error_handle->error_type);
         }
         break;
@@ -114,21 +120,17 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = "mqtts://a2at9bxpjy4od7-ats.iot.us-east-2.amazonaws.com",
+                .uri = (const char *)AWS_URL,
             },
             .verification = {
-                
-                .certificate = (const char*)AWS_CA_CRT,
+
+                .certificate = (const char *)AWS_CA_CRT,
             },
         },
-        .credentials = {
-            .client_id = "SensorBin",
-            .authentication = {
-                .certificate = (const char*)AWS_CLIENT_CRT,
-                .key = (const char*)AWS_CLIENT_KEY,
-            }
-        }
-    };
+        .credentials = {.client_id = "SensorBin", .authentication = {
+                                                      .certificate = (const char *)AWS_CLIENT_CRT,
+                                                      .key = (const char *)AWS_CLIENT_KEY,
+                                                  }}};
 
     ESP_LOGI(TAG, "Connecting to AWS server %s", AWS_URL);
 
@@ -140,7 +142,8 @@ static void mqtt_app_start(void)
 }
 
 // TODO: replace this code, very bad implementation
-void Client::clientPublish(char* message){
+void Client::clientPublish(char *message)
+{
     publish(test_client, message);
 }
 

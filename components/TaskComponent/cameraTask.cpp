@@ -64,7 +64,7 @@ static const uint32_t stackSize = 4096;
 
 #define PART_BOUNDARY "123456789000000000000987654321"
 
-    static const char *TAG = "example:take_picture";
+static const char *TAG = "example:take_picture";
 static const char *_STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char *_STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
 static const char *_STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
@@ -78,7 +78,9 @@ static camera_config_t camera_config = {
 
     // CAM_PIN_PWDN
     // .pin_reset = CAM_PIN_RESET,
-    
+
+
+
     .pin_pwdn = CAM_PIN_PWDN,
     .pin_reset = CAM_PIN_RESET,
     .pin_xclk = CAM_PIN_XCLK,
@@ -150,7 +152,7 @@ void startSleep()
 void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_t output_size)
 {
     size_t pos = 0;
-    //pos += snprintf(output + pos, output_size - pos, "[");
+    // pos += snprintf(output + pos, output_size - pos, "[");
     for (size_t i = 0; i < buffer_length; i++)
     {
         if (i > 0)
@@ -159,8 +161,9 @@ void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_
         }
         pos += snprintf(output + pos, output_size - pos, "%u", buffer[i]);
     }
-    //snprintf(output + pos, output_size - pos, "]");
+    // snprintf(output + pos, output_size - pos, "]");
 }
+
 
 
 static esp_err_t init_camera(void)
@@ -190,7 +193,8 @@ void CameraTask::taskFunction(void *task)
 {
     CameraTask *cameraTask = static_cast<CameraTask *>(task);
     cameraTask->setup();
-    cameraTask->loop();   
+    cameraTask->loop();
+
 }
 
 void CameraTask::setup()
@@ -202,7 +206,9 @@ void CameraTask::setup()
 void CameraTask::loop()
 {
 
-//  xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
+
+
+    //  xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
     gpio_reset_pin(flashPIN);
     gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
     gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
@@ -227,10 +233,14 @@ void CameraTask::loop()
         Client::clientPublish("Camera Failed");
     }
 
-    Client::clientPublish("Started Camera"); 
+    Client::clientPublish("Started Camera");
+
+
 
     sensor_t *s = esp_camera_sensor_get();
-    if (s != NULL) {
+    if (s != NULL)
+
+    {
         s->set_brightness(s, 1);
         s->set_contrast(s, 1);
         s->set_saturation(s, 2);
@@ -240,24 +250,38 @@ void CameraTask::loop()
         Client::clientPublish("Adjusted Camera");
     }
 
-    
-    camera_fb_t *fb = NULL;
-    while(1){
 
-        if(gpio_get_level(inputPIN) == 1){
-            for(int i = 0; i < 30; i++){
-                if(i == 29){
+
+    camera_fb_t *fb = NULL;
+    while (1)
+
+    {
+
+        if (gpio_get_level(inputPIN) == 1)
+
+        {
+            for (int i = 0; i < 30; i++)
+
+            {
+                if (i == 29)
+
+                {
                     gpio_set_level(flashPIN, 1);
                 }
-            fb = esp_camera_fb_get();
-            vTaskDelay(33 / portTICK_PERIOD_MS);
-            esp_camera_fb_return(fb);
+
+                fb = esp_camera_fb_get();
+
+                vTaskDelay(33 / portTICK_PERIOD_MS);
+
+                esp_camera_fb_return(fb);
             }
             vTaskDelay(200 / portTICK_PERIOD_MS);
             gpio_set_level(flashPIN, 0);
-            uint8_t *buffer = fb->buf;      
+            uint8_t *buffer = fb->buf;
+
             size_t buffer_length = fb->len;
-            size_t output_size = 65536; 
+            size_t output_size = 65536;
+
             char *output_string = (char *)malloc(output_size);
             buffer_to_string(buffer, buffer_length, output_string, output_size);
             Client::clientPublish(output_string);
