@@ -12,6 +12,7 @@ var annotated_dup =
       [ "WeightMetric", "class_weight_1_1_weight_metric.html", "class_weight_1_1_weight_metric" ]
     ] ],
     [ "Zotbins", null, [
+      [ "CameraTask", "class_zotbins_1_1_camera_task.html", "class_zotbins_1_1_camera_task" ],
       [ "ClientTask", "class_zotbins_1_1_client_task.html", "class_zotbins_1_1_client_task" ],
       [ "FullnessTask", "class_zotbins_1_1_fullness_task.html", "class_zotbins_1_1_fullness_task" ],
       [ "Message", "struct_zotbins_1_1_message.html", "struct_zotbins_1_1_message" ],

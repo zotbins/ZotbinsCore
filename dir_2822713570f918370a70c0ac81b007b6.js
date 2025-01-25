@@ -1,5 +1,6 @@
 var dir_2822713570f918370a70c0ac81b007b6 =
 [
+    [ "cameraTask.hpp", "camera_task_8hpp.html", "camera_task_8hpp" ],
     [ "clientTask.hpp", "client_task_8hpp.html", "client_task_8hpp" ],
     [ "fullnessTask.hpp", "fullness_task_8hpp.html", "fullness_task_8hpp" ],
     [ "message.hpp", "message_8hpp.html", "message_8hpp" ],
