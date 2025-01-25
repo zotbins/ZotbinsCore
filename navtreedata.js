@@ -25,8 +25,6 @@
 var NAVTREE =
 [
   [ "ZotBins Core", "index.html", [
-    [ "Prerequisites", "index.html#autotoc_md1", null ],
-    [ "How to Build & Upload", "index.html#autotoc_md2", null ],
     [ "Intro to Doxygen", "md__2github_2workspace_2docs_2doxygen.html", [
       [ "Documentating Source Code", "md__2github_2workspace_2docs_2doxygen.html#autotoc_md4", null ],
       [ "Example Source File", "md__2github_2workspace_2docs_2doxygen.html#autotoc_md5", null ],
@@ -72,5 +70,5 @@ var NAVTREEINDEX =
 "_client_8hpp_source.html"
 ];
 
-var SYNCONMSG = 'click to disable panel synchronisation';
-var SYNCOFFMSG = 'click to enable panel synchronisation';
+var SYNCONMSG = 'click to disable panel synchronization';
+var SYNCOFFMSG = 'click to enable panel synchronization';

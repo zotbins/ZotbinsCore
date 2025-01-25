@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['how_20to_20build_20upload_0',['How to Build &amp; Upload',['../index.html#autotoc_md2',1,'']]],
+  ['how_20to_20build_20upload_0',['How to Build &amp; Upload',['..//github/workspace/README.md#autotoc_md2',1,'']]],
   ['hx711_1',['hx711',['../group__hx711.html',1,'']]],
   ['hx711_2ec_2',['hx711.c',['../hx711_8c.html',1,'']]],
   ['hx711_2eh_3',['hx711.h',['../hx711_8h.html',1,'']]],
