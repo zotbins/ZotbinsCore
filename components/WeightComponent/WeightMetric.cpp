@@ -11,4 +11,3 @@ int32_t WeightMetric::getWeight()
 {
     return mWeightSensor.getWeight();
 }
-    

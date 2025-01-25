@@ -79,8 +79,6 @@ static camera_config_t camera_config = {
     // CAM_PIN_PWDN
     // .pin_reset = CAM_PIN_RESET,
 
-
-
     .pin_pwdn = CAM_PIN_PWDN,
     .pin_reset = CAM_PIN_RESET,
     .pin_xclk = CAM_PIN_XCLK,
@@ -164,8 +162,6 @@ void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_
     // snprintf(output + pos, output_size - pos, "]");
 }
 
-
-
 static esp_err_t init_camera(void)
 {
     // initialize the camera
@@ -194,19 +190,14 @@ void CameraTask::taskFunction(void *task)
     CameraTask *cameraTask = static_cast<CameraTask *>(task);
     cameraTask->setup();
     cameraTask->loop();
-
 }
 
 void CameraTask::setup()
 {
 }
 
-
-
 void CameraTask::loop()
 {
-
-
 
     //  xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
     gpio_reset_pin(flashPIN);
@@ -235,8 +226,6 @@ void CameraTask::loop()
 
     Client::clientPublishStr("Started Camera");
 
-
-
     sensor_t *s = esp_camera_sensor_get();
     if (s != NULL)
 
@@ -249,8 +238,6 @@ void CameraTask::loop()
         s->set_whitebal(s, 1);
         Client::clientPublishStr("Adjusted Camera");
     }
-
-
 
     camera_fb_t *fb = NULL;
     while (1)
@@ -282,5 +269,4 @@ void CameraTask::loop()
         }
         vTaskDelay(33 / portTICK_PERIOD_MS);
     }
-
 }
