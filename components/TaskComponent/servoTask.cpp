@@ -3,15 +3,8 @@
 #include "freertos/task.h"
 #include "esp_log.h"
 #include "driver/mcpwm_prelude.h"
-// #include "driver/mcpwm.h"
-// #include "hal/mcpwm_types.h"
 
 using namespace Zotbins;
-
-// const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
-// const gpio_num_t PIN_ECHO = GPIO_NUM_13;
-
-
 
 // Please consult the datasheet of your servo before changing the following parameters
 #define SERVO_MIN_PULSEWIDTH_US 500  // Minimum pulse width in microsecond
@@ -37,6 +30,7 @@ ServoTask::ServoTask(QueueHandle_t &messageQueue)
 {
 }
 
+// TODO: implement servo with task notifs
 void ServoTask::start()
 {
     xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
@@ -49,7 +43,7 @@ void ServoTask::taskFunction(void *task)
     servoTask->loop();
 }
 
-void ServoTask::setup() // could refactor into setup later but there are a lot of issues with scope
+void ServoTask::setup() // TODO: could refactor into setup later but there are a lot of issues with scope
 {
 }
 
