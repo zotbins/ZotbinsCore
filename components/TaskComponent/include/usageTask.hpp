@@ -13,6 +13,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
+#include "freertos/semphr.h"
+#include "driver/gpio.h"
 
 namespace Zotbins
 {
@@ -64,6 +66,8 @@ namespace Zotbins
          *
          */
         QueueHandle_t &mMessageQueue;
+        gpio_num_t DETECT_PIN = GPIO_NUM_16;
+
     };
 }
 
