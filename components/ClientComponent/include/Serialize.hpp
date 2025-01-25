@@ -4,7 +4,8 @@
 #include <cJSON.h>
 #include <stdint.h>
 
-namespace Client {
+namespace Client
+{
     /*
      * @brief Serialize data from sensors for API interaction.
      *
@@ -19,7 +20,7 @@ namespace Client {
      *
      * @return cJSON* root of a JSON object containing sensor data. Make sure to free this after you are done using it.
      */
-    cJSON* serialize(float fullness, uint32_t usage, bool overflow, int32_t weight);
+    cJSON *serialize(float fullness, uint32_t usage, bool overflow, int32_t weight);
 }
 
 #endif

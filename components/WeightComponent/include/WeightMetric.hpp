@@ -40,7 +40,7 @@ namespace Weight
          * @brief IWeight object, uses reference because virtual function
          *
          */
-        IWeight& mWeightSensor;
+        IWeight &mWeightSensor;
     };
 }
 

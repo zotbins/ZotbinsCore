@@ -9,12 +9,12 @@
 #ifndef CAMERA_TASK_HPP
 #define CAMERA_TASK_HPP
 
-#include "task.hpp"
+#include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
-#include "freertos/task.h"
 #include "freertos/semphr.h"
-#include "driver/gpio.h"
+#include "freertos/task.h"
+#include "task.hpp"
 
 namespace Zotbins
 {
