@@ -30,7 +30,7 @@ namespace Weight
         /**
          * @brief Returns the weight.
          * @return int32_t Weight in kilograms.
-         * 
+         *
          */
         int32_t getWeight() override;
 
