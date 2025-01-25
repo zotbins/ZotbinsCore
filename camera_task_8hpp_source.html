@@ -112,12 +112,12 @@ $(function(){initNavTree('camera_task_8hpp_source.html',''); initResizable(true)
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#ifndef CAMERA_TASK_HPP</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#define CAMERA_TASK_HPP</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="task_8hpp.html">task.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;driver/gpio.h&quot;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;freertos/FreeRTOS.h&quot;</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;freertos/queue.h&quot;</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;freertos/task.h&quot;</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;freertos/semphr.h&quot;</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &quot;driver/gpio.h&quot;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;freertos/semphr.h&quot;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;freertos/task.h&quot;</span></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &quot;<a class="code" href="task_8hpp.html">task.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="keyword">namespace </span>Zotbins</div>
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>{</div>
@@ -143,8 +143,8 @@ $(function(){initNavTree('camera_task_8hpp_source.html',''); initResizable(true)
 <div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>}</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclass_zotbins_1_1_camera_task_html_acf7c27b24e013dfe6796f471b9c9cefa"><div class="ttname"><a href="class_zotbins_1_1_camera_task.html#acf7c27b24e013dfe6796f471b9c9cefa">Zotbins::CameraTask::start</a></div><div class="ttdeci">void start() override</div><div class="ttdoc">Start execution of Camera Task.</div><div class="ttdef"><b>Definition</b> cameraTask.cpp:187</div></div>
-<div class="ttc" id="aclass_zotbins_1_1_camera_task_html_addbc2a881a115d0bea5b6bc8c31b7b83"><div class="ttname"><a href="class_zotbins_1_1_camera_task.html#addbc2a881a115d0bea5b6bc8c31b7b83">Zotbins::CameraTask::CameraTask</a></div><div class="ttdeci">CameraTask(QueueHandle_t &amp;messageQueue)</div><div class="ttdoc">Construct a new Camera Task object.</div><div class="ttdef"><b>Definition</b> cameraTask.cpp:182</div></div>
+<div class="ttc" id="aclass_zotbins_1_1_camera_task_html_acf7c27b24e013dfe6796f471b9c9cefa"><div class="ttname"><a href="class_zotbins_1_1_camera_task.html#acf7c27b24e013dfe6796f471b9c9cefa">Zotbins::CameraTask::start</a></div><div class="ttdeci">void start() override</div><div class="ttdoc">Start execution of Camera Task.</div><div class="ttdef"><b>Definition</b> cameraTask.cpp:183</div></div>
+<div class="ttc" id="aclass_zotbins_1_1_camera_task_html_addbc2a881a115d0bea5b6bc8c31b7b83"><div class="ttname"><a href="class_zotbins_1_1_camera_task.html#addbc2a881a115d0bea5b6bc8c31b7b83">Zotbins::CameraTask::CameraTask</a></div><div class="ttdeci">CameraTask(QueueHandle_t &amp;messageQueue)</div><div class="ttdoc">Construct a new Camera Task object.</div><div class="ttdef"><b>Definition</b> cameraTask.cpp:178</div></div>
 <div class="ttc" id="aclass_zotbins_1_1_task_html_aac7494327c74bcd8bf14fb00a755b00e"><div class="ttname"><a href="class_zotbins_1_1_task.html#aac7494327c74bcd8bf14fb00a755b00e">Zotbins::Task::Task</a></div><div class="ttdeci">Task(const char *name, const int priority, const uint32_t stackSize)</div><div class="ttdoc">Construct a new Task object. Parameters are needed for FreeRTOS.</div><div class="ttdef"><b>Definition</b> task.hpp:31</div></div>
 <div class="ttc" id="atask_8hpp_html"><div class="ttname"><a href="task_8hpp.html">task.hpp</a></div><div class="ttdoc">Header file for Task class.</div></div>
 </div><!-- fragment --></div><!-- contents -->

@@ -112,10 +112,10 @@ $(function(){initNavTree('client_task_8hpp_source.html',''); initResizable(true)
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#ifndef CLIENT_TASK_HPP</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#define CLIENT_TASK_HPP</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;<a class="code" href="task_8hpp.html">task.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;freertos/FreeRTOS.h&quot;</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;freertos/queue.h&quot;</span></div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;freertos/task.h&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="preprocessor">#include &quot;freertos/FreeRTOS.h&quot;</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &quot;freertos/queue.h&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;freertos/task.h&quot;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &quot;<a class="code" href="task_8hpp.html">task.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">namespace </span>Zotbins</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>{</div>
@@ -133,12 +133,11 @@ $(function(){initNavTree('client_task_8hpp_source.html',''); initResizable(true)
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <span class="keywordtype">void</span> setup();</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span></div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        <span class="keywordtype">void</span> loop();</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    };</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    };</div>
 </div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>}</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span> </div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>}</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclass_zotbins_1_1_client_task_html_aa64cb12742e64b3094c5d5a18497bd32"><div class="ttname"><a href="class_zotbins_1_1_client_task.html#aa64cb12742e64b3094c5d5a18497bd32">Zotbins::ClientTask::start</a></div><div class="ttdeci">void start() override</div><div class="ttdoc">Start execution of Client Task.</div><div class="ttdef"><b>Definition</b> clientTask.cpp:17</div></div>
 <div class="ttc" id="aclass_zotbins_1_1_client_task_html_aa9267f66e00449f7e960ad5f791b4d41"><div class="ttname"><a href="class_zotbins_1_1_client_task.html#aa9267f66e00449f7e960ad5f791b4d41">Zotbins::ClientTask::ClientTask</a></div><div class="ttdeci">ClientTask(QueueHandle_t &amp;messageQueue)</div><div class="ttdoc">Construct a new MQTT Client Task object.</div><div class="ttdef"><b>Definition</b> clientTask.cpp:13</div></div>
 <div class="ttc" id="aclass_zotbins_1_1_task_html_aac7494327c74bcd8bf14fb00a755b00e"><div class="ttname"><a href="class_zotbins_1_1_task.html#aac7494327c74bcd8bf14fb00a755b00e">Zotbins::Task::Task</a></div><div class="ttdeci">Task(const char *name, const int priority, const uint32_t stackSize)</div><div class="ttdoc">Construct a new Task object. Parameters are needed for FreeRTOS.</div><div class="ttdef"><b>Definition</b> task.hpp:31</div></div>
