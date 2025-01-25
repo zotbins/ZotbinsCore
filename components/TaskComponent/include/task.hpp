@@ -40,7 +40,7 @@ namespace Zotbins
         virtual void start() = 0;
 
     protected:
-        /**
+        /**z
          * @brief Name of task
          *
          */

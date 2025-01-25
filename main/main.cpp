@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <iostream>
 #include "Client.hpp"
-#include "MockDistance.hpp"
-#include "MockWeight.hpp"
-#include "RealWeight.hpp"
-#include "weightTask.hpp"
-#include "usageTask.hpp"
+//#include "MockDistance.hpp"
+//#include "MockWeight.hpp"
+//#include "RealWeight.hpp"
+//#include "weightTask.hpp"
+//#include "usageTask.hpp"
+#include "cameraTask.hpp"
 #include "message.hpp"
 
 constexpr size_t messageQueueSize = 20;
@@ -20,12 +21,16 @@ extern "C" void app_main(void)
 	Weight::RealWeight rw;
 	rw.getWeight();
 	*/
+
     Client::clientStart();
-    QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
+	QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 
     // Zotbins::WeightTask weightTask(messageQueue);
 	// weightTask.start();
-	Zotbins::UsageTask usageTask(messageQueue);
-	usageTask.start();
+	// Zotbins::UsageTask usageTask(messageQueue);
+	
+	Zotbins::CameraTask cameraTask(messageQueue);
+	// usageTask.start();
+	cameraTask.start();
 }

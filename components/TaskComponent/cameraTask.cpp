@@ -1,20 +1,21 @@
 #include "cameraTask.hpp"
 #include "esp_log.h"
 
+#include "Client.hpp"
 #include <driver/gpio.h>
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
+#include <esp_idf_lib_helpers.h>
 #include <esp_timer.h>
 #include <ets_sys.h>
-#include <esp_idf_lib_helpers.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 using namespace Zotbins;
 
 static const char *name = "cameraTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
-static SemaphoreHandle_t cameraSem;
 
+#define ESP_INR_FLAG_DEFAULT 0
 
 // camera script
 #include "esp_camera.h"
@@ -24,22 +25,23 @@ static SemaphoreHandle_t cameraSem;
 #include "esp_timer.h"
 #include "esp_wifi.h"
 #include <esp_log.h>
+#include <esp_sleep.h>
 #include <esp_system.h>
 #include <nvs_flash.h>
-#include <string.h>
-#include <esp_system.h>
-#include <esp_sleep.h>
 #include <rom/ets_sys.h>
-
+#include <string.h>
 
 // FreeRTOS headers
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "freertos/task.h"
 
-#define BOARD_ESP32CAM_AITHINKER
+// BOARD_ESP32CAM_AITHINKER
 
-#ifdef BOARD_ESP32CAM_AITHINKER
+#define CAMERA_MODEL_AI_THINKER
+
+// Board BOARD_ESP32CAM_AITHINKER
+#ifdef CAMERA_MODEL_AI_THINKER
 // ESP32Cam (AiThinker) PIN Map
 #define CAM_PIN_PWDN 32
 #define CAM_PIN_RESET -1
@@ -62,7 +64,7 @@ static SemaphoreHandle_t cameraSem;
 
 #define PART_BOUNDARY "123456789000000000000987654321"
 
-static const char *TAG = "example:take_picture";
+    static const char *TAG = "example:take_picture";
 static const char *_STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char *_STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
 static const char *_STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
@@ -73,6 +75,10 @@ static esp_ip4_addr_t s_ip_addr;
 #define WIFI_CONNECTED_BIT BIT0
 
 static camera_config_t camera_config = {
+
+    // CAM_PIN_PWDN
+    // .pin_reset = CAM_PIN_RESET,
+    
     .pin_pwdn = CAM_PIN_PWDN,
     .pin_reset = CAM_PIN_RESET,
     .pin_xclk = CAM_PIN_XCLK,
@@ -109,187 +115,53 @@ const gpio_num_t flashPIN = GPIO_NUM_4;
 const gpio_num_t inputPIN = GPIO_NUM_14;
 const gpio_num_t ledPin1 = GPIO_NUM_1;
 const gpio_num_t ledPin2 = GPIO_NUM_3;
+TaskHandle_t camera_capture = NULL;
+TaskHandle_t camera_countdown = NULL;
 
-typedef struct {
-    gpio_num_t pin;
-    int duration_ms;
-} pwm_task_params_t;
-
-void pwm(void *pvParameters){
-    // pwm_task_params_t *params = (pwm_task_params_t *)pvParameters;
-    // gpio_num_t pin = params->pin;
-    // int duration_ms = params->duration_ms;
-
-    // int current;
-
-    // while (current > duration_ms) {
-    //     gpio_set_level(pin, 1);
-    //     vTaskDelay(100);
-    //     gpio_set_level(pin, 0);
-    //     vTaskDelay(pdMS_TO_TICKS(100));
-    // }
-
-    // gpio_set_level(pin, 0);
-    // vTaskDelete(NULL);
-
-
-
-}
-
-
-bool allowPicture = true; 
+// Possible to get 3 LEDS if you solder an AND gate
 bool takePicture = false;
-void vCountdown(){    
-    takePicture = false;
-    //pwm(ledPin1);
-    // pwm(ledPin2);
-    vTaskDelay(3000 / portTICK_PERIOD_MS);
-    takePicture = true;
-    gpio_set_level(flashPIN,1);
-    vTaskDelay(250 / portTICK_PERIOD_MS);
-    gpio_set_level(flashPIN,0);
-    vTaskDelete(NULL);
-}
+bool allowPicture = true;
 
-
-void startSleep(){
-    esp_sleep_enable_ext0_wakeup(inputPIN, 1); 
-    esp_light_sleep_start();
-    // while(1){
-    //      if(gpio_get_level(inputPIN) == 1){
-    //          break;
-    //      }
-    // }
-    
-}
-
-
-void exportImage(int *buffer, size_t length){
-    // FILE *file;
-    // file = fopen(fname, "w");
-    // fprintf(file, "{\n  \"numbers\": [");
-    // for (size_t i = 0; i < length; ++i) {
-    //     fprintf(file, "%u", *(buffer+i));
-    //     if(i < (length - 1)){
-    //         fprintf(file, ", ");
-    //     }
-    // }
-    // fprintf(file, "]\n}");
-    // fclose(file);
-}
-
-esp_err_t jpg_stream_httpd_handler(httpd_req_t *req)
+void vCountdown(void *pvParameters)
 {
-    
-    allowPicture = true;
-    camera_fb_t *fb = NULL;
-    esp_err_t res = ESP_OK;
-    size_t _jpg_buf_len;
-    uint8_t *_jpg_buf;
-    char part_buf[128];
-    static int64_t last_frame = 0;
-    if (!last_frame)
-    {
-        last_frame = esp_timer_get_time();
-    }
+    // The LED System
+    // takePicture = false;
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    gpio_set_level(ledPin1, 1);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    gpio_set_level(ledPin2, 1);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    // takePicture = true;
+    xTaskNotifyGive(camera_capture); // capture camera parallel task
 
-    res = httpd_resp_set_type(req, _STREAM_CONTENT_TYPE);
-    if (res != ESP_OK)
-    {
-        return res;
-    }
-
-    
-    // startSleep();
-    while (true)
-    {       
-        
-        fb = esp_camera_fb_get();
-
-        if (!fb)
-        {
-            ESP_LOGE(TAG, "Camera capture failed");
-            res = ESP_FAIL;
-            break;
-        }
-        if (fb->format != PIXFORMAT_JPEG)
-        {
-            bool jpeg_converted = frame2jpg(fb, camera_config.jpeg_quality, &_jpg_buf, &_jpg_buf_len);
-            if (!jpeg_converted)
-            {
-                ESP_LOGE(TAG, "JPEG compression failed");
-                esp_camera_fb_return(fb);
-                res = ESP_FAIL;
-                break;
-            }
-        }
-        else
-        {
-            _jpg_buf_len = fb->len;
-            _jpg_buf = fb->buf;
-        }     
-
-        
-        
-        if(gpio_get_level(inputPIN) == 1 && allowPicture == true){
-            allowPicture = false;
-            // xTaskCreate(vCountdown, "Countdown", 2048, NULL, 1, NULL); // Picture Timer
-        }
-        
-    
-        if(takePicture == true){
-
-            uint8_t *buffer = fb->buf;  // Pointer to the buffer
-            size_t buffer_length = fb->len;  // Length of the buffer in bytes
-            gpio_set_level(flashPIN, 0);
-
-            ESP_LOGE(TAG, "Buffer Pointer: %p", buffer);
-            ESP_LOGE(TAG, "Buffer Length: %u", buffer_length);
-            ESP_LOGE(TAG, "Start of List");
-
-            // Print Buffer
-            // for (size_t i = 0; i < buffer_length; ++i) {
-            //     uint8_t byte = *(buffer + i); 
-            //     printf("%u,", byte);
-            // }
-            // exportImage(buffer, buffer_length);
-            takePicture = false;
-            ESP_LOGE(TAG, "Capture Completed");
-            allowPicture = true;
-            startSleep();
-        }
-
-
-        // Everything below this is not needed
-
-        if (res == ESP_OK)
-        {
-            res = httpd_resp_send_chunk(req, _STREAM_BOUNDARY, strlen(_STREAM_BOUNDARY));
-        }
-        if (res == ESP_OK)
-        {
-            size_t hlen = snprintf(part_buf, sizeof(part_buf), _STREAM_PART, _jpg_buf_len);
-            res = httpd_resp_send_chunk(req, part_buf, hlen);
-        }
-        if (res == ESP_OK)
-        {
-            res = httpd_resp_send_chunk(req, (const char *)_jpg_buf, _jpg_buf_len);
-        }
-        if (fb->format != PIXFORMAT_JPEG)
-        {
-            free(_jpg_buf);
-        }
-        esp_camera_fb_return(fb);
-        if (res != ESP_OK)
-        {
-            break;
-        }
-        int64_t frame_time = (esp_timer_get_time() - last_frame) / 1000;
-        last_frame = esp_timer_get_time();
-    }
-    last_frame = 0;
-    return res;
+    gpio_set_level(flashPIN, 1);
+    vTaskDelay(250 / portTICK_PERIOD_MS);
+    gpio_set_level(flashPIN, 0);
+    // vTaskDelete(camera_countdown);
 }
+
+// THIS ONLY WORKS IF ONLY Camera Task
+void startSleep()
+{
+    esp_sleep_enable_ext0_wakeup(inputPIN, 1);
+    esp_light_sleep_start();
+}
+
+void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_t output_size)
+{
+    size_t pos = 0;
+    //pos += snprintf(output + pos, output_size - pos, "[");
+    for (size_t i = 0; i < buffer_length; i++)
+    {
+        if (i > 0)
+        {
+            pos += snprintf(output + pos, output_size - pos, ",");
+        }
+        pos += snprintf(output + pos, output_size - pos, "%u", buffer[i]);
+    }
+    //snprintf(output + pos, output_size - pos, "]");
+}
+
 
 static esp_err_t init_camera(void)
 {
@@ -300,92 +172,9 @@ static esp_err_t init_camera(void)
         ESP_LOGE(TAG, "Camera Init Failed");
         return err;
     }
-
+    ESP_LOGE(TAG, "Camera Init Worked");
     return ESP_OK;
 }
-
-static void event_handler(void *arg, esp_event_base_t event_base,
-                          int32_t event_id, void *event_data)
-{
-    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START)
-    {
-        esp_wifi_connect();
-    }
-    else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED)
-    {
-        ESP_LOGI(TAG, "Disconnected from Wi-Fi");
-        esp_wifi_connect();
-    }
-    else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
-    {
-        ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
-        s_ip_addr = event->ip_info.ip;
-        ESP_LOGI(TAG, "Got IP Address: " IPSTR, IP2STR(&s_ip_addr));
-        xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
-    }
-}
-
-void wifi_init_sta(void)
-{
-    s_wifi_event_group = xEventGroupCreate();
-
-    esp_netif_init();
-    esp_event_loop_create_default();
-    esp_netif_create_default_wifi_sta();
-
-    esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID, &event_handler, NULL);
-    esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &event_handler, NULL);
-
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    esp_wifi_init(&cfg);
-
-    wifi_config_t wifi_config = {
-        .sta = {
-            .ssid = "UCInet Mobile Access", 
-            .password = "",
-        },
-    };
-
-    esp_wifi_set_mode(WIFI_MODE_STA);
-    esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
-    esp_wifi_start();
-
-    ESP_LOGI(TAG, "Connecting to Wi-Fi...");
-
-    EventBits_t bits = xEventGroupWaitBits(s_wifi_event_group,
-                                           WIFI_CONNECTED_BIT,
-                                           pdFALSE,
-                                           pdFALSE,
-                                           portMAX_DELAY);
-}
-
-void start_camera_server()
-{
-    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-
-    httpd_handle_t server = NULL;
-    if (httpd_start(&server, &config) == ESP_OK)
-    {
-        httpd_uri_t stream_uri = {
-            .uri = "/stream",
-            .method = HTTP_GET,
-            .handler = jpg_stream_httpd_handler,
-            .user_ctx = NULL};
-        httpd_register_uri_handler(server, &stream_uri);
-    }
-    else
-    {
-        ESP_LOGI(TAG, "Error starting server!");
-    }
-}
-
-
-
-// // task handling 
-// static void IRAM_ATTR breakbeam_isr(void *param)
-// {
-// xSemaphoreGiveFromISR(cameraSem, nullptr);
-// }
 
 CameraTask::CameraTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -394,53 +183,40 @@ CameraTask::CameraTask(QueueHandle_t &messageQueue)
 
 void CameraTask::start()
 {
-    xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
 }
 
 void CameraTask::taskFunction(void *task)
 {
     CameraTask *cameraTask = static_cast<CameraTask *>(task);
     cameraTask->setup();
-    cameraTask->loop();
+    cameraTask->loop();   
 }
 
 void CameraTask::setup()
-{    
+{
 }
+
+
 
 void CameraTask::loop()
 {
-    
-    // Flash Pin Declaration (GPIO 4)    
-    
+
+//  xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
     gpio_reset_pin(flashPIN);
-    gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);    
+    gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
     gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
     gpio_set_level(flashPIN, 0);
 
-    // Input Pin Declaration (GPIO 14)
     gpio_reset_pin(inputPIN);
     gpio_set_direction(inputPIN, GPIO_MODE_INPUT);
-    gpio_set_pull_mode(inputPIN, GPIO_PULLDOWN_ONLY); 
+    gpio_set_pull_mode(inputPIN, GPIO_PULLDOWN_ONLY);
     gpio_set_level(inputPIN, 0);
-    
-    gpio_reset_pin(ledPin1);
-    gpio_set_direction(ledPin1, GPIO_MODE_OUTPUT);
-    gpio_set_pull_mode(ledPin1, GPIO_PULLDOWN_ONLY);
-    gpio_set_level(ledPin1, 0);
 
-    gpio_reset_pin(ledPin2);
-    gpio_set_direction(ledPin2, GPIO_MODE_OUTPUT);
-    gpio_set_pull_mode(ledPin2, GPIO_PULLDOWN_ONLY);
-    gpio_set_level(ledPin2, 0);
-
-    static pwm_task_params_t pwm_params = {
-        .pin = ledPin1,    // Replace with your GPIO pin
-        .duration_ms = 5000    // Replace with your desired duration in ms
-    };
-    while(1){
-        xTaskCreate(pwm, "PWM Task", 2048, &pwm_params, 1, NULL);
-    }
+    gpio_reset_pin(GPIO_NUM_0);
+    gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
+    gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
+    gpio_set_level(flashPIN, 0);
 
     // Initialize NVS
     ESP_ERROR_CHECK(nvs_flash_init());
@@ -448,9 +224,46 @@ void CameraTask::loop()
     // Initialize the camera
     if (ESP_OK != init_camera())
     {
-        return;
+        Client::clientPublish("Camera Failed");
     }
 
-    wifi_init_sta();
-    start_camera_server();
+    Client::clientPublish("Started Camera"); 
+
+    sensor_t *s = esp_camera_sensor_get();
+    if (s != NULL) {
+        s->set_brightness(s, 1);
+        s->set_contrast(s, 1);
+        s->set_saturation(s, 2);
+        s->set_sharpness(s, 1);
+        s->set_gain_ctrl(s, 1);
+        s->set_whitebal(s, 1);
+        Client::clientPublish("Adjusted Camera");
+    }
+
+    
+    camera_fb_t *fb = NULL;
+    while(1){
+
+        if(gpio_get_level(inputPIN) == 1){
+            for(int i = 0; i < 30; i++){
+                if(i == 29){
+                    gpio_set_level(flashPIN, 1);
+                }
+            fb = esp_camera_fb_get();
+            vTaskDelay(33 / portTICK_PERIOD_MS);
+            esp_camera_fb_return(fb);
+            }
+            vTaskDelay(200 / portTICK_PERIOD_MS);
+            gpio_set_level(flashPIN, 0);
+            uint8_t *buffer = fb->buf;      
+            size_t buffer_length = fb->len;
+            size_t output_size = 65536; 
+            char *output_string = (char *)malloc(output_size);
+            buffer_to_string(buffer, buffer_length, output_string, output_size);
+            Client::clientPublish(output_string);
+            vTaskDelay(4500 / portTICK_PERIOD_MS);
+        }
+        vTaskDelay(33 / portTICK_PERIOD_MS);
+    }
+
 }
