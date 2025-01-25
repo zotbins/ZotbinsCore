@@ -45,18 +45,20 @@ static void publish(esp_mqtt_client_handle_t client, char data[])
  * @param event_id The id for the received event.
  * @param event_data The data for the event, esp_mqtt_event_handle_t.
  */
+esp_mqtt_client_handle_t test_client;
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32, base, event_id);
     esp_mqtt_event_handle_t event = (esp_mqtt_event_handle_t)event_data;
     esp_mqtt_client_handle_t client = event->client;
+    test_client = client;
     int msg_id;
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
         // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
-        publish(client, "Test");
+        // publish(client, "Test");
 
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
         // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
@@ -112,9 +114,10 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = strcat("mqtts://", (const char*)AWS_URL),
+                .uri = "mqtts://a2at9bxpjy4od7-ats.iot.us-east-2.amazonaws.com",
             },
             .verification = {
+                
                 .certificate = (const char*)AWS_CA_CRT,
             },
         },
@@ -134,6 +137,11 @@ static void mqtt_app_start(void)
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);
+}
+
+// TODO: replace this code, very bad implementation
+void Client::clientPublish(char* message){
+    publish(test_client, message);
 }
 
 void Client::clientStart(void)

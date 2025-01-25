@@ -16,7 +16,7 @@ ClientTask::ClientTask(QueueHandle_t &messageQueue): Task(name, priority, stackS
 
 void ClientTask::start()
 {
-    xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 0);
 }
 
 void ClientTask::taskFunction(void *task)

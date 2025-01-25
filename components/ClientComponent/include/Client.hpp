@@ -3,6 +3,7 @@
 
 namespace Client {
     void clientStart(void);
+    void clientPublish(char* message);
 }
 
 #endif
