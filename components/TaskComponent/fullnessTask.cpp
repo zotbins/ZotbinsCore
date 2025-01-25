@@ -2,7 +2,6 @@
 #include "FullnessMetric.hpp"
 #include "esp_log.h"
 
-
 using namespace Zotbins;
 
 static const char *name = "fullnessTask";

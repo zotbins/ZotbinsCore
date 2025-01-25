@@ -11,8 +11,8 @@
 
 #include "IDistance.hpp"
 #include <array>
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
 namespace Fullness
 {

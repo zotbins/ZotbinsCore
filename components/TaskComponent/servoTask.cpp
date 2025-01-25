@@ -1,20 +1,20 @@
 #include "servoTask.hpp"
+#include "driver/mcpwm_prelude.h"
+#include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "esp_log.h"
-#include "driver/mcpwm_prelude.h"
 
 using namespace Zotbins;
 
 // Please consult the datasheet of your servo before changing the following parameters
 #define SERVO_MIN_PULSEWIDTH_US 500  // Minimum pulse width in microsecond
-#define SERVO_MAX_PULSEWIDTH_US 2500  // Maximum pulse width in microsecond
-#define SERVO_MIN_DEGREE        -90   // Minimum angle
-#define SERVO_MAX_DEGREE        90    // Maximum angle
+#define SERVO_MAX_PULSEWIDTH_US 2500 // Maximum pulse width in microsecond
+#define SERVO_MIN_DEGREE -90         // Minimum angle
+#define SERVO_MAX_DEGREE 90          // Maximum angle
 
-#define SERVO_PULSE_GPIO             15        // GPIO connects to the PWM signal line
-#define SERVO_TIMEBASE_RESOLUTION_HZ 1000000  // 1MHz, 1us per tick
-#define SERVO_TIMEBASE_PERIOD        20000    // 20000 ticks, 20ms
+#define SERVO_PULSE_GPIO 15                  // GPIO connects to the PWM signal line
+#define SERVO_TIMEBASE_RESOLUTION_HZ 1000000 // 1MHz, 1us per tick
+#define SERVO_TIMEBASE_PERIOD 20000          // 20000 ticks, 20ms
 
 static inline uint32_t example_angle_to_compare(int angle)
 {
@@ -49,7 +49,7 @@ void ServoTask::setup() // TODO: could refactor into setup later but there are a
 
 void ServoTask::loop()
 {
-        ESP_LOGI(name, "Create timer and operator");
+    ESP_LOGI(name, "Create timer and operator");
     mcpwm_timer_handle_t timer = NULL;
     mcpwm_timer_config_t timer_config = {
         .group_id = 0,
@@ -74,8 +74,7 @@ void ServoTask::loop()
     mcpwm_comparator_config_t comparator_config = {
         .flags = {
             .update_cmp_on_tez = true,
-        }
-    };
+        }};
     ESP_ERROR_CHECK(mcpwm_new_comparator(oper, &comparator_config, &comparator));
 
     mcpwm_gen_handle_t generator = NULL;
@@ -101,12 +100,14 @@ void ServoTask::loop()
 
     int angle = 0;
     int step = 2;
-    while (1) {
+    while (1)
+    {
         ESP_LOGI(name, "Angle of rotation: %d", angle);
         ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
-        //Add delay, since it takes time for servo to rotate, usually 200ms/60degree rotation under 5V power supply
+        // Add delay, since it takes time for servo to rotate, usually 200ms/60degree rotation under 5V power supply
         vTaskDelay(pdMS_TO_TICKS(500));
-        if ((angle + step) > 60 || (angle + step) < -60) {
+        if ((angle + step) > 60 || (angle + step) < -60)
+        {
             step *= -1;
         }
         angle += step;
