@@ -29,9 +29,9 @@
 
 static const char *TAG = "mqtts_example";
 
-static void publish(esp_mqtt_client_handle_t client, char data[])
+static void publish(esp_mqtt_client_handle_t client, char data[], size_t len)
 {
-    int msg_id = esp_mqtt_client_publish(client, "binData", data, 0, 1, 0);
+    int msg_id = esp_mqtt_client_publish(client, "binData", data, len, 1, 0);
     ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
 }
 
@@ -142,9 +142,9 @@ static void mqtt_app_start(void)
 }
 
 // TODO: replace this code, very bad implementation
-void Client::clientPublish(char *message)
+void Client::clientPublish(char *message, size_t len)
 {
-    publish(test_client, message);
+    publish(test_client, message, len);
 }
 
 void Client::clientStart(void)

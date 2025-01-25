@@ -277,14 +277,7 @@ void CameraTask::loop()
             }
             vTaskDelay(200 / portTICK_PERIOD_MS);
             gpio_set_level(flashPIN, 0);
-            uint8_t *buffer = fb->buf;
-
-            size_t buffer_length = fb->len;
-            size_t output_size = 65536;
-
-            char *output_string = (char *)malloc(output_size);
-            buffer_to_string(buffer, buffer_length, output_string, output_size);
-            Client::clientPublish(output_string);
+            Client::clientPublish(fb->buf, fb->len);
             vTaskDelay(4500 / portTICK_PERIOD_MS);
         }
         vTaskDelay(33 / portTICK_PERIOD_MS);
