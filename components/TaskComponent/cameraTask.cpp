@@ -230,10 +230,10 @@ void CameraTask::loop()
     // Initialize the camera
     if (ESP_OK != init_camera())
     {
-        Client::clientPublish("Camera Failed");
+        Client::clientPublishStr("Camera Failed");
     }
 
-    Client::clientPublish("Started Camera");
+    Client::clientPublishStr("Started Camera");
 
 
 
@@ -247,7 +247,7 @@ void CameraTask::loop()
         s->set_sharpness(s, 1);
         s->set_gain_ctrl(s, 1);
         s->set_whitebal(s, 1);
-        Client::clientPublish("Adjusted Camera");
+        Client::clientPublishStr("Adjusted Camera");
     }
 
 
