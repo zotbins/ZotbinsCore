@@ -10,7 +10,7 @@ jobs:
       uses: DoozyX/clang-format-lint-action@v0.18.1
       with:
         source: 'components main'
-        exclude: 'managed_components'
+        exclude: 'managed_components components/hx711'
         clangFormatVersion: 18
         style: file
 
