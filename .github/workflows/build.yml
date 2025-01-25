@@ -1,3 +1,4 @@
+name: Compile check
 on: [push]
 
 jobs:
