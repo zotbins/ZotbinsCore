@@ -16,6 +16,7 @@ var annotated_dup =
       [ "FullnessTask", "class_zotbins_1_1_fullness_task.html", "class_zotbins_1_1_fullness_task" ],
       [ "Message", "struct_zotbins_1_1_message.html", "struct_zotbins_1_1_message" ],
       [ "MessagePayload", "union_zotbins_1_1_message_payload.html", "union_zotbins_1_1_message_payload" ],
+      [ "ServoTask", "class_zotbins_1_1_servo_task.html", "class_zotbins_1_1_servo_task" ],
       [ "Task", "class_zotbins_1_1_task.html", "class_zotbins_1_1_task" ],
       [ "UsageTask", "class_zotbins_1_1_usage_task.html", "class_zotbins_1_1_usage_task" ],
       [ "WeightTask", "class_zotbins_1_1_weight_task.html", "class_zotbins_1_1_weight_task" ]
