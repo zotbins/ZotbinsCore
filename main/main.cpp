@@ -13,16 +13,6 @@ constexpr size_t messageQueueSize = 20;
 
 extern "C" void app_main(void)
 {
-
-	// PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[xx], PIN_FUNC_GPIO);
-	/*
-	Fullness::MockDistance md{std::vector<int32_t>{1, 2}};
-	md.getDistance();
-	Weight::MockWeight mw{10};
-	mw.getWeight();
-	Weight::RealWeight rw;
-	rw.getWeight();
-	*/
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 
@@ -32,6 +22,4 @@ extern "C" void app_main(void)
 	fullnessTask.start();
 	Zotbins::UsageTask usageTask(messageQueue);
 	usageTask.start();
-
-
 }
