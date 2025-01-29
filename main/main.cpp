@@ -26,16 +26,12 @@ extern "C" void app_main(void)
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 
-
+	Zotbins::WeightTask weightTask(messageQueue);
+	weightTask.start();
 	Zotbins::FullnessTask fullnessTask(messageQueue);
 	fullnessTask.start();
-    // Zotbins::WeightTask weightTask(messageQueue);
-	// weightTask.start();
 	Zotbins::UsageTask usageTask(messageQueue);
 	usageTask.start();
 
-	
 
-	// Zotbins::WeightTask weightTask(messageQueue);
-	// weightTask.start();
 }

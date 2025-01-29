@@ -9,12 +9,29 @@
 using namespace Zotbins;
 
 const gpio_num_t PIN_DOUT = GPIO_NUM_2;
-const gpio_num_t PIN_PD_SCK = GPIO_NUM_16;
+const gpio_num_t PIN_PD_SCK = GPIO_NUM_14;
+static TaskHandle_t xTaskToNotify = NULL;
+
+const gpio_config_t PIN_DOUT_CONFIG = {
+    .pin_bit_mask = 0x00000004,
+    .mode = GPIO_MODE_OUTPUT,
+    .pull_up_en = GPIO_PULLUP_DISABLE,
+    .pull_down_en = GPIO_PULLDOWN_ENABLE,
+    .intr_type = GPIO_INTR_DISABLE
+};
+
+const gpio_config_t PIN_PD_SCK_CONFIG = {
+    .pin_bit_mask = 0x00004000,
+    .mode = GPIO_MODE_INPUT,
+    .pull_up_en = GPIO_PULLUP_DISABLE,
+    .pull_down_en = GPIO_PULLDOWN_DISABLE,
+    .intr_type = GPIO_INTR_DISABLE
+};
 
 static const char *name = "weightTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
-static TaskHandle_t xTaskToNotify = NULL;
+static const int core = 1;
 
 WeightTask::WeightTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -23,7 +40,7 @@ WeightTask::WeightTask(QueueHandle_t &messageQueue)
 
 void WeightTask::start()
 {
-    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
 }
 
 void WeightTask::taskFunction(void *task)
@@ -40,6 +57,9 @@ void WeightTask::setup()
 
 void WeightTask::loop()
 {
+
+    gpio_config(&PIN_DOUT_CONFIG); // ensure pins is configured as gpio, especially necessary for pins 12-15 and just in case for other pins
+    gpio_config(&PIN_PD_SCK_CONFIG);
 
     int32_t weight_raw;
     float weight;
@@ -59,92 +79,102 @@ void WeightTask::loop()
 
     hx711_init(&wm);
 
-    // below was copied and modified from nvs_rw_value under storage in examples (esp-idf examples)
-    esp_err_t err = nvs_flash_init();
-    if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        // NVS partition was truncated and needs to be erased
-        // Retry nvs_flash_init
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        err = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(err);
+    // use the below to save startup (needs to tare the weight at the beginning of every startup, this means if the esp32 restarts it will re-tare the weight, possibly with trash on the scale, throwing off the measurements)
+    // // below was copied and modified from nvs_rw_value under storage in examples (esp-idf examples)
+    // esp_err_t err = nvs_flash_init();
+    // if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+    //     // NVS partition was truncated and needs to be erased
+    //     // Retry nvs_flash_init
+    //     ESP_ERROR_CHECK(nvs_flash_erase());
+    //     err = nvs_flash_init();
+    // }
+    // ESP_ERROR_CHECK(err);
 
-    // Open
-    printf("\n");
-    printf("Opening Non-Volatile Storage (NVS) handle... ");
-    nvs_handle_t my_handle;
-    err = nvs_open("storage", NVS_READWRITE, &my_handle);
-    if (err != ESP_OK) {
-        printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
-    } else {
-        printf("Done\n");
+    // // Open
+    // printf("\n");
+    // printf("Opening Non-Volatile Storage (NVS) handle... ");
+    // nvs_handle_t my_handle;
+    // err = nvs_open("storage", NVS_READWRITE, &my_handle);
+    // if (err != ESP_OK) {
+    //     printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
+    // } else {
+    //     printf("Done\n");
 
-        // Read
-        printf("Reading restart counter from NVS ... ");
-        // int32_t restart_counter = 0; // value will default to 0, if not set yet in NVS
-        err = nvs_get_i32(my_handle, "tare_factor", &tare_factor); // checking if the tare factor is already written to nvs
-        switch (err) {
-            case ESP_OK:
-                printf("Done\n");
-                printf("Tare factor = %" PRIu32 "\n", tare_factor);
-                tare_factor_initialized = true;
-                break;
-            case ESP_ERR_NVS_NOT_FOUND:
-                printf("The value is not initialized yet!\n");
-                tare_factor_initialized = false;
-                break;
-            default :
-                printf("Error (%s) reading!\n", esp_err_to_name(err));
-                tare_factor_initialized = true; // skip initializing, something wrong with accessing the tare_factor from nvs
-        }
+    //     // Read
+    //     printf("Reading restart counter from NVS ... ");
+    //     // int32_t restart_counter = 0; // value will default to 0, if not set yet in NVS
 
-        err = nvs_get_i32(my_handle, "calibration_factor", &calibration_factor); // checking if the calibration factor is already written to nvs
-        switch (err) {
-            case ESP_OK:
-                printf("Done\n");
-                printf("Tare factor = %" PRIu32 "\n", calibration_factor);
-                calibration_factor_initialized = true;
-                break;
-            case ESP_ERR_NVS_NOT_FOUND:
-                printf("The value is not initialized yet!\n");
-                calibration_factor_initialized = false;
-                break;
-            default :
-                printf("Error (%s) reading!\n", esp_err_to_name(err));
-                calibration_factor_initialized = true; // skip initializing, something wrong with accessing the tare_factor from nvs
-        }
+    //     err = nvs_get_i32(my_handle, "tare_factor", &tare_factor); // checking if the tare factor is already written to nvs
+    //     switch (err) {
+    //         case ESP_OK:
+    //             printf("Done\n");
+    //             printf("Tare factor = %" PRIu32 "\n", tare_factor);
+    //             tare_factor_initialized = true;
+    //             break;
+    //         case ESP_ERR_NVS_NOT_FOUND:
+    //             printf("The value is not initialized yet!\n");
+    //             tare_factor_initialized = false;
+    //             break;
+    //         default :
+    //             printf("Error (%s) reading!\n", esp_err_to_name(err));
+    //             tare_factor_initialized = true; // skip initializing, something wrong with accessing the tare_factor from nvs
+    //     }
 
-        if (tare_factor_initialized == false) { // if the tare_factor has not already been set, measured and set it
-            hx711_is_ready(&wm, &ready);
-            while(!ready) hx711_read_average(&wm, 10, &tare_factor); 
-            // get the raw weight when there is nothing on the sensor, so this reading can be considered zero weight (tare).
+    //     err = nvs_get_i32(my_handle, "calibration_factor", &calibration_factor); // checking if the calibration factor is already written to nvs
+    //     switch (err) {
+    //         case ESP_OK:
+    //             printf("Done\n");
+    //             printf("Tare factor = %" PRIu32 "\n", calibration_factor);
+    //             calibration_factor_initialized = true;
+    //             break;
+    //         case ESP_ERR_NVS_NOT_FOUND:
+    //             printf("The value is not initialized yet!\n");
+    //             calibration_factor_initialized = false;
+    //             break;
+    //         default :
+    //             printf("Error (%s) reading!\n", esp_err_to_name(err));
+    //             calibration_factor_initialized = true; // skip initializing, something wrong with accessing the tare_factor from nvs
+    //     }
 
-            err = nvs_set_i32(my_handle, "tare_factor", tare_factor); // write
-            printf((err != ESP_OK) ? "tare_factor writing failed!\n" : "Done\n");
-        }
+    //     // if (tare_factor_initialized == false) { // if the tare_factor has not already been set, measured and set it
+    //     //     hx711_is_ready(&wm, &ready);
+    //     //     while(!ready) hx711_read_average(&wm, 10, &tare_factor); 
+    //     //     // get the raw weight when there is nothing on the sensor, so this reading can be considered zero weight (tare).
 
-        if (calibration_factor_initialized == false) { // if the tare_factor has not already been set, measured and set it
-            // TODO: calibrate - idea is to proceed with this after the tare factor is initialized, and then wait for a significant change in weight, or until some sort of input (might need a separate pin for this or pause all the other tasks to avoid pin conflicts) and then get the calibration factor from this. or we can meauser it and write it directly into nvs using a constant in program memory but that is messier
-            calibration_factor = 1;
+    //     //     err = nvs_set_i32(my_handle, "tare_factor", tare_factor); // write
+    //     //     printf((err != ESP_OK) ? "tare_factor writing failed!\n" : "Done\n");
+    //     // }
 
-            err = nvs_set_i32(my_handle, "calibration_factor", calibration_factor); // write
-            printf((err != ESP_OK) ? "calibration_factor writing failed!\n" : "Done\n");
-        }
+    //     if (calibration_factor_initialized == false) { // if the tare_factor has not already been set, measured and set it
+    //         // TODO: calibrate - idea is to proceed with this after the tare factor is initialized, and then wait for a significant change in weight, or until some sort of input (might need a separate pin for this or pause all the other tasks to avoid pin conflicts) and then get the calibration factor from this. or we can meauser it and write it directly into nvs using a constant in program memory but that is messier
+    //         calibration_factor = 1;
 
-        // Commit written value.
-        // After setting any values, nvs_commit() must be called to ensure changes are written
-        // to flash storage. Implementations may write to storage at other times,
-        // but this is not guaranteed.
-        printf("Committing updates in NVS ... ");
-        err = nvs_commit(my_handle);
-        printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+    //         err = nvs_set_i32(my_handle, "calibration_factor", calibration_factor); // write
+    //         printf((err != ESP_OK) ? "calibration_factor writing failed!\n" : "Done\n");
+    //     }
 
-        // Close
-        nvs_close(my_handle);
-    }
+    //     // Commit written value.
+    //     // After setting any values, nvs_commit() must be called to ensure changes are written
+    //     // to flash storage. Implementations may write to storage at other times,
+    //     // but this is not guaranteed.
+    //     printf("Committing updates in NVS ... ");
+    //     err = nvs_commit(my_handle);
+    //     printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+
+    //     // Close
+    //     nvs_close(my_handle);
+    // }
+
+    hx711_is_ready(&wm, &ready);
+    while(!ready) {hx711_is_ready(&wm, &ready);}
+    hx711_read_average(&wm, 10, &tare_factor);
+    // get the raw weight when there is nothing on the sensor, so this reading can be considered zero weight (tare).
+
+    calibration_factor = 10000; // temp calibration factor that just about measures in lbs, we should get some metric weights and do grams
 
     while (1)
     {
+        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         gpio_set_level(wm.pd_sck, 0);
         hx711_is_ready(&wm, &ready);
         if (ready) {
@@ -158,7 +188,9 @@ void WeightTask::loop()
         weight = weight / calibration_factor; 
         // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
 
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
+        xTaskToNotify = xTaskGetHandle("usageTask");
+        //vTaskDelay(2000 / portTICK_PERIOD_MS);
+        vTaskResume(xTaskToNotify);
     }
 }

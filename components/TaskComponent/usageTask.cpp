@@ -10,18 +10,6 @@ static const uint32_t stackSize = 4096;
 static TaskHandle_t xTaskToNotify = NULL;
 static const int core = 1;
 
-// static void IRAM_ATTR breakbeam_isr(void *param)
-// {
-//     /* At this point xTaskToNotify should be NULL as no transmission
-//        is in progress. A mutex can be used to guard access to the
-//        peripheral if necessary. */
-//     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-//     configASSERT(xTaskToNotify == NULL);
-//     /* Store the handle of the calling task. */
-//     xTaskToNotify = xTaskGetCurrentTaskHandle();
-//     vTaskNotifyGiveFromISR(xTaskToNotify, &xHigherPriorityTaskWoken);
-// }
-
 UsageTask::UsageTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
 {
@@ -48,24 +36,20 @@ void UsageTask::loop()
     // From https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf#iomuxgpio
     // GPIO pads 34-39 are input-only.
     ESP_LOGI(name, "Hello from Usage Task");
-
     // Setup GPIO pin sensors
     gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
-
     while (1)
     {
         // Read in signal from breakbeam
         int detect = gpio_get_level(PIN_BREAKBEAM);
-
         // If breakbeam is disconnected
-        if (detect == 1)
+        if (detect == 0)
         {
-            while (detect == 1)
+            while (detect == 0)
             {
 
                 ESP_LOGI(name, "Detecting item");
                 detect = gpio_get_level(PIN_BREAKBEAM);
-                vTaskDelay(1000 / portTICK_PERIOD_MS);
             }
             ESP_LOGI(name, "No longer detected");
             xTaskToNotify = xTaskGetHandle("fullnessTask");
@@ -73,6 +57,6 @@ void UsageTask::loop()
             vTaskSuspend(NULL);
         }
         ESP_LOGI(name, "Nothing detected");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }

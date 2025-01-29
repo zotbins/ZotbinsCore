@@ -29,6 +29,7 @@ static const char *name = "fullnessTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 static TaskHandle_t xTaskToNotify = NULL;
+static const int core = 1;
 
 // static void IRAM_ATTR breakbeam_isr(void *param)
 // {
@@ -50,7 +51,7 @@ FullnessTask::FullnessTask(QueueHandle_t &messageQueue)
 
 void FullnessTask::start()
 {
-    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
 }
 
 void FullnessTask::taskFunction(void *task)
@@ -85,11 +86,10 @@ void FullnessTask::loop()
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         distance = ultrasonic.getDistance();
         ESP_LOGI(name, "Hello from Fullness Task %f", distance);
-        vTaskDelay(3000 / portTICK_PERIOD_MS);
-        xTaskToNotify = xTaskGetHandle("usageTask");
-        vTaskResume(xTaskToNotify);
-
-
+        xTaskToNotify = xTaskGetHandle("weightTask");
+        xTaskNotifyGive(xTaskToNotify);
+        //vTaskDelay(2000 / portTICK_PERIOD_MS);
+    
         // ESP_LOGI(name, "Hello from Fullness Task");
         // gpio_set_level(PIN_TRIGGER, 0);
         // gpio_set_level(PIN_ECHO, 0);
