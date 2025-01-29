@@ -10,9 +10,13 @@
 #define USAGE_TASK_HPP
 
 #include "task.hpp"
-#include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
+#include "driver/gpio.h"
+#include "esp_attr.h"
+
+#include "esp_log.h"
+#include "esp_timer.h"
 
 namespace Zotbins
 {
@@ -64,6 +68,7 @@ namespace Zotbins
          *
          */
         QueueHandle_t &mMessageQueue;
+        gpio_num_t DETECT_PIN = GPIO_NUM_16;
     };
 }
 

@@ -1,5 +1,5 @@
-idf_component_register(SRCS "fullnessTask.cpp"
-                            "usageTask.cpp"
+idf_component_register(SRCS "usageTask.cpp" "fullnessTask.cpp"
+                           
                             "weightTask.cpp"
                             "clientTask.cpp"
                     INCLUDE_DIRS "include"
