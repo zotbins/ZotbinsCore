@@ -1,27 +1,57 @@
-#include <stdio.h>
-#include <iostream>
 #include "Client.hpp"
 #include "MockWeight.hpp"
 #include "RealWeight.hpp"
+<<<<<<< HEAD
 #include "fullnessTask.hpp"
-#include "weightTask.hpp"
-#include "usageTask.hpp"
 #include "message.hpp"
+#include "usageTask.hpp"
+#include "weightTask.hpp"
 #include <driver/gpio.h>
+    =======
+#include "cameraTask.hpp"
+#include "fullnessTask.hpp"
+#include "message.hpp"
+#include "servoTask.hpp"
+#include "usageTask.hpp"
+#include "weightTask.hpp"
+#include <iostream>
+#include <stdio.h>
+    >>>>>>> upstream/main
 
-constexpr size_t messageQueueSize = 20;
+    constexpr size_t messageQueueSize = 20;
 
 extern "C" void app_main(void)
 {
+    /*
+    Fullness::MockDistance md{std::vector<int32_t>{1, 2}};
+    md.getDistance();
+    Weight::MockWeight mw{10};
+    mw.getWeight();
+    Weight::RealWeight rw;
+    rw.getWeight();
+    */
+
+    Client::clientStart();
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 
-	Zotbins::UsageTask usageTask(messageQueue); // usage task (breakbeam)
-	usageTask.start();
+    // Zotbins::WeightTask weightTask(messageQueue);
+    // weightTask.start();
+    // Zotbins::UsageTask usageTask(messageQueue);
 
-	Zotbins::FullnessTask fullnessTask(messageQueue); // fullness task (ultrasonic)
-	fullnessTask.start();
+    Zotbins::CameraTask cameraTask(messageQueue);
+    // usageTask.start();
+    cameraTask.start();
 
-	Zotbins::WeightTask weightTask(messageQueue); // weight task (load cell)
-	weightTask.start();
+    Zotbins::UsageTask usageTask(messageQueue);
+    usageTask.start();
+
+    Zotbins::FullnessTask fullnessTask(messageQueue);
+    fullnessTask.start();
+
+    Zotbins::ServoTask servoTask(messageQueue);
+    servoTask.start();
+
+    Zotbins::WeightTask weightTask(messageQueue);
+    weightTask.start();
 }

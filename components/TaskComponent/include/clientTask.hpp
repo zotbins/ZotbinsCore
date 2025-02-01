@@ -9,10 +9,10 @@
 #ifndef CLIENT_TASK_HPP
 #define CLIENT_TASK_HPP
 
-#include "task.hpp"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
+#include "task.hpp"
 
 namespace Zotbins
 {
@@ -57,7 +57,6 @@ namespace Zotbins
          *
          */
         void loop();
-        
     };
 }
 

@@ -10,13 +10,13 @@ static const char *name = "clientTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 
-ClientTask::ClientTask(QueueHandle_t &messageQueue): Task(name, priority, stackSize)
+ClientTask::ClientTask(QueueHandle_t &messageQueue) : Task(name, priority, stackSize)
 {
 }
 
 void ClientTask::start()
 {
-    xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 0);
 }
 
 void ClientTask::taskFunction(void *task)

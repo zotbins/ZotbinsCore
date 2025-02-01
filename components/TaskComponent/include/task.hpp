@@ -40,7 +40,7 @@ namespace Zotbins
         virtual void start() = 0;
 
     protected:
-        /**
+        /**z
          * @brief Name of task
          *
          */
@@ -51,7 +51,7 @@ namespace Zotbins
          *
          */
         const int mPriority;
-        
+
         /**
          * @brief Task size of task
          *

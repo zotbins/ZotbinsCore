@@ -1,0 +1,10 @@
+{
+    "idf.flashType": "UART",
+    "idf.port": "/dev/COM4",
+    "idf.portWin": "COM7",
+    "files.associations": {
+        "system_error": "cpp"
+    },
+    "idf.espIdfPath": "/Users/anthonychen/esp/v5.3.1/esp-idf",
+    "idf.toolsPath": "/Users/anthonychen/.espressif"
+}
