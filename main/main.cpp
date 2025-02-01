@@ -1,7 +1,13 @@
 #include "Client.hpp"
-#include "MockDistance.hpp"
 #include "MockWeight.hpp"
 #include "RealWeight.hpp"
+<<<<<<< HEAD
+#include "fullnessTask.hpp"
+#include "message.hpp"
+#include "usageTask.hpp"
+#include "weightTask.hpp"
+#include <driver/gpio.h>
+    =======
 #include "cameraTask.hpp"
 #include "fullnessTask.hpp"
 #include "message.hpp"
@@ -10,8 +16,9 @@
 #include "weightTask.hpp"
 #include <iostream>
 #include <stdio.h>
+    >>>>>>> upstream/main
 
-constexpr size_t messageQueueSize = 20;
+    constexpr size_t messageQueueSize = 20;
 
 extern "C" void app_main(void)
 {
