@@ -4,7 +4,6 @@
   inputs = {
     esp-dev = {
       url = "github:mirrexagon/nixpkgs-esp-dev";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
