@@ -1,6 +1,4 @@
 #include "weightTask.hpp"
-#include "RealWeight.hpp"
-#include "WeightMetric.hpp"
 #include "driver/ledc.h"
 #include "esp_log.h"
 #include "hx711.h"
@@ -55,8 +53,6 @@ void WeightTask::loop()
 {
     gpio_config(&PIN_DOUT_CONFIG); // ensure pins is configured as gpio, especially necessary for pins 12-15 and just in case for other pins
     gpio_config(&PIN_PD_SCK_CONFIG);
-    Weight::RealWeight weight_source;
-    Weight::WeightMetric wm(weight_source);
 
     int32_t weight_raw;
     float weight;
@@ -68,12 +64,12 @@ void WeightTask::loop()
 
     hx711_gain_t gain_setting = HX711_GAIN_A_128;
 
-    hx711_t wm_sensor = {// construct weight object that specifies the pins to use and the gain of the hx711 amplifier
+    hx711_t wm = {// construct weight object that specifies the pins to use and the gain of the hx711 amplifier
                          .dout = PIN_DOUT,
                          .pd_sck = PIN_PD_SCK,
                          .gain = gain_setting};
 
-    hx711_init(&wm_sensor);
+    hx711_init(&wm);
 
     // below was copied and modified from nvs_rw_value under storage in examples (esp-idf examples)
     esp_err_t err = nvs_flash_init();
@@ -139,9 +135,9 @@ void WeightTask::loop()
 
         if (tare_factor_initialized == false)
         { // if the tare_factor has not already been set, measured and set it
-            hx711_is_ready(&wm_sensor, &ready);
+            hx711_is_ready(&wm, &ready);
             while (!ready)
-                hx711_read_average(&wm_sensor, 10, &tare_factor);
+                hx711_read_average(&wm, 10, &tare_factor);
             // get the raw weight when there is nothing on the sensor, so this reading can be considered zero weight (tare).
 
             err = nvs_set_i32(my_handle, "tare_factor", tare_factor); // write
