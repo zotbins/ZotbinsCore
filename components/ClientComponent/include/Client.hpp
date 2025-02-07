@@ -1,7 +1,7 @@
 #ifndef CLIENT_HPP
 #define CLIENT_HPP
 
-#include <stdint.h>
+#include <stddef.h>
 
 namespace Client
 {
