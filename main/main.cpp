@@ -1,13 +1,11 @@
 #include "Client.hpp"
-#include "MockDistance.hpp"
-#include "MockWeight.hpp"
-#include "RealWeight.hpp"
 #include "cameraTask.hpp"
 #include "fullnessTask.hpp"
 #include "message.hpp"
 #include "servoTask.hpp"
 #include "usageTask.hpp"
 #include "weightTask.hpp"
+#include <driver/gpio.h>
 #include <iostream>
 #include <stdio.h>
 
