@@ -1,5 +1,0 @@
-<map id="Weight::RealWeight" name="Weight::RealWeight">
-<area shape="rect" id="Node000001" title="Real weight class that inherits from the IWeight interface class. Wrapper class for the HX711." alt="" coords="5,120,128,206"/>
-<area shape="rect" id="Node000002" href="$class_weight_1_1_i_weight.html" title="Interface (abstract) class for mock and real hardware weight sensor. Used to inherit the getWeight me..." alt="" coords="16,5,117,72"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="69,86,69,120,64,120,64,86"/>
-</map>
