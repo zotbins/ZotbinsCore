@@ -65,9 +65,9 @@ void WeightTask::loop()
     hx711_gain_t gain_setting = HX711_GAIN_A_128;
 
     hx711_t wm = {// construct weight object that specifies the pins to use and the gain of the hx711 amplifier
-                         .dout = PIN_DOUT,
-                         .pd_sck = PIN_PD_SCK,
-                         .gain = gain_setting};
+                  .dout = PIN_DOUT,
+                  .pd_sck = PIN_PD_SCK,
+                  .gain = gain_setting};
 
     hx711_init(&wm);
 

@@ -30,7 +30,7 @@
 
 //         /**
 //          * @brief Clears the distance buffer
-//          */   
+//          */
 //         void clearBuffer();
 
 //     private:

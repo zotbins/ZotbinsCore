@@ -9,17 +9,16 @@
 #ifndef DISTANCE_HPP
 #define DISTANCE_HPP
 
+#include "ultrasonic.h"
 #include <cstdint>
 #include <driver/gpio.h>
 #include <esp_intr_alloc.h>
 #include <freertos/FreeRTOS.h>
-#include "ultrasonic.h"
-
 
 namespace Fullness
 {
     /**
-     * @brief 
+     * @brief
      */
     class Distance
     {
@@ -28,7 +27,7 @@ namespace Fullness
         // /**
         //  * @brief Construct a new Distance object (init with trigger and echo)
         //  */
-        // Distance(gpio_num_t trigger, gpio_num_t echo, float max_distance_cm); // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE 
+        // Distance(gpio_num_t trigger, gpio_num_t echo, float max_distance_cm); // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE
 
         /**
          * @brief Construct a new Distance object (init with trigger and echo)
@@ -44,7 +43,6 @@ namespace Fullness
     private:
         const ultrasonic_sensor_t sensor;
         float max_distance_cm = 100;
-
     };
 }
 
