@@ -1,13 +1,27 @@
 #include "weightTask.hpp"
-#include "RealWeight.hpp"
-#include "WeightMetric.hpp"
+#include "driver/ledc.h"
 #include "esp_log.h"
-#include "nvs_flash.h"
+#include "hx711.h"
+#include "nvs_flash.h" // for storing calibration data
 
 using namespace Zotbins;
 
 const gpio_num_t PIN_DOUT = GPIO_NUM_2;
 const gpio_num_t PIN_PD_SCK = GPIO_NUM_14;
+
+const gpio_config_t PIN_DOUT_CONFIG = {
+    .pin_bit_mask = 0x00000004,
+    .mode = GPIO_MODE_OUTPUT,
+    .pull_up_en = GPIO_PULLUP_DISABLE,
+    .pull_down_en = GPIO_PULLDOWN_ENABLE,
+    .intr_type = GPIO_INTR_DISABLE};
+
+const gpio_config_t PIN_PD_SCK_CONFIG = {
+    .pin_bit_mask = 0x00004000,
+    .mode = GPIO_MODE_INPUT,
+    .pull_up_en = GPIO_PULLUP_DISABLE,
+    .pull_down_en = GPIO_PULLDOWN_DISABLE,
+    .intr_type = GPIO_INTR_DISABLE};
 
 static const char *name = "weightTask";
 static const int priority = 1;
@@ -32,12 +46,13 @@ void WeightTask::taskFunction(void *task)
 
 void WeightTask::setup()
 {
+    // TODO: move all necessary setup variables to members of a weighttask object
 }
 
 void WeightTask::loop()
 {
-    Weight::RealWeight weight_source;
-    Weight::WeightMetric wm(weight_source);
+    gpio_config(&PIN_DOUT_CONFIG); // ensure pins is configured as gpio, especially necessary for pins 12-15 and just in case for other pins
+    gpio_config(&PIN_PD_SCK_CONFIG);
 
     int32_t weight_raw;
     float weight;
@@ -49,12 +64,12 @@ void WeightTask::loop()
 
     hx711_gain_t gain_setting = HX711_GAIN_A_128;
 
-    hx711_t wm_sensor = {// construct weight object that specifies the pins to use and the gain of the hx711 amplifier
-                         .dout = PIN_DOUT,
-                         .pd_sck = PIN_PD_SCK,
-                         .gain = gain_setting};
+    hx711_t wm = {// construct weight object that specifies the pins to use and the gain of the hx711 amplifier
+                  .dout = PIN_DOUT,
+                  .pd_sck = PIN_PD_SCK,
+                  .gain = gain_setting};
 
-    hx711_init(&wm_sensor);
+    hx711_init(&wm);
 
     // below was copied and modified from nvs_rw_value under storage in examples (esp-idf examples)
     esp_err_t err = nvs_flash_init();
@@ -120,9 +135,9 @@ void WeightTask::loop()
 
         if (tare_factor_initialized == false)
         { // if the tare_factor has not already been set, measured and set it
-            hx711_is_ready(&wm_sensor, &ready);
+            hx711_is_ready(&wm, &ready);
             while (!ready)
-                hx711_read_average(&wm_sensor, 10, &tare_factor);
+                hx711_read_average(&wm, 10, &tare_factor);
             // get the raw weight when there is nothing on the sensor, so this reading can be considered zero weight (tare).
 
             err = nvs_set_i32(my_handle, "tare_factor", tare_factor); // write
@@ -156,7 +171,23 @@ void WeightTask::loop()
 
     while (1)
     {
+        gpio_set_level(wm.pd_sck, 0);
+        hx711_is_ready(&wm, &ready);
+        if (ready)
+        {
+            hx711_read_data(&wm, &weight_raw);
+        }
+        else
+        {
+            weight_raw = -1;
+        }
+
+        weight = tare_factor + (-1) * (weight_raw);
+        // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
+        weight = weight / calibration_factor;
+        // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
+
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-        ESP_LOGI(name, "Hello from Weight Task : %d", static_cast<int>(wm.getWeight()));
+        ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
     }
 }

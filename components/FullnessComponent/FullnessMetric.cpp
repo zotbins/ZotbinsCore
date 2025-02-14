@@ -1,9 +1,16 @@
+/**
+ * @file FullnessMetric.cpp
+ * @brief Helper class for fullness data smoothing in a bin with arbitrary dimensions
+ * @version 0.1
+ * @date 2024-11-08
+ */
+
 #include "FullnessMetric.hpp"
-#include "IDistance.hpp"
+#include "Distance.hpp"
 
 using namespace Fullness;
 
-FullnessMetric::FullnessMetric(uint32_t binHeight, IDistance &distanceSensor) : mBinHeight(binHeight), mDistanceSensor(distanceSensor)
+FullnessMetric::FullnessMetric(uint32_t binHeight, Distance &distanceSensor) : mBinHeight{binHeight}, mDistanceSensor{distanceSensor}
 {
 }
 
@@ -31,7 +38,7 @@ bool FullnessMetric::isValidDistance(uint32_t distance)
 
 float FullnessMetric::IQM(std::array<int32_t, mDistanceBufferSize> &distanceBuffer)
 {
-    int32_t averageDistance = 0;
+    uint32_t averageDistance = 0;
 
     shellSort(distanceBuffer);
 

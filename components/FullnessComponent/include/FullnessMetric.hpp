@@ -1,6 +1,6 @@
 /**
  * @file FullnessMetric.hpp
- * @brief Header file for Fullness class
+ * @brief Header file for Fullness class for an hcsr04
  * @version 0.1
  * @date 2022-05-04
  *
@@ -9,7 +9,7 @@
 #ifndef FULLNESS_HPP
 #define FULLNESS_HPP
 
-#include "IDistance.hpp"
+#include "Distance.hpp"
 #include <array>
 #include <cstddef>
 #include <cstdint>
@@ -29,7 +29,7 @@ namespace Fullness
          * @param binHeight Height of bin in mm
          * @param distanceSensor Interface to distance sensor
          */
-        FullnessMetric(uint32_t binHeight, IDistance &distanceSensor);
+        FullnessMetric(uint32_t binHeight, Distance &distanceSensor);
 
         /**
          * @brief Returns the fullness percentage of the bin
@@ -49,7 +49,7 @@ namespace Fullness
     private:
         static constexpr size_t mDistanceBufferSize = 8;
 
-        float IQM(std::array<int32_t, mDistanceBufferSize> &distanceBuffer);
+        float IQM(std::array<int32_t, mDistanceBufferSize> &distanceBuffer); // interquartile mean, a statistical "average" across multiple values. i assume iqm uses shell sort to sort the values, then creates the iqm using standard formulas, then passes that into (is called by) getFullness to calculate a final percentage value. otherwise the iqm could be of fullness values but that would likely be slower requiring multiple calls to getFullness
 
         void shellSort(std::array<int32_t, mDistanceBufferSize> &arr);
 
@@ -63,7 +63,7 @@ namespace Fullness
          * @brief Distance sensor
          *
          */
-        IDistance &mDistanceSensor;
+        Distance &mDistanceSensor;
     };
 }
 #endif
