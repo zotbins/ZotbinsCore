@@ -8,6 +8,7 @@ using namespace Zotbins;
 
 const gpio_num_t PIN_DOUT = GPIO_NUM_2;
 const gpio_num_t PIN_PD_SCK = GPIO_NUM_14;
+static TaskHandle_t xTaskToNotify = NULL;
 
 const gpio_config_t PIN_DOUT_CONFIG = {
     .pin_bit_mask = 0x00000004,
@@ -26,6 +27,7 @@ const gpio_config_t PIN_PD_SCK_CONFIG = {
 static const char *name = "weightTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+static const int core = 1;
 
 WeightTask::WeightTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -34,7 +36,7 @@ WeightTask::WeightTask(QueueHandle_t &messageQueue)
 
 void WeightTask::start()
 {
-    xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
 }
 
 void WeightTask::taskFunction(void *task)
@@ -171,6 +173,7 @@ void WeightTask::loop()
 
     while (1)
     {
+        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         gpio_set_level(wm.pd_sck, 0);
         hx711_is_ready(&wm, &ready);
         if (ready)
@@ -189,5 +192,7 @@ void WeightTask::loop()
 
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
+        xTaskToNotify = xTaskGetHandle("usageTask");
+        vTaskResume(xTaskToNotify);
     }
 }

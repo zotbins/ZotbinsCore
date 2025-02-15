@@ -28,6 +28,8 @@ const gpio_config_t PIN_ECHO_CONFIG = {
 static const char *name = "fullnessTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+static TaskHandle_t xTaskToNotify = NULL;
+static const int core = 1;
 
 FullnessTask::FullnessTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -36,7 +38,7 @@ FullnessTask::FullnessTask(QueueHandle_t &messageQueue)
 
 void FullnessTask::start()
 {
-    xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
 }
 
 void FullnessTask::taskFunction(void *task)
@@ -69,10 +71,12 @@ void FullnessTask::loop()
 
         // gpio_set_level(PIN_TRIGGER, 1);
         // gpio_set_level(PIN_ECHO, 1);
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         distance = ultrasonic.getDistance();
 
         ESP_LOGI(name, "Hello from Fullness Task %f", distance);
+        xTaskToNotify = xTaskGetHandle("weightTask");
+        xTaskNotifyGive(xTaskToNotify);
         // ESP_LOGI(name, "Hello from Fullness Task");
         // gpio_set_level(PIN_TRIGGER, 0);
         // gpio_set_level(PIN_ECHO, 0);
