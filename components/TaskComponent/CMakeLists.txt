@@ -6,6 +6,6 @@ idf_component_register(SRCS "fullnessTask.cpp"
                             "cameraTask.cpp"
                     INCLUDE_DIRS "include"
                     REQUIRES freertos FullnessComponent ClientComponent TaskComponent log driver nvs_flash
-                        json spiffs esp_http_server esp_wifi esp_netif esp_timer
-                    PRIV_REQUIRES nvs_flash esp_psram driver esp32-camera unity mbedtls hx711
+                        json spiffs esp_http_server esp_wifi esp_netif esp_timer esp32-camera
+                    PRIV_REQUIRES nvs_flash esp_psram driver unity mbedtls hx711
                     )
