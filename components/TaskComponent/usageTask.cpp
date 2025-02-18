@@ -25,8 +25,9 @@ UsageTask::UsageTask(QueueHandle_t &messageQueue)
 {
 }
 
-void IRAM_ATTR breakbeamISR(void* arg) {
-    beamBroken = true; 
+void IRAM_ATTR breakbeamISR(void *arg)
+{
+    beamBroken = true;
     vTaskResume(usageHandle);
 }
 
@@ -46,7 +47,7 @@ void UsageTask::setup()
 {
     gpio_install_isr_service(0);
     gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
-    gpio_set_intr_type(PIN_BREAKBEAM, GPIO_INTR_NEGEDGE);  // Falling edge interrupt
+    gpio_set_intr_type(PIN_BREAKBEAM, GPIO_INTR_NEGEDGE); // Falling edge interrupt
     gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL);
     gpio_intr_enable(PIN_BREAKBEAM);
 }
@@ -61,8 +62,9 @@ void UsageTask::loop()
     gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
     while (1)
     {
-        if (!beamBroken) {
-            vTaskSuspend(NULL);  // Suspend the task until notified
+        if (!beamBroken)
+        {
+            vTaskSuspend(NULL); // Suspend the task until notified
         }
         // Read in signal from breakbeam
         int detect = gpio_get_level(PIN_BREAKBEAM);
