@@ -7,10 +7,6 @@ jobs:
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
-    - name: Polyfill AWS certificates
-      run: |
-        cd components/ClientComponent/
-        touch ca.crt client.crt client.key aws.url
     - name: Build ESP-IDF project
       uses: espressif/esp-idf-ci-action@v1
       with:
