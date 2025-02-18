@@ -15,17 +15,24 @@ const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
 static const char *name = "usageTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
-static TaskHandle_t xTaskToNotify = NULL;
+static TaskHandle_t usageHandle = NULL;
 static const int core = 1;
+static bool beamBroken = false;
+static TaskHandle_t xTaskToNotify = NULL;
 
 UsageTask::UsageTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
 {
 }
 
+void IRAM_ATTR breakbeamISR(void* arg) {
+    beamBroken = true; 
+    vTaskResume(usageHandle);
+}
+
 void UsageTask::start()
 {
-    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &usageHandle, core);
 }
 
 void UsageTask::taskFunction(void *task)
@@ -37,6 +44,11 @@ void UsageTask::taskFunction(void *task)
 
 void UsageTask::setup()
 {
+    gpio_install_isr_service(0);
+    gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
+    gpio_set_intr_type(PIN_BREAKBEAM, GPIO_INTR_NEGEDGE);  // Falling edge interrupt
+    gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL);
+    gpio_intr_enable(PIN_BREAKBEAM);
 }
 
 void UsageTask::loop()
@@ -46,9 +58,12 @@ void UsageTask::loop()
     ESP_LOGI(name, "Hello from Usage Task"); // init
 
     // Setup GPIO pin sensors
-    gpio_set_direction(DETECT_PIN, GPIO_MODE_INPUT);
+    gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
     while (1)
     {
+        if (!beamBroken) {
+            vTaskSuspend(NULL);  // Suspend the task until notified
+        }
         // Read in signal from breakbeam
         int detect = gpio_get_level(PIN_BREAKBEAM);
         // If breakbeam is disconnected
@@ -60,6 +75,7 @@ void UsageTask::loop()
                 detect = gpio_get_level(PIN_BREAKBEAM);
             }
             ESP_LOGI(name, "No longer detected");
+            beamBroken = false;
             xTaskToNotify = xTaskGetHandle("fullnessTask");
             xTaskNotifyGive(xTaskToNotify);
             vTaskSuspend(NULL);
