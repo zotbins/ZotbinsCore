@@ -13,26 +13,13 @@ constexpr size_t messageQueueSize = 20;
 
 extern "C" void app_main(void)
 {
-    /*
-    Fullness::MockDistance md{std::vector<int32_t>{1, 2}};
-    md.getDistance();
-    Weight::MockWeight mw{10};
-    mw.getWeight();
-    Weight::RealWeight rw;
-    rw.getWeight();
-    */
 
     Client::clientStart();
 
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 
-    Zotbins::WeightTask weightTask(messageQueue);
-    weightTask.start();
-    Zotbins::UsageTask usageTask(messageQueue);
-
-    // Zotbins::CameraTask cameraTask(messageQueue);
-    // // usageTask.start();
+    // please leave these uncommented when you commit!
 
     Zotbins::UsageTask usageTask(messageQueue);
     usageTask.start();
@@ -40,9 +27,12 @@ extern "C" void app_main(void)
     Zotbins::FullnessTask fullnessTask(messageQueue);
     fullnessTask.start();
 
-    // Zotbins::ServoTask servoTask(messageQueue);
-    // servoTask.start();
-
     Zotbins::WeightTask weightTask(messageQueue);
     weightTask.start();
+    
+    Zotbins::ServoTask servoTask(messageQueue);
+    servoTask.start();
+
+    Zotbins::CameraTask cameraTask(messageQueue);
+    cameraTask.start();
 }
