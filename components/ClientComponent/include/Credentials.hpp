@@ -15,11 +15,11 @@ extern const uint8_t AWS_URL[] asm("_binary_aws_url_start");
 #else
 const uint8_t AWS_CA_CRT[] = "";
 // Device-local certificate
-extern const uint8_t AWS_CLIENT_CRT[] = "";
+const uint8_t AWS_CLIENT_CRT[] = "";
 // Device-local private key
-extern const uint8_t AWS_CLIENT_KEY[] = "";
+const uint8_t AWS_CLIENT_KEY[] = "";
 // URL of AWS endpoint
-extern const uint8_t AWS_URL[] = "";
+const uint8_t AWS_URL[] = "";
 #endif /* HAS_AWS_CREDENTIALS */
 
 #endif
