@@ -2,8 +2,6 @@
 #include "clientTask.hpp"
 #include "esp_log.h"
 
-// namespace Zotbins {}
-
 using namespace Zotbins;
 
 static const char *name = "clientTask";
@@ -37,4 +35,5 @@ void ClientTask::loop()
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         ESP_LOGI(name, "Hello from Client Task");
     }
+    vTaskDelete(NULL);
 }
