@@ -1,9 +1,9 @@
 #include "servoTask.hpp"
-#include <driver/gpio.h>
 #include "driver/mcpwm_prelude.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include <driver/gpio.h>
 
 using namespace Zotbins;
 

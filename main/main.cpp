@@ -19,20 +19,16 @@ extern "C" void app_main(void)
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 
-    // please leave these uncommented when you commit!
-
+    // Zotbins::CameraTask cameraTask(messageQueue);
+    //  usageTask.start();
+    // cameraTask.start();
+    Zotbins::WeightTask weightTask(messageQueue);
+    weightTask.start();
+    Zotbins::FullnessTask fullnessTask(messageQueue);
+    fullnessTask.start();
     Zotbins::UsageTask usageTask(messageQueue);
     usageTask.start();
 
-    Zotbins::FullnessTask fullnessTask(messageQueue);
-    fullnessTask.start();
-
-    Zotbins::WeightTask weightTask(messageQueue);
-    weightTask.start();
-    
-    Zotbins::ServoTask servoTask(messageQueue);
-    servoTask.start();
-
-    Zotbins::CameraTask cameraTask(messageQueue);
-    cameraTask.start();
+    // Zotbins::ServoTask servoTask(messageQueue);
+    // servoTask.start();
 }
