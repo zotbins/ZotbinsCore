@@ -10,7 +10,7 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/client.key"
     set(HAS_AWS_CREDENTIALS TRUE)
     set(AWS_EMBED client.key client.crt ca.crt aws.url)
 else()
-    message("Not all AWS key components found, adding polyfill")
+    message(WARNING "Not all AWS key components found, adding polyfill")
     set(HAS_AWS_CREDENTIALS FALSE)
     set(AWS_EMBED "")
 endif()
@@ -20,5 +20,5 @@ idf_component_register(SRCS "Client.cpp" "Serialize.cpp"
                     PRIV_REQUIRES log esp_system esp_partition nvs_flash esp_event esp_netif protocol_examples_common mqtt app_update json
                     EMBED_TXTFILES "${AWS_EMBED}")
 if(HAS_AWS_CREDENTIALS)
-    target_compile_definitions("${COMPONENT_TARGET}" PRIVATE "${HAS_AWS_CREDENTIALS}")
+    target_compile_definitions("${COMPONENT_TARGET}" PRIVATE HAS_AWS_CREDENTIALS)
 endif()

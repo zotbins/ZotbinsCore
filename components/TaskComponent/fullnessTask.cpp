@@ -55,8 +55,8 @@ void FullnessTask::setup() // could refactor into setup later but there are a lo
 void FullnessTask::loop()
 {
 
-    gpio_config(&PIN_TRIGGER_CONFIG);
-    gpio_config(&PIN_ECHO_CONFIG);
+    ESP_ERROR_CHECK(gpio_config(&PIN_TRIGGER_CONFIG));
+    ESP_ERROR_CHECK(gpio_config(&PIN_ECHO_CONFIG));
 
     // TODO: use distance buffer to get averages and discard outliers
     // uint32_t bin_height = BIN_HEIGHT; // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE
@@ -73,7 +73,6 @@ void FullnessTask::loop()
         // gpio_set_level(PIN_ECHO, 1);
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         distance = ultrasonic.getDistance();
-
         ESP_LOGI(name, "Hello from Fullness Task %f", distance);
         xTaskToNotify = xTaskGetHandle("weightTask");
         xTaskNotifyGive(xTaskToNotify);
@@ -82,4 +81,5 @@ void FullnessTask::loop()
         // gpio_set_level(PIN_ECHO, 0);
         // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
     }
+    vTaskDelete(NULL);
 }

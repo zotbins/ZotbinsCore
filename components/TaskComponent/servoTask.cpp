@@ -1,4 +1,5 @@
 #include "servoTask.hpp"
+#include <driver/gpio.h>
 #include "driver/mcpwm_prelude.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
@@ -12,9 +13,10 @@ using namespace Zotbins;
 #define SERVO_MIN_DEGREE -90         // Minimum angle
 #define SERVO_MAX_DEGREE 90          // Maximum angle
 
-#define SERVO_PULSE_GPIO 15                  // GPIO connects to the PWM signal line
 #define SERVO_TIMEBASE_RESOLUTION_HZ 1000000 // 1MHz, 1us per tick
 #define SERVO_TIMEBASE_PERIOD 20000          // 20000 ticks, 20ms
+
+const gpio_num_t PIN_SERVO = GPIO_NUM_15;
 
 static inline uint32_t example_angle_to_compare(int angle)
 {
@@ -79,7 +81,7 @@ void ServoTask::loop()
 
     mcpwm_gen_handle_t generator = NULL;
     mcpwm_generator_config_t generator_config = {
-        .gen_gpio_num = SERVO_PULSE_GPIO,
+        .gen_gpio_num = PIN_SERVO,
     };
     ESP_ERROR_CHECK(mcpwm_new_generator(oper, &generator_config, &generator));
 
@@ -112,4 +114,5 @@ void ServoTask::loop()
         }
         angle += step;
     }
+    vTaskDelete(NULL);
 }
