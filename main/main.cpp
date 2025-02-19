@@ -28,7 +28,6 @@ extern "C" void app_main(void)
     fullnessTask.start();
     Zotbins::UsageTask usageTask(messageQueue);
     usageTask.start();
-
     // Zotbins::ServoTask servoTask(messageQueue);
     // servoTask.start();
 }
