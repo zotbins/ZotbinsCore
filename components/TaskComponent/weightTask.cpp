@@ -150,9 +150,9 @@ void WeightTask::loop()
 
     //     if (tare_factor_initialized == false)
     //     { // if the tare_factor has not already been set, measured and set it
-    //      hx711_is_ready(&wm, &ready);
-    //      while (!ready)
-    //         hx711_read_average(&wm, 10, &tare_factor);
+            // hx711_is_ready(&wm, &ready);
+            // while (!ready)
+            //     hx711_read_average(&wm, 10, &tare_factor);
     //         // get the raw weight when there is nothing on the sensor, so this reading can be considered zero weight (tare).
 
     //         err = nvs_set_i32(my_handle, "tare_factor", tare_factor); // write
