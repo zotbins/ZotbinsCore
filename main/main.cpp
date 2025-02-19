@@ -21,18 +21,18 @@ extern "C" void app_main(void)
 
     // please leave these uncommented when you commit!
 
-    Zotbins::UsageTask usageTask(messageQueue);
-    usageTask.start();
+    // Zotbins::UsageTask usageTask(messageQueue);
+    // usageTask.start();
 
     Zotbins::FullnessTask fullnessTask(messageQueue);
     fullnessTask.start();
 
-    Zotbins::WeightTask weightTask(messageQueue);
-    weightTask.start();
+    // Zotbins::WeightTask weightTask(messageQueue);
+    // weightTask.start();
     
-    Zotbins::ServoTask servoTask(messageQueue);
-    servoTask.start();
+    // Zotbins::ServoTask servoTask(messageQueue);
+    // servoTask.start();
 
-    Zotbins::CameraTask cameraTask(messageQueue);
-    cameraTask.start();
+    // Zotbins::CameraTask cameraTask(messageQueue);
+    // cameraTask.start();
 }
