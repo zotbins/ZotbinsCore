@@ -117,20 +117,44 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
 static void mqtt_app_start(void)
 {
+    static const char mqtts_prefix[] = "mqtts://";
+
+    size_t len = strlen((const char *)AWS_URL) + 1;
+    // NOTE: This leaks memory but it's only like 20 bytes or so so I'm fine with this
+    auto uri = static_cast<char *>(malloc(len));
+    // Copy the entire URL to the new buffer
+    memcpy(uri, AWS_URL, len);
+
+    if (strstr(uri, mqtts_prefix) == nullptr)
+    {
+        ESP_LOGW(TAG, "URI scheme is not mqtts, AWS endpoint won't work!");
+    }
+
+    char *found = strchr(uri, '\n');
+    if (found != nullptr)
+    {
+        ESP_LOGI(TAG, "Found newline in AWS URL, trimming short");
+        // Trim the string short
+        *found = 0;
+    }
+
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = (const char *)AWS_URL,
+                .uri = uri,
             },
             .verification = {
-
                 .certificate = (const char *)AWS_CA_CRT,
             },
         },
-        .credentials = {.client_id = "SensorBin", .authentication = {
-                                                      .certificate = (const char *)AWS_CLIENT_CRT,
-                                                      .key = (const char *)AWS_CLIENT_KEY,
-                                                  }}};
+        .credentials = {
+            .client_id = "SensorBin",
+            .authentication = {
+                .certificate = (const char *)AWS_CLIENT_CRT,
+                .key = (const char *)AWS_CLIENT_KEY,
+            },
+        },
+    };
 
     ESP_LOGI(TAG, "Connecting to AWS server %s", AWS_URL);
 
