@@ -5,9 +5,9 @@
 #include "servoTask.hpp"
 #include "usageTask.hpp"
 #include "weightTask.hpp"
-#include <driver/gpio.h>
 #include <iostream>
 #include <stdio.h>
+#include <driver/gpio.h>
 
 constexpr size_t messageQueueSize = 20;
 

@@ -22,8 +22,7 @@ const gpio_config_t PIN_PD_SCK_CONFIG = {
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE
-};
+    .intr_type = GPIO_INTR_DISABLE};
 
 static const char *name = "weightTask";
 static const int priority = 1;
@@ -150,9 +149,9 @@ void WeightTask::loop()
 
     //     if (tare_factor_initialized == false)
     //     { // if the tare_factor has not already been set, measured and set it
-            // hx711_is_ready(&wm, &ready);
-            // while (!ready)
-            //     hx711_read_average(&wm, 10, &tare_factor);
+    // hx711_is_ready(&wm, &ready);
+    // while (!ready)
+    //     hx711_read_average(&wm, 10, &tare_factor);
     //         // get the raw weight when there is nothing on the sensor, so this reading can be considered zero weight (tare).
 
     //         err = nvs_set_i32(my_handle, "tare_factor", tare_factor); // write
