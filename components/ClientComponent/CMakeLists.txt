@@ -10,7 +10,7 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/client.key"
     set(HAS_AWS_CREDENTIALS TRUE)
     set(AWS_EMBED client.key client.crt ca.crt aws.url)
 else()
-    message(SEND_ERROR "Not all AWS key components found, adding polyfill")
+    message(WARNING "Not all AWS key components found, adding polyfill")
     set(HAS_AWS_CREDENTIALS FALSE)
     set(AWS_EMBED "")
 endif()
