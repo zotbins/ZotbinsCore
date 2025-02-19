@@ -183,7 +183,6 @@ void WeightTask::loop()
     //     nvs_close(my_handle);
     // }
 
-
     while (1)
     {
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
