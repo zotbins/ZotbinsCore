@@ -1,0 +1,15 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from." alt="" coords="5,129,105,155"/>
+<area shape="rect" id="Node000001" href="$class_zotbins_1_1_camera_task.html" title="Task to measure the camera rate of the bin using the breakbeam sensor." alt="" coords="155,5,299,31"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="73,115,107,77,151,40,173,29,175,34,154,44,110,80,77,119"/>
+<area shape="rect" id="Node000002" href="$class_zotbins_1_1_client_task.html" title="Task to measure fullness of the bin by using the distance sensor." alt="" coords="161,55,293,80"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="91,119,152,89,180,78,182,83,154,94,94,124"/>
+<area shape="rect" id="Node000003" href="$class_zotbins_1_1_fullness_task.html" title="Task to measure fullness of the bin by using the distance sensor." alt="" coords="153,104,301,130"/>
+<area shape="poly" id="edge3_Node000000_Node000003" title=" " alt="" coords="120,130,152,125,153,130,121,135"/>
+<area shape="rect" id="Node000004" href="$class_zotbins_1_1_servo_task.html" title="Task to measure servo of the bin by using the distance sensor." alt="" coords="160,153,294,179"/>
+<area shape="poly" id="edge4_Node000000_Node000004" title=" " alt="" coords="120,149,160,154,159,159,120,154"/>
+<area shape="rect" id="Node000005" href="$class_zotbins_1_1_usage_task.html" title="Task to measure the usage rate of the bin using the breakbeam sensor." alt="" coords="158,203,296,228"/>
+<area shape="poly" id="edge5_Node000000_Node000005" title=" " alt="" coords="94,160,154,189,182,200,180,205,152,194,92,165"/>
+<area shape="rect" id="Node000006" href="$class_zotbins_1_1_weight_task.html" title="Task to measure current weight of the trash inside the bin using the HX711 and load cell." alt="" coords="157,252,296,278"/>
+<area shape="poly" id="edge6_Node000000_Node000006" title=" " alt="" coords="77,166,111,203,154,239,176,249,173,254,151,243,107,207,73,169"/>
+</map>

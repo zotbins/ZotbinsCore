@@ -1,0 +1,18 @@
+<map id="cameraTask.hpp" name="cameraTask.hpp">
+<area shape="rect" id="Node000001" title="Header file for CameraTask class." alt="" coords="240,5,358,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,97,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="258,34,109,77,107,72,256,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="244,153,386,178"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="241,34,204,46,173,61,163,71,157,80,156,91,161,103,175,119,192,131,231,149,228,154,189,136,171,123,157,106,151,92,152,79,159,67,170,57,202,41,239,29"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="171,79,286,105"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="289,33,253,70,249,66,285,29"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="310,79,432,105"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="313,29,350,66,346,70,309,33"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="456,79,560,105"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="335,29,459,71,457,76,334,34"/>
+<area shape="rect" id="Node000007" href="$task_8hpp.html" title="Header file for Task class." alt="" coords="585,79,656,105"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="357,29,571,76,569,81,356,34"/>
+<area shape="poly" id="edge7_Node000007_Node000003" title=" " alt="" coords="585,104,573,107,383,151,382,146,572,102,584,99"/>
+<area shape="rect" id="Node000008" title=" " alt="" coords="590,153,650,178"/>
+<area shape="poly" id="edge8_Node000007_Node000008" title=" " alt="" coords="623,105,623,137,618,137,618,105"/>
+</map>

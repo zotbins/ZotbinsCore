@@ -1,0 +1,9 @@
+<map id="hx711.h" name="hx711.h">
+<area shape="rect" id="Node000001" title=" " alt="" coords="125,5,190,31"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,79,97,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="141,34,83,72,80,68,138,29"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="121,79,194,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="160,31,160,63,155,63,155,31"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="218,79,292,105"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="176,29,228,68,225,72,173,34"/>
+</map>

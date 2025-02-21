@@ -1,0 +1,5 @@
+<map id="Zotbins::FullnessTask" name="Zotbins::FullnessTask">
+<area shape="rect" id="Node000001" title="Task to measure fullness of the bin by using the distance sensor." alt="" coords="5,181,143,267"/>
+<area shape="rect" id="Node000002" href="$class_zotbins_1_1_task.html" title="Abstract class for tasks to inherit from." alt="" coords="27,5,121,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="77,147,77,181,72,181,72,147"/>
+</map>
