@@ -20,12 +20,14 @@ extern "C" void app_main(void)
     assert(messageQueue != nullptr);
 
     // Zotbins::CameraTask cameraTask(messageQueue);
-    //  usageTask.start();
     // cameraTask.start();
-    Zotbins::WeightTask weightTask(messageQueue);
-    weightTask.start();
+
     Zotbins::FullnessTask fullnessTask(messageQueue);
     fullnessTask.start();
+
+    Zotbins::WeightTask weightTask(messageQueue);
+    weightTask.start();
+
     Zotbins::UsageTask usageTask(messageQueue);
     usageTask.start();
 
