@@ -6,12 +6,12 @@
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_DOUT = GPIO_NUM_14; // swapped since pcb pins are swapped when you plug directly in
-const gpio_num_t PIN_PD_SCK = GPIO_NUM_2;
+const gpio_num_t PIN_DOUT = GPIO_NUM_14; // shifted since pcb pins are swapped when you plug directly in
+const gpio_num_t PIN_PD_SCK = GPIO_NUM_15; // shifted for same reason. 15 used by servo, cant use servo on pin 15 simultaneously.
 static TaskHandle_t xTaskToNotify = NULL;
 
 const gpio_config_t PIN_PD_SCK_CONFIG = {
-    .pin_bit_mask = 0x00000004,
+    .pin_bit_mask = 0x00008000,
     .mode = GPIO_MODE_OUTPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_ENABLE,
