@@ -123,6 +123,7 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
+                // TODO: make sure address isn't hardcoded and go back to config files
                 .uri = "mqtts://a1wqr7kl6hd1sm-ats.iot.us-west-1.amazonaws.com:8883",
             },
             .verification = {
