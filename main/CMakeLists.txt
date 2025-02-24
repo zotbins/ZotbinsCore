@@ -6,4 +6,7 @@ idf_component_register(SRCS "main.cpp"
 =======
                     INCLUDE_DIRS ".")
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

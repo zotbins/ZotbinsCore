@@ -1,7 +1,10 @@
 #include "Client.hpp"
 #include "cameraTask.hpp"
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 #include "gpsTask.hpp"
 #include "MockDistance.hpp"
 #include "MockWeight.hpp"
@@ -62,6 +65,9 @@ extern "C" void app_main(void)
 	Zotbins::WeightTask weightTask(messageQueue);
 	weightTask.start();
 	*/
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
     // Zotbins::ServoTask servoTask(messageQueue);

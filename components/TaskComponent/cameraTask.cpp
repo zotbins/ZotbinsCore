@@ -83,7 +83,10 @@ static camera_config_t camera_config = {
     // CAM_PIN_PWDN
     // .pin_reset = CAM_PIN_RESET,
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     .pin_pwdn = CAM_PIN_PWDN,
@@ -164,7 +167,10 @@ void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_
 }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 // THIS ONLY WORKS IF ONLY Camera Task
 void startSleep()
 {
@@ -237,7 +243,11 @@ void CameraTask::loop()
     }
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     Client::clientPublishStr("Started Camera");
+=======
+    //Client::clientPublishStr("Started Camera");
+>>>>>>> Stashed changes
 =======
     //Client::clientPublishStr("Started Camera");
 >>>>>>> Stashed changes
