@@ -2,6 +2,13 @@
     "idf.port": "/dev/tty.usbserial-0001",
     "idf.flashType": "UART",
     "files.associations": {
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "locale": "cpp",
+        "streambuf": "cpp",
+        "sstream": "cpp",
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "vector": "cpp"
     }
 }

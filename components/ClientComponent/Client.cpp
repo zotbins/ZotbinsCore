@@ -26,6 +26,9 @@
 
 #include "Client.hpp"
 #include "Credentials.hpp"
+#include "Serialize.hpp"
+#include <cstdarg>
+#include <cstring>
 
 static const char *TAG = "mqtts_example";
 
@@ -140,17 +143,56 @@ static void mqtt_app_start(void)
     esp_mqtt_client_start(client);
 }
 
-void Client::clientPublish(const void *message, size_t len)
+// TODO: optimize this into a dictionary or something
+// #ifdef MCU_TYPE == CAMERA
+    // bool payload;
+// #elif MCU_TYPE == SENSOR
+    bool payload_distance = false;
+    bool payload_weight = false;
+    float distance;
+    int32_t weight;
+// #endif 
+
+// TODO: change temp to include the actual value through variadics
+void Client::clientPublish(char* data_type, void* value)
 {
-    publish(test_client, message, len);
+    #if MCU_TYPE == CAMERA
+        // cJSON* data = serialize(message, len);
+    #elif MCU_TYPE == SENSOR
+        if (strcmp(data_type, "distance") == 0){
+            payload_distance = true;
+            distance = *(float*)value;
+        }else if (strcmp(data_type, "weight") == 0){
+            payload_weight = true;
+            weight = *(int32_t*)value;
+        }
+    #endif
+
+    // only send when both distance and weight payloads are specified
+    if (payload_distance && payload_weight){
+        ESP_LOGI(TAG, "sending payload");
+        ESP_LOGI(TAG, "distance = %d, weight = %d", payload_distance, payload_weight);
+        cJSON* data = serialize("Sensor result", distance, false, weight);
+        if (data) {
+            char* json_str = cJSON_PrintUnformatted(data);  // Convert cJSON object to string
+            if (json_str) {
+                publish(test_client, json_str, strlen(json_str));  // Use strlen to get the size
+                free(json_str);  // Free the allocated string after publishing
+            }
+            cJSON_Delete(data);  // Free cJSON object
+        }
+        payload_distance = false;
+        payload_weight = false;
+    }
 }
 
-void Client::clientPublishStr(const char *message)
-{
-    Client::clientPublish(message, strlen(message));
-}
 
-void Client::clientStart(void)
+// void Client::clientPublishStr(const char *message)
+// {
+//     Client::clientPublish();
+// }
+
+void Client::clientStart()
 {
     ESP_LOGI(TAG, "[APP] Startup..");
     ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes", esp_get_free_heap_size());

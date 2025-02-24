@@ -82,13 +82,6 @@ static camera_config_t camera_config = {
 
     // CAM_PIN_PWDN
     // .pin_reset = CAM_PIN_RESET,
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
     .pin_pwdn = CAM_PIN_PWDN,
     .pin_reset = CAM_PIN_RESET,
     .pin_xclk = CAM_PIN_XCLK,
@@ -166,11 +159,6 @@ void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_
     // snprintf(output + pos, output_size - pos, "]");
 }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> Stashed changes
 // THIS ONLY WORKS IF ONLY Camera Task
 void startSleep()
 {
@@ -179,7 +167,6 @@ void startSleep()
 }
 
 
->>>>>>> Stashed changes
 static esp_err_t init_camera(void)
 {
     // initialize the camera
@@ -189,7 +176,7 @@ static esp_err_t init_camera(void)
         ESP_LOGE(TAG, "Camera Init Failed");
         return err;
     }
-    ESP_LOGE(TAG, "Camera Init Worked");
+    ESP_LOGI(TAG, "Camera Init Worked");
     return ESP_OK;
 }
 
@@ -239,18 +226,11 @@ void CameraTask::loop()
     // Initialize the camera
     if (ESP_OK != init_camera())
     {
-        Client::clientPublishStr("Camera Failed");
+        
+        // Client::clientPublishStr("Camera Failed");
     }
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    Client::clientPublishStr("Started Camera");
-=======
-    //Client::clientPublishStr("Started Camera");
->>>>>>> Stashed changes
-=======
-    //Client::clientPublishStr("Started Camera");
->>>>>>> Stashed changes
+    // Client::clientPublishStr("Started Camera");
 
     sensor_t *s = esp_camera_sensor_get();
     if (s != NULL)
@@ -258,6 +238,7 @@ void CameraTask::loop()
         s->set_sharpness(s, 1);
         s->set_gain_ctrl(s, 1);
         s->set_whitebal(s, 1);
+        // Client::clientPublishStr("Adjusted Camera");
     }
 
     camera_fb_t *fb = NULL;
