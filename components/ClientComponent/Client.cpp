@@ -31,7 +31,7 @@ static const char *TAG = "mqtts_example";
 
 static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
-    int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 1, 0);
+    int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
     ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
 }
 
@@ -120,7 +120,7 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = (const char *)AWS_URL,
+                .uri = "mqtts://a2at9bxpjy4od7-ats.iot.us-east-2.amazonaws.com",
             },
             .verification = {
 
