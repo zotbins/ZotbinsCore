@@ -1,5 +1,6 @@
 #include "Client.hpp"
 #include "cameraTask.hpp"
+#include "gpsTask.hpp"
 #include "fullnessTask.hpp"
 #include "message.hpp"
 #include "servoTask.hpp"
@@ -30,6 +31,31 @@ extern "C" void app_main(void)
 
     Zotbins::UsageTask usageTask(messageQueue);
     usageTask.start();
+    // Zotbins::WeightTask weightTask(messageQueue);
+	// weightTask.start();
+	// Zotbins::UsageTask usageTask(messageQueue);
+	// usageTask.start();
+	
+	// Zotbins::CameraTask cameraTask(messageQueue);
+	// cameraTask.start();
+
+
+	// Zotbins::GpsTask gpsTask(messageQueue);
+	// gpsTask.start();
+
+	/*
+	Zotbins::UsageTask usageTask(messageQueue);
+	usageTask.start();
+
+	Zotbins::FullnessTask fullnessTask(messageQueue);
+	fullnessTask.start();
+
+  	Zotbins::ServoTask servoTask(messageQueue);
+  	servoTask.start();
+
+	Zotbins::WeightTask weightTask(messageQueue);
+	weightTask.start();
+	*/
 
     // Zotbins::ServoTask servoTask(messageQueue);
     // servoTask.start();

@@ -1,5 +1,6 @@
 #include "cameraTask.hpp"
 #include "esp_log.h"
+#include "mbedtls/base64.h"
 
 #include "Client.hpp"
 #include <driver/gpio.h>
@@ -8,6 +9,7 @@
 #include <ets_sys.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+
 
 using namespace Zotbins;
 
@@ -30,6 +32,8 @@ static const uint32_t stackSize = 4096;
 #include <nvs_flash.h>
 #include <rom/ets_sys.h>
 #include <string.h>
+// #include "zlib.h"
+
 
 // FreeRTOS headers
 #include "freertos/FreeRTOS.h"
@@ -78,7 +82,6 @@ static camera_config_t camera_config = {
 
     // CAM_PIN_PWDN
     // .pin_reset = CAM_PIN_RESET,
-
     .pin_pwdn = CAM_PIN_PWDN,
     .pin_reset = CAM_PIN_RESET,
     .pin_xclk = CAM_PIN_XCLK,
@@ -103,7 +106,7 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_QVGA,
+    .frame_size = FRAMESIZE_VGA, // UXGA, VGA
     .jpeg_quality = 12,
     .fb_count = 2,
     .fb_location = CAMERA_FB_IN_PSRAM,
@@ -121,6 +124,7 @@ TaskHandle_t camera_countdown = NULL;
 // Possible to get 3 LEDS if you solder an AND gate
 bool takePicture = false;
 bool allowPicture = true;
+
 
 void vCountdown(void *pvParameters)
 {
@@ -140,13 +144,6 @@ void vCountdown(void *pvParameters)
     // vTaskDelete(camera_countdown);
 }
 
-// THIS ONLY WORKS IF ONLY Camera Task
-void startSleep()
-{
-    esp_sleep_enable_ext0_wakeup(inputPIN, 1);
-    esp_light_sleep_start();
-}
-
 void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_t output_size)
 {
     size_t pos = 0;
@@ -162,6 +159,14 @@ void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_
     // snprintf(output + pos, output_size - pos, "]");
 }
 
+// THIS ONLY WORKS IF ONLY Camera Task
+void startSleep()
+{
+    esp_sleep_enable_ext0_wakeup(inputPIN, 1);
+    esp_light_sleep_start();
+}
+
+
 static esp_err_t init_camera(void)
 {
     // initialize the camera
@@ -171,7 +176,7 @@ static esp_err_t init_camera(void)
         ESP_LOGE(TAG, "Camera Init Failed");
         return err;
     }
-    ESP_LOGE(TAG, "Camera Init Worked");
+    ESP_LOGI(TAG, "Camera Init Worked");
     return ESP_OK;
 }
 
@@ -217,54 +222,64 @@ void CameraTask::loop()
 
     // Initialize NVS
     ESP_ERROR_CHECK(nvs_flash_init());
-
+ 
     // Initialize the camera
     if (ESP_OK != init_camera())
     {
-        Client::clientPublishStr("Camera Failed");
+        
+        // Client::clientPublishStr("Camera Failed");
     }
 
-    Client::clientPublishStr("Started Camera");
+    // Client::clientPublishStr("Started Camera");
 
     sensor_t *s = esp_camera_sensor_get();
     if (s != NULL)
-
     {
-        s->set_brightness(s, 1);
-        s->set_contrast(s, 1);
-        s->set_saturation(s, 2);
         s->set_sharpness(s, 1);
         s->set_gain_ctrl(s, 1);
         s->set_whitebal(s, 1);
-        Client::clientPublishStr("Adjusted Camera");
+        // Client::clientPublishStr("Adjusted Camera");
     }
 
     camera_fb_t *fb = NULL;
+    int cnt = 0;
     while (1)
-
     {
-
-        if (gpio_get_level(inputPIN) == 1)
-
+        cnt++;
+        if (cnt == 30)
         {
             for (int i = 0; i < 30; i++)
-
             {
                 if (i == 29)
-
                 {
                     gpio_set_level(flashPIN, 1);
                 }
 
                 fb = esp_camera_fb_get();
-
                 vTaskDelay(33 / portTICK_PERIOD_MS);
-
                 esp_camera_fb_return(fb);
             }
             vTaskDelay(200 / portTICK_PERIOD_MS);
             gpio_set_level(flashPIN, 0);
-            Client::clientPublish(fb->buf, fb->len);
+
+            size_t output_size = 262144; 
+            char *output = (char *)malloc(output_size);
+            buffer_to_string(fb->buf, fb->len, output, output_size);
+
+            //size_t b64_len;
+            //char *b64_output = base64_encode(fb->buf, fb->len, &b64_len);
+            //Client::clientPublishStr(b64_output);
+
+            ESP_LOGE(TAG, "Hello");
+            Client::clientPublishStr(output);
+            //compress_and_publish(fb->buf, fb->len);
+
+
+
+
+
+
+
             vTaskDelay(4500 / portTICK_PERIOD_MS);
         }
         vTaskDelay(33 / portTICK_PERIOD_MS);

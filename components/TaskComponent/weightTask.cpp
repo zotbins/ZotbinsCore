@@ -3,6 +3,7 @@
 #include "esp_log.h"
 #include "hx711.h"
 #include "nvs_flash.h" // for storing calibration data
+#include "Client.hpp"
 
 using namespace Zotbins;
 
@@ -51,13 +52,16 @@ void WeightTask::setup()
     // TODO: move all necessary setup variables to members of a weighttask object
 }
 
+float WeightTask::getWeight(){
+    return weight;
+}
+
 void WeightTask::loop()
 {
     ESP_ERROR_CHECK(gpio_config(&PIN_DOUT_CONFIG)); // ensure pins is configured as gpio, especially necessary for pins 12-15 and just in case for other pins
     ESP_ERROR_CHECK(gpio_config(&PIN_PD_SCK_CONFIG));
 
     int32_t weight_raw;
-    float weight;
     int32_t tare_factor;
     int32_t calibration_factor;
     bool ready; // variable storing the status of the weight sensor measurement (measurement ready to be read or not)
@@ -209,12 +213,19 @@ void WeightTask::loop()
         }
         else
         {
-            weight = -1; // otherwise set an invalid weight value
+            weight_raw = -1;
         }
 
-        ESP_LOGI(name, "Hello from Weight Task: %f", (weight));
-        xTaskToNotify = xTaskGetHandle("usageTask");
-        vTaskResume(xTaskToNotify); // resume usage task collection
+        weight = tare_factor + (-1) * (weight_raw);
+        // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
+        weight = weight / calibration_factor;
+        // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
+        Client::clientPublish("weight", static_cast<void*>(&weight));
+
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+        ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
+        xTaskToNotify = xTaskGetHandle("usageTask");        
+        vTaskResume(xTaskToNotify);
     }
     vTaskDelete(NULL);
 }

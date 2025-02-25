@@ -3,6 +3,9 @@
 #include "FullnessMetric.hpp"
 #include "esp_log.h"
 #include <driver/gpio.h>
+#include "Client.hpp"
+
+#define BIN_HEIGHT 1000
 
 using namespace Zotbins;
 
@@ -31,7 +34,8 @@ static TaskHandle_t xTaskToNotify = NULL;
 static const int core = 1;
 
 FullnessTask::FullnessTask(QueueHandle_t &messageQueue)
-    : Task(name, priority, stackSize), mMessageQueue(messageQueue)
+    : Task(name, priority, stackSize), mMessageQueue(messageQueue),
+      ultrasonic(PIN_TRIGGER, PIN_ECHO) // Initialize directly
 {
 }
 
@@ -51,6 +55,11 @@ void FullnessTask::setup() // could refactor into setup later but there are a lo
 {
 }
 
+float FullnessTask::getFullness(){
+    distance = ultrasonic.getDistance();
+    return distance; 
+}
+
 void FullnessTask::loop()
 {
 
@@ -59,10 +68,6 @@ void FullnessTask::loop()
 
     // TODO: use distance buffer to get averages and discard outliers
     // uint32_t bin_height = BIN_HEIGHT; // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE
-    float distance;
-    float fullness;
-
-    Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
     // gpio_set_direction(PIN_TRIGGER, GPIO_MODE_OUTPUT);
     // gpio_set_direction(PIN_ECHO, GPIO_MODE_OUTPUT);
 
@@ -71,15 +76,14 @@ void FullnessTask::loop()
 
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         distance = ultrasonic.getDistance();
-        if (distance < 0) {
-            ESP_LOGI(name, "Error reading distance.");
-        } else {
-            fullness = distance / BIN_HEIGHT;
-            ESP_LOGI(name, "Hello from Fullness Task: %f%%", distance);
-        }
-        xTaskToNotify = xTaskGetHandle("weightTask"); // get rtos handle for weight task
-        xTaskNotifyGive(xTaskToNotify); // using that handle notify weight task to collect
-
+        ESP_LOGI(name, "Hello from Fullness Task %f", distance);
+        Client::clientPublish("distance", static_cast<void*>(&distance));
+        xTaskToNotify = xTaskGetHandle("weightTask");
+        xTaskNotifyGive(xTaskToNotify);
+        // ESP_LOGI(name, "Hello from Fullness Task");
+        // gpio_set_level(PIN_TRIGGER, 0);
+        // gpio_set_level(PIN_ECHO, 0);
+        // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
     }
     vTaskDelete(NULL);
 }
