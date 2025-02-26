@@ -78,9 +78,11 @@ void UsageTask::loop()
             }
             ESP_LOGI(name, "No longer detected");
             beamBroken = false;
-            xTaskToNotify = xTaskGetHandle("fullnessTask");
-            xTaskNotifyGive(xTaskToNotify);
-            vTaskSuspend(NULL);
+            // xTaskToNotify = xTaskGetHandle("fullnessTask");
+            // xTaskNotifyGive(xTaskToNotify);
+            xTaskToNotify = xTaskGetHandle("usageTask");        
+            vTaskResume(xTaskToNotify);
+            // vTaskSuspend(NULL);
         }
         ESP_LOGI(name, "Nothing detected");
         vTaskDelay(10 / portTICK_PERIOD_MS);

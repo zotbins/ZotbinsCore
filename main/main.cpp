@@ -23,8 +23,8 @@ extern "C" void app_main(void)
     // Zotbins::CameraTask cameraTask(messageQueue);
     //  usageTask.start();
     // cameraTask.start();
-    Zotbins::WeightTask weightTask(messageQueue);
-    weightTask.start();
+    // Zotbins::WeightTask weightTask(messageQueue);
+    // weightTask.start();
     Zotbins::FullnessTask fullnessTask(messageQueue);
     fullnessTask.start();
     Zotbins::UsageTask usageTask(messageQueue);
