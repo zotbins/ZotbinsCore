@@ -147,21 +147,6 @@ void startSleep()
     esp_light_sleep_start();
 }
 
-void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_t output_size)
-{
-    size_t pos = 0;
-    // pos += snprintf(output + pos, output_size - pos, "[");
-    for (size_t i = 0; i < buffer_length; i++)
-    {
-        if (i > 0)
-        {
-            pos += snprintf(output + pos, output_size - pos, ",");
-        }
-        pos += snprintf(output + pos, output_size - pos, "%u", buffer[i]);
-    }
-    // snprintf(output + pos, output_size - pos, "]");
-}
-
 static esp_err_t init_camera(void)
 {
     // initialize the camera
@@ -263,8 +248,14 @@ void CameraTask::loop()
                 esp_camera_fb_return(fb);
             }
             vTaskDelay(200 / portTICK_PERIOD_MS);
+
+            uint8_t *jpg;
+            size_t jpg_len;
+
+            frame2jpg(fb, 18, &jpg, &jpg_len);
+
             gpio_set_level(flashPIN, 0);
-            Client::clientPublish(fb->buf, fb->len);
+            Client::clientPublish(jpg, jpg_len);
             vTaskDelay(4500 / portTICK_PERIOD_MS);
         }
         vTaskDelay(33 / portTICK_PERIOD_MS);
