@@ -26,8 +26,13 @@
 
 #include "Client.hpp"
 #include "Credentials.hpp"
+#include "Serialize.hpp"
+#include <cstdarg>
+#include <cstring>
 
 static const char *TAG = "mqtts_example";
+
+
 
 static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
@@ -120,7 +125,8 @@ static void mqtt_app_start(void)
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
-                .uri = (const char *)AWS_URL,
+                // TODO: make sure address isn't hardcoded and go back to config files
+                .uri = "mqtts://a2at9bxpjy4od7-ats.iot.us-east-2.amazonaws.com:8883",
             },
             .verification = {
 
@@ -140,6 +146,51 @@ static void mqtt_app_start(void)
     esp_mqtt_client_start(client);
 }
 
+// TODO: optimize this into a dictionary or something
+// #ifdef MCU_TYPE == CAMERA
+    // bool payload;
+// #elif MCU_TYPE == SENSOR
+    bool payload_distance = false;
+    bool payload_weight = false;
+    float distance;
+    int32_t weight;
+// #endif 
+
+// TODO: change temp to include the actual value through variadics
+
+// void Client::clientPublish(char* data_type, void* value)
+// {;
+//     #if MCU_TYPE == CAMERA
+//         // cJSON* data = serialize(message, len);
+//     #elif MCU_TYPE == SENSOR
+//         if (strcmp(data_type, "distance") == 0){
+//             payload_distance = true;
+//             distance = *(float*)value;
+//         }else if (strcmp(data_type, "weight") == 0){
+//             payload_weight = true;
+//             weight = *(int32_t*)value;
+//         }
+//     #endif
+
+//     // only send when both distance and weight payloads are specified
+//     if (payload_distance && payload_weight){
+//         ESP_LOGI(TAG, "sending payload");
+//         ESP_LOGI(TAG, "distance = %d, weight = %d", payload_distance, payload_weight);
+//         cJSON* data = serialize("Sensor result", distance, false, weight);
+//         if (data) {
+//             char* json_str = cJSON_PrintUnformatted(data);  // Convert cJSON object to string
+//             if (json_str) {
+//                 ESP_LOGI(TAG, "json string: %s", json_str);
+//                 publish(test_client, json_str, strlen(json_str));  // Use strlen to get the size
+//                 free(json_str);  // Free the allocated string after publishing
+//             }
+//             cJSON_Delete(data);  // Free cJSON object
+//         }
+//         payload_distance = false;
+//         payload_weight = false;
+//     }
+// }
+
 void Client::clientPublish(const void *message, size_t len)
 {
     publish(test_client, message, len);
@@ -150,7 +201,24 @@ void Client::clientPublishStr(const char *message)
     Client::clientPublish(message, strlen(message));
 }
 
-void Client::clientStart(void)
+
+// Send a JSON File
+// int photoID, int totalCount
+// void Client::clientInitPhotoSend(int photoID, int totalCount){
+//     // cJSON* data = serializeInitImage(photoID, totalCount);
+//     return;
+// }
+// // int photoID, int imageNumber, char* image
+// void Client::clientPhotoSend(int photoID, int imageNumber, char* image){
+//     return; 
+// }
+
+// void Client::clientPublishStr(const char *message)
+// {
+//     Client::clientPublish();
+// }
+
+void Client::clientStart()
 {
     ESP_LOGI(TAG, "[APP] Startup..");
     ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes", esp_get_free_heap_size());
