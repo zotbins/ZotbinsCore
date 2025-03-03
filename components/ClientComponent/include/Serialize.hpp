@@ -28,6 +28,8 @@ namespace Client
      *         Make sure to free this after use.
      */
     cJSON *serialize(char* message, const void* img_str, size_t buffer_length);
+    cJSON *serializeInitImage(int photoID, int totalCount);
+    cJSON *serializeSendImage(int photoID, int imageNumber, char* image)
 }
 
 #elif MCU_TYPE == SENSOR

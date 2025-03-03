@@ -9,6 +9,9 @@
         "array": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "vector": "cpp"
-    }
+        "vector": "cpp",
+        "cstdint": "cpp",
+        "compare": "cpp"
+    },
+    "idf.portWin": "COM7"
 }

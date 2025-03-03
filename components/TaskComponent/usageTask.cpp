@@ -10,7 +10,8 @@
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
+//const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_34;
 
 static const char *name = "usageTask";
 static const int priority = 1;
@@ -33,7 +34,8 @@ void IRAM_ATTR breakbeamISR(void *arg)
 
 void UsageTask::start()
 {
-    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &usageHandle, core);
+    //xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &usageHandle, core);
+    taskFunction(this);
 }
 
 void UsageTask::taskFunction(void *task)
@@ -58,14 +60,17 @@ void UsageTask::loop()
     // GPIO pads 34-39 are input-only.
     ESP_LOGI(name, "Hello from Usage Task"); // init
 
+
+
     // Setup GPIO pin sensors
     gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
     while (1)
     {
-        if (!beamBroken)
-        {
-            vTaskSuspend(NULL); // Suspend the task until notified
-        }
+        // if (!beamBroken)
+        // {
+        //     vTaskSuspend(NULL); // Suspend the task until notified
+        // }
+
         // Read in signal from breakbeam
         int detect = gpio_get_level(PIN_BREAKBEAM);
         // If breakbeam is disconnected
@@ -80,8 +85,8 @@ void UsageTask::loop()
             beamBroken = false;
             // xTaskToNotify = xTaskGetHandle("fullnessTask");
             // xTaskNotifyGive(xTaskToNotify);
-            xTaskToNotify = xTaskGetHandle("usageTask");        
-            vTaskResume(xTaskToNotify);
+            // xTaskToNotify = xTaskGetHandle("usageTask");        
+            // vTaskResume(xTaskToNotify);
             // vTaskSuspend(NULL);
         }
         ESP_LOGI(name, "Nothing detected");

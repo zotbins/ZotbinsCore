@@ -21,21 +21,21 @@ extern "C" void app_main(void)
     assert(messageQueue != nullptr);
 
     // Zotbins::CameraTask cameraTask(messageQueue);
-    //  usageTask.start();
+    // //usageTask.start();
     // cameraTask.start();
     // Zotbins::WeightTask weightTask(messageQueue);
     // weightTask.start();
-    Zotbins::FullnessTask fullnessTask(messageQueue);
-    fullnessTask.start();
-    Zotbins::UsageTask usageTask(messageQueue);
-    usageTask.start();
+    // Zotbins::FullnessTask fullnessTask(messageQueue);
+    // fullnessTask.start();
+    // Zotbins::UsageTask usageTask(messageQueue);
+    // usageTask.start();
     // Zotbins::WeightTask weightTask(messageQueue);
 	// weightTask.start();
 	// Zotbins::UsageTask usageTask(messageQueue);
 	// usageTask.start();
 	
-	// Zotbins::CameraTask cameraTask(messageQueue);
-	// cameraTask.start();
+	Zotbins::CameraTask cameraTask(messageQueue);
+	cameraTask.start();
 
 
 	// Zotbins::GpsTask gpsTask(messageQueue);
@@ -54,7 +54,8 @@ extern "C" void app_main(void)
 	Zotbins::WeightTask weightTask(messageQueue);
 	weightTask.start();
 	*/
-
+	printf("Hello1");
     // Zotbins::ServoTask servoTask(messageQueue);
     // servoTask.start();
+	printf("Hello");
 }
