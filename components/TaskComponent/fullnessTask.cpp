@@ -4,9 +4,6 @@
 #include "esp_log.h"
 #include <driver/gpio.h>
 #include "Client.hpp"
-
-#define BIN_HEIGHT 1000
-
 using namespace Zotbins;
 
 const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
@@ -78,8 +75,8 @@ void FullnessTask::loop()
         distance = ultrasonic.getDistance();
         ESP_LOGI(name, "Hello from Fullness Task %f", distance);
         Client::clientPublish("distance", static_cast<void*>(&distance));
-        xTaskToNotify = xTaskGetHandle("weightTask");
-        xTaskNotifyGive(xTaskToNotify);
+        xTaskToNotify = xTaskGetHandle("usageTask");        
+        vTaskResume(xTaskToNotify);
         // ESP_LOGI(name, "Hello from Fullness Task");
         // gpio_set_level(PIN_TRIGGER, 0);
         // gpio_set_level(PIN_ECHO, 0);

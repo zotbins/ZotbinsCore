@@ -4,5 +4,6 @@
     "files.associations": {
         "iostream": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "idf.portWin": "COM20"
 }

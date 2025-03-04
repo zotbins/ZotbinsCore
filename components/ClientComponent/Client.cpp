@@ -124,7 +124,7 @@ static void mqtt_app_start(void)
         .broker = {
             .address = {
                 // TODO: make sure address isn't hardcoded and go back to config files
-                .uri = "mqtts://a1wqr7kl6hd1sm-ats.iot.us-west-1.amazonaws.com:8883",
+                .uri = (const char *)AWS_URL,
             },
             .verification = {
 
@@ -162,7 +162,10 @@ void Client::clientPublish(char* data_type, void* value)
     #elif MCU_TYPE == SENSOR
         if (strcmp(data_type, "distance") == 0){
             payload_distance = true;
-            distance = *(float*)value;
+            distance = *(float*)value; 
+            payload_weight = true;
+            weight = 0;
+
         }else if (strcmp(data_type, "weight") == 0){
             payload_weight = true;
             weight = *(int32_t*)value;

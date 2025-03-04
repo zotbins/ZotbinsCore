@@ -10,7 +10,7 @@
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_34;
 
 static const char *name = "usageTask";
 static const int priority = 1;
