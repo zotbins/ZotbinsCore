@@ -106,7 +106,7 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_VGA, // UXGA, VGA
+    .frame_size = FRAMESIZE_UXGA, // UXGA, VGA
     .jpeg_quality = 12,
     .fb_count = 2,
     .fb_location = CAMERA_FB_IN_PSRAM,
@@ -125,6 +125,20 @@ TaskHandle_t camera_countdown = NULL;
 bool takePicture = false;
 bool allowPicture = true;
 
+int id[100] = {0};
+int getPhotoID(){
+    for(int i = 0; i<100; i++){
+        if(id[i] == 0){
+            id[i] = 1;
+            return i;
+        }
+    }
+    return -1;
+
+
+}
+
+void returnPhotoID(int i){id[i] = 0;}
 
 void vCountdown(void *pvParameters)
 {
@@ -144,19 +158,25 @@ void vCountdown(void *pvParameters)
     // vTaskDelete(camera_countdown);
 }
 
-void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_t output_size)
+size_t buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_t output_size)
 {
     size_t pos = 0;
-    // pos += snprintf(output + pos, output_size - pos, "[");
+
     for (size_t i = 0; i < buffer_length; i++)
     {
         if (i > 0)
         {
-            pos += snprintf(output + pos, output_size - pos, ",");
+            int written = snprintf(output + pos, output_size - pos, ",");
+            if (written < 0 || (size_t)written >= output_size - pos) break;  // Prevent overflow
+            pos += written;
         }
-        pos += snprintf(output + pos, output_size - pos, "%u", buffer[i]);
+
+        int written = snprintf(output + pos, output_size - pos, "%u", buffer[i]);
+        if (written < 0 || (size_t)written >= output_size - pos) break;  // Prevent overflow
+        pos += written;
     }
-    // snprintf(output + pos, output_size - pos, "]");
+
+    return pos;  // Return the actual number of bytes written
 }
 
 // THIS ONLY WORKS IF ONLY Camera Task
@@ -220,9 +240,13 @@ void CameraTask::loop()
     gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
     gpio_set_level(flashPIN, 0);
 
+    Client::clientPublishStr("Wrover Wifi Working");
+
     // Initialize NVS
     ESP_ERROR_CHECK(nvs_flash_init());
- 
+
+    
+    
     // Initialize the camera
     if (ESP_OK != init_camera())
     {
@@ -259,28 +283,51 @@ void CameraTask::loop()
                 vTaskDelay(33 / portTICK_PERIOD_MS);
                 esp_camera_fb_return(fb);
             }
+            
             vTaskDelay(200 / portTICK_PERIOD_MS);
             gpio_set_level(flashPIN, 0);
 
             size_t output_size = 262144; 
             char *output = (char *)malloc(output_size);
-            buffer_to_string(fb->buf, fb->len, output, output_size);
+            size_t actual_length = buffer_to_string(fb->buf, fb->len, output, output_size);
 
-            //size_t b64_len;
-            //char *b64_output = base64_encode(fb->buf, fb->len, &b64_len);
-            //Client::clientPublishStr(b64_output);
+            int n = 10;
+            size_t chunk_size = actual_length / n;
+            size_t remainder = actual_length % n;  // Handle uneven division
+            int currentID = getPhotoID(); 
 
+            for (size_t i = 0; i < n; i++) {
+                size_t start = i * chunk_size;
+                size_t end = start + chunk_size;
+            
+                // Add remainder bytes to the last chunk
+                if (n== 10) {
+                    end += remainder;
+                }
+            
+                size_t len = end - start;  // Actual length of this chunk
+            
+                
+                char *temp_chunk = (char *)malloc(len + 1);
+                if (temp_chunk == NULL) {
+                    ESP_LOGE(TAG, "Memory allocation failed!");
+                    break;
+                }
+            
+                memcpy(temp_chunk, output + start, len);
+                temp_chunk[len] = '\0';  // Null-terminate
+            
+                // Send the chunk
+                ESP_LOGI(TAG, "Sending chunk %zu/%d: %.*s", i + 1, n, (int)len, temp_chunk);
+                //Client::clientPublishStr(temp_chunk);
+            
+                free(temp_chunk);  // Free memory after sending
+            }
+            free(output);
             ESP_LOGE(TAG, "Hello");
-            Client::clientPublishStr(output);
-            //compress_and_publish(fb->buf, fb->len);
-
-
-
-
-
-
-
-            vTaskDelay(4500 / portTICK_PERIOD_MS);
+            returnPhotoID(currentID);
+            
+            vTaskDelay(3000 / portTICK_PERIOD_MS);
         }
         vTaskDelay(33 / portTICK_PERIOD_MS);
     }

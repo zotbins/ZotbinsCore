@@ -16,19 +16,14 @@
 //     // snprintf(output + pos, output_size - pos, "]");
 // }
 
-#if MCU_TYPE == CAMERA
-cJSON *Client::serialize(const void * message, size_t buffer_length)
-{
-    // Use the ESP32's MAC address as a UUID (since it is a UUID)
+uint64_t getMAC(){
     uint8_t mac_addr_arr[6];
     uint64_t mac_addr;
-    if (esp_base_mac_addr_get(mac_addr_arr) != ESP_OK)
-    {
+    if (esp_base_mac_addr_get(mac_addr_arr) != ESP_OK){
         // TODO: Handle mac address being unset properly
         mac_addr = 0x112233445566;
     }
-    else
-    {
+    else{
         mac_addr =
             ((uint64_t)mac_addr_arr[5] << 0) |
             ((uint64_t)mac_addr_arr[4] << 8) |
@@ -37,16 +32,35 @@ cJSON *Client::serialize(const void * message, size_t buffer_length)
             ((uint64_t)mac_addr_arr[1] << 32) |
             ((uint64_t)mac_addr_arr[0] << 40);
     }
-
-    cJSON *root = cJSON_CreateObject();
-    cJSON_AddNumberToObject(root, "bin_id", mac_addr);
-    cJSON_AddNumberToObject(root, "mcu_type", MCU_TYPE);
-    cJSON_AddStringToObject(root, "message", message);
-    // free(output);
-    return root;
+    return mac_addr;
 }
 
-#elif MCU_TYPE == SENSOR
+// #if MCU_TYPE == CAMERA
+// cJSON *Client::serializeInitImage(int photoID, int totalCount)
+// {
+//     // Use the ESP32's MAC address as a UUID (since it is a UUID)
+//     uint64_t mac_addr = getMAC();
+//     cJSON *root = cJSON_CreateObject();
+//     cJSON_AddNumberToObject(root, "bin_id", mac_addr);
+//     cJSON_AddNumberToObject(root, "photoID", photoID);
+//     cJSON_AddNumberToObject(root, "totalCount", totalCount);
+//     return root;
+// }
+
+//#if MCU_TYPE == CAMERA
+// cJSON *Client::serializeSendImage(int photoID, int imageNumber, char* image)
+// {
+//     uint64_t mac_addr = getMAC();
+//     cJSON *root = cJSON_CreateObject();
+//     cJSON_AddNumberToObject(root, "bin_id", mac_addr);
+//     cJSON_AddNumberToObject(root, "photoID", photoID);
+//     cJSON_AddNumberToObject(root, "imageNumber", imageNumber);
+//     cJSON_AddStringToObject(root, "image", image);
+//     return root;
+// }
+
+
+// #if MCU_TYPE == SENSOR
 cJSON *Client::serialize(char* message, float fullness, bool overflow, int32_t weight)
 {
     // Use the ESP32's MAC address as a UUID (since it is a UUID)
@@ -75,8 +89,7 @@ cJSON *Client::serialize(char* message, float fullness, bool overflow, int32_t w
     cJSON_AddNumberToObject(root, "fullness", fullness);
     cJSON_AddNumberToObject(root, "overflow", overflow);
     cJSON_AddNumberToObject(root, "weight", weight);
+    
     return root;
 }
-
-#endif // MCU_TYPE
 
