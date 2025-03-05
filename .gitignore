@@ -15,5 +15,3 @@ components/ClientComponent/aws.url
 components/ClientComponent/ca.crt
 components/ClientComponent/client.crt
 components/ClientComponent/client.key
-sdkconfig*
-!sdkconfig.defaults
