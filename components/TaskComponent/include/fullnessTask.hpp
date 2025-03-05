@@ -78,6 +78,7 @@ namespace Zotbins
          *
          */
         float distance;
+        float fullness;
 
     };
 }

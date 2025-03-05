@@ -12,6 +12,10 @@ Distance::Distance(gpio_num_t trigger, gpio_num_t echo) : sensor{trigger, echo}
     ultrasonic_init(&this->sensor);
 }
 
+void Distance::setMaxDistance(int max_distance_cm) {
+    this->max_distance_cm = max_distance_cm;
+}
+
 float Distance::getDistance()
 {
     float measured_distance = -1; // if return -1 did not read properly, handle accordingly - TODO replace with error type
@@ -23,20 +27,19 @@ float Distance::getDistance()
         switch (res)
         {
         case ESP_ERR_ULTRASONIC_PING:
-            ESP_LOGE(name, "Cannot ping (device is in invalid state)\n");
+            ESP_LOGE(name, "Cannot ping (device is in invalid state)");
             break;
         case ESP_ERR_ULTRASONIC_PING_TIMEOUT:
-            ESP_LOGE(name, "Ping timeout (no device found)\n");
+            ESP_LOGE(name, "Ping timeout (no device found)");
             break;
         case ESP_ERR_ULTRASONIC_ECHO_TIMEOUT:
-            ESP_LOGE(name, "Echo timeout (i.e. distance too big)\n");
+            ESP_LOGE(name, "Echo timeout (i.e. distance too big)");
             break;
         default:
-            ESP_LOGE(name, "%s\n", esp_err_to_name(res));
+            ESP_LOGE(name, "%s", esp_err_to_name(res));
         }
     }
     else {
-        // ESP_LOGI(name, "Distance: %0.04f cm\n", measured_distance * 100);
     }
 
     return measured_distance;

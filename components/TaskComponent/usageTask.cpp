@@ -10,7 +10,15 @@
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_19;
+
+const gpio_config_t PIN_BREAKBEAM_CONFIG = {
+    .pin_bit_mask = 0x00080000,
+    .mode = GPIO_MODE_INPUT,
+    .pull_up_en = GPIO_PULLUP_ENABLE,
+    .pull_down_en = GPIO_PULLDOWN_DISABLE,
+    .intr_type = GPIO_INTR_NEGEDGE
+};
 
 static const char *name = "usageTask";
 static const int priority = 1;
@@ -45,9 +53,9 @@ void UsageTask::taskFunction(void *task)
 
 void UsageTask::setup()
 {
+    ESP_LOGI(name, "Configuring interrupt GPIO");
     gpio_install_isr_service(0);
-    gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
-    gpio_set_intr_type(PIN_BREAKBEAM, GPIO_INTR_NEGEDGE); // Falling edge interrupt
+    ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG));
     gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL);
     gpio_intr_enable(PIN_BREAKBEAM);
 }
@@ -58,18 +66,16 @@ void UsageTask::loop()
     // GPIO pads 34-39 are input-only.
     // ESP_LOGI(name, "Hello from Usage Task"); // init
 
-    // Setup GPIO pin sensors
-    gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
+    ESP_LOGI(name, "Starting usage loop...");
     while (1)
     {
-        if (!beamBroken)
-        {
-            vTaskSuspend(NULL); // Suspend the task until notified
-        }
+        ESP_LOGI(name, "\n--------------------Suspending usage task until beam is broken...-------------------\n"); // no if statement needed, will resume from here and complete one iteration then suspend again.
+        vTaskSuspend(NULL); // Suspend the task until notified
+
         bool DETECTED = !gpio_get_level(PIN_BREAKBEAM); // Read in signal from breakbeam
         if (DETECTED) // If breakbeam is disconnected
         {
-            ESP_LOGI(name, "Detected item.");
+            ESP_LOGI(name, "\n--------------------Detected item.-------------------\n");
             while (DETECTED)
             {
                 DETECTED = !gpio_get_level(PIN_BREAKBEAM);

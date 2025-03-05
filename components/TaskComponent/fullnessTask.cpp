@@ -5,8 +5,6 @@
 #include <driver/gpio.h>
 #include "Client.hpp"
 
-#define BIN_HEIGHT 1000
-
 using namespace Zotbins;
 
 const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
@@ -25,7 +23,8 @@ const gpio_config_t PIN_ECHO_CONFIG = {
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+    .intr_type = GPIO_INTR_DISABLE
+};
 
 static const char *name = "fullnessTask";
 static const int priority = 1;
@@ -57,11 +56,13 @@ void FullnessTask::setup() // could refactor into setup later but there are a lo
 
 float FullnessTask::getFullness(){
     distance = ultrasonic.getDistance();
-    return distance; 
+    fullness = distance / BIN_HEIGHT;
+    return fullness; 
 }
 
 void FullnessTask::loop()
 {
+    ultrasonic.setMaxDistance(BIN_HEIGHT);
 
     ESP_ERROR_CHECK(gpio_config(&PIN_TRIGGER_CONFIG));
     ESP_ERROR_CHECK(gpio_config(&PIN_ECHO_CONFIG));
@@ -73,17 +74,19 @@ void FullnessTask::loop()
 
     while (1)
     {
+        ESP_LOGI(name, "Starting fullness loop...");
 
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+
+        ESP_LOGI(name, "Getting distance...");
         distance = ultrasonic.getDistance();
-        ESP_LOGI(name, "Hello from Fullness Task %f", distance);
-        Client::clientPublish("distance", static_cast<void*>(&distance));
-        xTaskToNotify = xTaskGetHandle("weightTask");
+        ESP_LOGI(name, "Fullness: %f", distance);
+
+        // Client::clientPublish("distance", static_cast<void*>(&distance));
+
+        xTaskToNotify = xTaskGetHandle("weightTask"); // pass off to weight task
         xTaskNotifyGive(xTaskToNotify);
-        // ESP_LOGI(name, "Hello from Fullness Task");
-        // gpio_set_level(PIN_TRIGGER, 0);
-        // gpio_set_level(PIN_ECHO, 0);
-        // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+
     }
     vTaskDelete(NULL);
 }

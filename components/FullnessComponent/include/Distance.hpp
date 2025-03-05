@@ -35,6 +35,11 @@ namespace Fullness
         Distance(gpio_num_t trigger, gpio_num_t echo);
 
         /**
+         * @brief Choose the max distance that the ultrasonic sensor will measure, such as the height of the bin.
+         */        
+        void setMaxDistance(int max_distance_cm);
+
+        /**
          * @brief Returns the distance of the sensor.
          * @return int32_t Distance in millimeters
          */
@@ -42,7 +47,7 @@ namespace Fullness
 
     private:
         const ultrasonic_sensor_t sensor;
-        float max_distance_cm = 100;
+        float max_distance_cm;
     };
 }
 
