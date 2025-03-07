@@ -5,12 +5,12 @@
 #include <driver/gpio.h>
 #include "Client.hpp"
 
-#define BIN_HEIGHT 1000
+// #define BIN_HEIGHT 1000
 
 using namespace Zotbins;
 
 const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
-const gpio_num_t PIN_ECHO = GPIO_NUM_13;
+const gpio_num_t PIN_ECHO = GPIO_NUM_14;
 const float BIN_HEIGHT = 100;
 
 const gpio_config_t PIN_TRIGGER_CONFIG = {
@@ -74,16 +74,16 @@ void FullnessTask::loop()
     while (1)
     {
 
-        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+        // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         distance = ultrasonic.getDistance();
         ESP_LOGI(name, "Hello from Fullness Task %f", distance);
-        Client::clientPublish("distance", static_cast<void*>(&distance));
-        xTaskToNotify = xTaskGetHandle("weightTask");
-        xTaskNotifyGive(xTaskToNotify);
+        // Client::clientPublish("distance", static_cast<void*>(&distance));
+        // xTaskToNotify = xTaskGetHandle("weightTask");
+        // xTaskNotifyGive(xTaskToNotify);
         // ESP_LOGI(name, "Hello from Fullness Task");
         // gpio_set_level(PIN_TRIGGER, 0);
         // gpio_set_level(PIN_ECHO, 0);
         // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
     }
-    vTaskDelete(NULL);
+    // vTaskDelete(NULL);
 }
