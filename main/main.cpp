@@ -15,7 +15,7 @@ constexpr size_t messageQueueSize = 20;
 extern "C" void app_main(void)
 {
 
-    Client::clientStart();
+    // Client::clientStart();
 
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
@@ -23,14 +23,16 @@ extern "C" void app_main(void)
     // Zotbins::CameraTask cameraTask(messageQueue);
     // cameraTask.start();
 
-    Zotbins::FullnessTask fullnessTask(messageQueue);
+    Zotbins::UsageTask usageTask(messageQueue);
+    usageTask.start();
+
+	Zotbins::FullnessTask fullnessTask(messageQueue);
     fullnessTask.start();
 
     // Zotbins::WeightTask weightTask(messageQueue);
     // weightTask.start();
 
-    Zotbins::UsageTask usageTask(messageQueue);
-    usageTask.start();
+	
     // Zotbins::WeightTask weightTask(messageQueue);
 	// weightTask.start();
 	// Zotbins::UsageTask usageTask(messageQueue);

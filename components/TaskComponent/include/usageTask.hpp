@@ -66,7 +66,7 @@ namespace Zotbins
          *
          */
         QueueHandle_t &mMessageQueue;
-        gpio_num_t DETECT_PIN = GPIO_NUM_34;
+        gpio_num_t DETECT_PIN = GPIO_NUM_18;
     };
 }
 

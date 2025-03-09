@@ -192,10 +192,11 @@ void Client::clientPublish(char* data_type, void* value)
 }
 
 
-// void Client::clientPublishStr(const char *message)
-// {
-//     Client::clientPublish();
-// }
+void Client::clientPublishStr(const char *message)
+{
+    ESP_LOGI(TAG, "message: %s", message);
+    publish(test_client, message, strlen(message));  // Use strlen to get the size
+}
 
 void Client::clientStart()
 {
