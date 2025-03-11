@@ -126,23 +126,28 @@ $(function(){initNavTree('weight_task_8hpp_source.html',''); initResizable(true)
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        <span class="keyword">explicit</span> <a class="code hl_function" href="class_zotbins_1_1_weight_task.html#a0e8a35c46fab6a95950b2c7b8266d9cc">WeightTask</a>(QueueHandle_t &amp;messageQueue);</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span></div>
 <div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="class_zotbins_1_1_weight_task.html#a778cdf289a705dba5daec29e325583d8">start</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span> </div>
-<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <span class="keyword">static</span> <span class="keywordtype">void</span> taskFunction(<span class="keywordtype">void</span> *task);</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span></div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="keywordtype">void</span> setup();</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span></div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        <span class="keywordtype">void</span> loop();</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span></div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        QueueHandle_t &amp;mMessageQueue;</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    };</div>
-</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>}</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>        </div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <span class="keywordtype">float</span> getWeight();</div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span> </div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keyword">static</span> <span class="keywordtype">void</span> taskFunction(<span class="keywordtype">void</span> *task);</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keywordtype">void</span> setup();</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        <span class="keywordtype">void</span> loop();</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        QueueHandle_t &amp;mMessageQueue;</div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        </div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordtype">float</span> weight;</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    };</div>
+</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>}</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span> </div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclass_zotbins_1_1_task_html_aac7494327c74bcd8bf14fb00a755b00e"><div class="ttname"><a href="class_zotbins_1_1_task.html#aac7494327c74bcd8bf14fb00a755b00e">Zotbins::Task::Task</a></div><div class="ttdeci">Task(const char *name, const int priority, const uint32_t stackSize)</div><div class="ttdoc">Construct a new Task object. Parameters are needed for FreeRTOS.</div><div class="ttdef"><b>Definition</b> task.hpp:31</div></div>
-<div class="ttc" id="aclass_zotbins_1_1_weight_task_html_a0e8a35c46fab6a95950b2c7b8266d9cc"><div class="ttname"><a href="class_zotbins_1_1_weight_task.html#a0e8a35c46fab6a95950b2c7b8266d9cc">Zotbins::WeightTask::WeightTask</a></div><div class="ttdeci">WeightTask(QueueHandle_t &amp;messageQueue)</div><div class="ttdoc">Construct a new Weight Task object.</div><div class="ttdef"><b>Definition</b> weightTask.cpp:32</div></div>
-<div class="ttc" id="aclass_zotbins_1_1_weight_task_html_a778cdf289a705dba5daec29e325583d8"><div class="ttname"><a href="class_zotbins_1_1_weight_task.html#a778cdf289a705dba5daec29e325583d8">Zotbins::WeightTask::start</a></div><div class="ttdeci">void start() override</div><div class="ttdoc">Start execution of Weight Task.</div><div class="ttdef"><b>Definition</b> weightTask.cpp:37</div></div>
+<div class="ttc" id="aclass_zotbins_1_1_weight_task_html_a0e8a35c46fab6a95950b2c7b8266d9cc"><div class="ttname"><a href="class_zotbins_1_1_weight_task.html#a0e8a35c46fab6a95950b2c7b8266d9cc">Zotbins::WeightTask::WeightTask</a></div><div class="ttdeci">WeightTask(QueueHandle_t &amp;messageQueue)</div><div class="ttdoc">Construct a new Weight Task object.</div><div class="ttdef"><b>Definition</b> weightTask.cpp:33</div></div>
+<div class="ttc" id="aclass_zotbins_1_1_weight_task_html_a778cdf289a705dba5daec29e325583d8"><div class="ttname"><a href="class_zotbins_1_1_weight_task.html#a778cdf289a705dba5daec29e325583d8">Zotbins::WeightTask::start</a></div><div class="ttdeci">void start() override</div><div class="ttdoc">Start execution of Weight Task.</div><div class="ttdef"><b>Definition</b> weightTask.cpp:38</div></div>
 <div class="ttc" id="atask_8hpp_html"><div class="ttname"><a href="task_8hpp.html">task.hpp</a></div><div class="ttdoc">Header file for Task class.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

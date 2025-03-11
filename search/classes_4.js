@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['message_0',['Message',['../struct_zotbins_1_1_message.html',1,'Zotbins']]],
-  ['messagepayload_1',['MessagePayload',['../union_zotbins_1_1_message_payload.html',1,'Zotbins']]]
+  ['hx711_5ft_0',['hx711_t',['../structhx711__t.html',1,'']]]
 ];

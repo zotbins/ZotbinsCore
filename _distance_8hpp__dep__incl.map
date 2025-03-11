@@ -1,8 +1,10 @@
 <map id="Distance.hpp" name="Distance.hpp">
-<area shape="rect" id="Node000001" title="Header file for ultrasonic distance class." alt="" coords="22,5,119,31"/>
+<area shape="rect" id="Node000001" title="Header file for ultrasonic distance class." alt="" coords="73,5,169,31"/>
 <area shape="rect" id="Node000002" href="$_fullness_metric_8cpp.html" title="Helper class for fullness data smoothing in a bin with arbitrary dimensions." alt="" coords="5,153,136,178"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="59,46,49,74,48,104,56,130,66,151,61,153,51,132,43,105,44,73,54,44"/>
-<area shape="rect" id="Node000003" href="$_fullness_metric_8hpp.html" title="Header file for Fullness class for an hcsr04." alt="" coords="57,79,188,105"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="90,42,116,77,112,80,86,45"/>
-<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="107,119,81,154,77,151,103,116"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="112,47,98,80,76,153,71,152,93,78,107,45"/>
+<area shape="rect" id="Node000003" href="$_fullness_metric_8hpp.html" title="Header file for Fullness class for an hcsr04." alt="" coords="108,79,238,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="141,42,167,77,162,80,137,45"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="145,116,90,154,86,150,142,111"/>
+<area shape="rect" id="Node000004" href="$fullness_task_8hpp.html" title="Header file for Fullness Task for Zotbins Core." alt="" coords="160,153,280,178"/>
+<area shape="poly" id="edge4_Node000003_Node000004" title=" " alt="" coords="191,116,214,151,210,154,187,119"/>
 </map>

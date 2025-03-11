@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hx711_5ft_0',['hx711_t',['../structhx711__t.html',1,'']]]
+  ['gpstask_0',['GpsTask',['../class_zotbins_1_1_gps_task.html',1,'Zotbins']]]
 ];
