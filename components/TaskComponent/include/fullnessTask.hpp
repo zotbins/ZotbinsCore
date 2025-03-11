@@ -14,12 +14,14 @@
 #include "freertos/task.h"
 #include "task.hpp"
 
+#include "DistanceBuffer.hpp"
+#include "FullnessMetric.hpp"
+#include "esp_log.h"
+#include <driver/gpio.h>
+
+
 namespace Zotbins
 {
-    /**
-     * @brief Task to measure fullness of the bin by using the distance sensor
-     *
-     */
     class FullnessTask : public Task
     {
     public:
@@ -35,6 +37,7 @@ namespace Zotbins
          */
         void start() override;
 
+        float getFullness();
     private:
         /**
          * @brief Function to be called by FreeRTOS function xTaskCreate().
@@ -63,6 +66,19 @@ namespace Zotbins
          *
          */
         QueueHandle_t &mMessageQueue;
+
+        /**
+         * @brief Distance sensor for measuring bin fullness
+         *
+         */
+        Fullness::Distance ultrasonic;
+        
+        /**
+         * @brief Variable to store distance measurements
+         *
+         */
+        float distance;
+
     };
 }
 

@@ -10,7 +10,7 @@
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
 
 static const char *name = "usageTask";
 static const int priority = 1;
@@ -66,23 +66,22 @@ void UsageTask::loop()
         {
             vTaskSuspend(NULL); // Suspend the task until notified
         }
-        // Read in signal from breakbeam
-        int detect = gpio_get_level(PIN_BREAKBEAM);
-        // If breakbeam is disconnected
-        if (detect == 0)
+        bool DETECTED = !gpio_get_level(PIN_BREAKBEAM); // Read in signal from breakbeam
+        if (DETECTED) // If breakbeam is disconnected
         {
-            while (detect == 0)
+            ESP_LOGI(name, "Detected item.");
+            while (DETECTED)
             {
-                ESP_LOGI(name, "Detecting item");
-                detect = gpio_get_level(PIN_BREAKBEAM);
+                DETECTED = !gpio_get_level(PIN_BREAKBEAM);
             }
-            ESP_LOGI(name, "No longer detected");
+            ESP_LOGI(name, "Item no longer detected.");
             beamBroken = false;
-            xTaskToNotify = xTaskGetHandle("fullnessTask");
-            xTaskNotifyGive(xTaskToNotify);
+            xTaskToNotify = xTaskGetHandle("fullnessTask"); 
+            xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
+
             vTaskSuspend(NULL);
         }
-        ESP_LOGI(name, "Nothing detected");
-        vTaskDelay(10 / portTICK_PERIOD_MS);
+        ESP_LOGI(name, "Ready to detect.");
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }

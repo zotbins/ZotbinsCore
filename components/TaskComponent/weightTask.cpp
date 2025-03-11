@@ -3,21 +3,22 @@
 #include "esp_log.h"
 #include "hx711.h"
 #include "nvs_flash.h" // for storing calibration data
+#include "Client.hpp"
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_DOUT = GPIO_NUM_2;
-const gpio_num_t PIN_PD_SCK = GPIO_NUM_14;
+const gpio_num_t PIN_DOUT = GPIO_NUM_14; // shifted since pcb pins are swapped when you plug directly in
+const gpio_num_t PIN_PD_SCK = GPIO_NUM_15; // shifted for same reason. 15 used by servo, cant use servo on pin 15 simultaneously.
 static TaskHandle_t xTaskToNotify = NULL;
 
-const gpio_config_t PIN_DOUT_CONFIG = {
-    .pin_bit_mask = 0x00000004,
+const gpio_config_t PIN_PD_SCK_CONFIG = {
+    .pin_bit_mask = 0x00008000,
     .mode = GPIO_MODE_OUTPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_ENABLE,
     .intr_type = GPIO_INTR_DISABLE};
 
-const gpio_config_t PIN_PD_SCK_CONFIG = {
+const gpio_config_t PIN_DOUT_CONFIG = {
     .pin_bit_mask = 0x00004000,
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
@@ -51,13 +52,16 @@ void WeightTask::setup()
     // TODO: move all necessary setup variables to members of a weighttask object
 }
 
+float WeightTask::getWeight(){
+    return weight;
+}
+
 void WeightTask::loop()
 {
     ESP_ERROR_CHECK(gpio_config(&PIN_DOUT_CONFIG)); // ensure pins is configured as gpio, especially necessary for pins 12-15 and just in case for other pins
     ESP_ERROR_CHECK(gpio_config(&PIN_PD_SCK_CONFIG));
 
     int32_t weight_raw;
-    float weight;
     int32_t tare_factor;
     int32_t calibration_factor;
     bool ready; // variable storing the status of the weight sensor measurement (measurement ready to be read or not)
@@ -77,10 +81,13 @@ void WeightTask::loop()
 
     /* calibration */
     ESP_ERROR_CHECK(gpio_set_level(wm.pd_sck, 0));
-    hx711_is_ready(&wm, &ready);
-    while (!ready)
-        hx711_read_average(&wm, 10, &tare_factor); // tare the scale during initialization when sensor is ready
+    ready = false;
 
+    while(!ready) {
+        ESP_LOGI(name, "Waiting for hx711...");
+        hx711_is_ready(&wm, &ready); // checks if dout is low
+    }
+    hx711_read_average(&wm, 10, &tare_factor); // tare the scale during initialization when sensor is ready
     calibration_factor = 10000; // callibrate scale to lbs, empirically determined
     /* end of calibration */
 
@@ -186,11 +193,23 @@ void WeightTask::loop()
     while (1)
     {
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
-        gpio_set_level(wm.pd_sck, 0);
-        hx711_is_ready(&wm, &ready);
-        if (ready)
+
+        ESP_ERROR_CHECK(gpio_set_level(wm.pd_sck, 0)); // reset clock pulse
+        ready = false; // reset hx711 ready status
+
+        while(!ready) {
+            ESP_LOGI(name, "Waiting for hx711...");
+            hx711_is_ready(&wm, &ready); // checks if dout is low
+        }
+        if (ready) // if dout is low, ready = !dout, read the weight
         {
-            hx711_read_data(&wm, &weight_raw);
+            hx711_read_average(&wm, 10, &weight_raw); 
+            ESP_LOGI(name, "Raw weight: %ld", weight_raw);
+
+            weight = tare_factor + (-1) * (weight_raw);
+            // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
+            weight = weight / calibration_factor;
+            // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
         }
         else
         {
@@ -201,10 +220,11 @@ void WeightTask::loop()
         // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
         weight = weight / calibration_factor;
         // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
+        Client::clientPublish("weight", static_cast<void*>(&weight));
 
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
-        xTaskToNotify = xTaskGetHandle("usageTask");
+        xTaskToNotify = xTaskGetHandle("usageTask");        
         vTaskResume(xTaskToNotify);
     }
     vTaskDelete(NULL);

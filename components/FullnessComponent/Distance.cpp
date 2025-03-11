@@ -35,8 +35,9 @@ float Distance::getDistance()
             ESP_LOGE(name, "%s\n", esp_err_to_name(res));
         }
     }
-    else
-        ESP_LOGI(name, "Distance: %0.04f cm\n", measured_distance * 100);
+    else {
+        // ESP_LOGI(name, "Distance: %0.04f cm\n", measured_distance * 100);
+    }
 
     return measured_distance;
 }
