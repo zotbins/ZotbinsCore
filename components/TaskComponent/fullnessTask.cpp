@@ -9,7 +9,10 @@
 
 using namespace Zotbins;
 
+// ESP32-CAM is 12, WROVER is 22 
 const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
+
+// ESP32-CAM is 13, WROVER is 23 
 const gpio_num_t PIN_ECHO = GPIO_NUM_23;
 const float BIN_HEIGHT = 100;
 
@@ -77,22 +80,22 @@ void FullnessTask::loop()
     Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
     while (1)
     {
+        ESP_LOGI(name, "Hello from Fullness Task");
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         distance = ultrasonic.getDistance();
-        ESP_LOGI(name, "Hello from Fullness Task %f", distance);
+        ESP_LOGI(name, "Got distance in m: %f", distance);
         
         // TODO: Publish to MQTT broker when done 
-        // Client::clientPublish("distance", static_cast<void*>(&distance));
-        // xTaskToNotify = xTaskGetHandle("weightTask");
-        // xTaskNotifyGive(xTaskToNotify);
+        Client::clientPublish("distance", static_cast<void*>(&distance));
+        xTaskToNotify = xTaskGetHandle("weightTask");
+        xTaskNotifyGive(xTaskToNotify);
         // gpio_set_level(PIN_TRIGGER, 0);
         // gpio_set_level(PIN_ECHO, 0);
         // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
 
         // TODO: remove if no longer needed
-        xTaskToNotify = xTaskGetHandle("usageTask");        
-        vTaskResume(xTaskToNotify);
-
+        // xTaskToNotify = xTaskGetHandle("usageTask");        
+        // vTaskResume(xTaskToNotify);
     }
     vTaskDelete(NULL);
 }

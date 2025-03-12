@@ -9,6 +9,7 @@
 #include <driver/gpio.h>
 #include <iostream>
 #include <stdio.h>
+#include "Serialize.hpp"
 
 constexpr size_t messageQueueSize = 20;
 
@@ -20,18 +21,21 @@ extern "C" void app_main(void)
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);
 
-    Zotbins::CameraTask cameraTask(messageQueue);
-    cameraTask.start();
+	#if MCU_TYPE == CAMERA
+		Zotbins::CameraTask cameraTask(messageQueue);
+		cameraTask.start();
 
-    Zotbins::UsageTask usageTask(messageQueue);
-    usageTask.start();
+	#elif MCU_TYPE == SENSOR
+		Zotbins::UsageTask usageTask(messageQueue);
+		usageTask.start();
 
-	Zotbins::FullnessTask fullnessTask(messageQueue);
-    fullnessTask.start();
+		Zotbins::FullnessTask fullnessTask(messageQueue);
+		fullnessTask.start();
 
-    Zotbins::WeightTask weightTask(messageQueue);
-    weightTask.start();
+		Zotbins::WeightTask weightTask(messageQueue);
+		weightTask.start();
 
+	#endif 
 	
     // Zotbins::WeightTask weightTask(messageQueue);
 	// weightTask.start();

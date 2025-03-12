@@ -7,7 +7,7 @@
 #define SENSOR 1
 #define CAMERA 2
 
-// Set the MCU type here
+// TODO: write a global config file that other files can require to preconfigure code
 #define MCU_TYPE SENSOR  // Change to SENSOR if needed
 
 #if MCU_TYPE == CAMERA
@@ -27,7 +27,7 @@ namespace Client
      * @return cJSON* root of a JSON object containing camera data. 
      *         Make sure to free this after use.
      */
-    cJSON *serialize(char* message, const void* img_str, size_t buffer_length);
+    cJSON *serialize(char* message, char* img_str, size_t buffer_length);
 }
 
 #elif MCU_TYPE == SENSOR
@@ -49,8 +49,7 @@ namespace Client
      * @return cJSON* root of a JSON object containing sensor data. 
      *         Make sure to free this after use.
      */
-    cJSON *serialize(char* message, float fullness, bool overflow, int32_t weight);
-    cJSON *serializeImage(char* message, char* img_str, size_t buffer_length);
+    cJSON *serialize(char* message, float fullness, bool overflow, int32_t weight, int usage);
 }
 
 #endif // MCU_TYPE

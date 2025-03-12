@@ -1,12 +1,14 @@
 {
-    "idf.port": "/dev/tty.usbserial-120",
+    "idf.port": "/dev/tty.usbserial-130",
     "idf.flashType": "UART",
     "files.associations": {
         "iostream": "cpp",
         "typeinfo": "cpp",
         "array": "cpp",
         "string": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "span": "cpp",
+        "cstdint": "cpp"
     },
     "idf.portWin": "COM7"
 }

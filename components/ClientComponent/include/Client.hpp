@@ -7,7 +7,7 @@
 namespace Client
 {
     void clientStart(void);
-    void clientPublish(char* data_type, char* mcu_type,  void* value);
+    void clientPublish(char* data_type, void* value);
     void clientPublish(const void *message, size_t len);
 
     // ONLY pass null terminated strings to this function! It uses strlen!

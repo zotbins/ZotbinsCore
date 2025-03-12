@@ -209,7 +209,7 @@ void CameraTask::loop()
             size_t output_size = 131072; 
             char *output = (char *)malloc(output_size);
             buffer_to_string(fb->buf, fb->len, output, output_size);
-            Client::clientPublish("camera", "CAMERA", output);
+            Client::clientPublish("camera", output);
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }
         vTaskDelay(35 / portTICK_PERIOD_MS);

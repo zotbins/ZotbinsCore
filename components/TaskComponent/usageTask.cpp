@@ -11,6 +11,7 @@
 
 using namespace Zotbins;
 
+// ESP32-CAM is 16, WROVER is 18 
 const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
 
 static const char *name = "usageTask";
@@ -51,6 +52,8 @@ void UsageTask::setup()
     gpio_set_intr_type(PIN_BREAKBEAM, GPIO_INTR_NEGEDGE); // Falling edge interrupt
     gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL);
     gpio_intr_enable(PIN_BREAKBEAM);
+
+    // TODO: make a int tracker that detects how many times usagetask is used
 }
 
 void UsageTask::loop()
@@ -59,15 +62,6 @@ void UsageTask::loop()
     // GPIO pads 34-39 are input-only.
     ESP_LOGI(name, "Hello from Usage Task"); // init
 
-    int32_t example_weight = 75;
-    float distance = 22.5;
-
-    Client::clientPublish("weight", "SENSOR", &example_weight);  
-    Client::clientPublish("distance", "SENSOR", &distance);
-
-    while(1){
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
     // Setup GPIO pin sensors
     gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
     while (1)
@@ -84,7 +78,11 @@ void UsageTask::loop()
             {
                 DETECTED = !gpio_get_level(PIN_BREAKBEAM);
             }
-            ESP_LOGI(name, "Item no longer detected.");
+
+            // TODO: usage for some reason goes to 1 million out of nowhere, needs testing
+            ESP_LOGI(name, "Item no longer detected. Incrementing usage: %i", usage);
+            usage += 1;
+            Client::clientPublish("usage", static_cast<void*>(&usage));
             beamBroken = false;
             xTaskToNotify = xTaskGetHandle("fullnessTask"); 
             xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data

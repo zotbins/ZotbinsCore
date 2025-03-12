@@ -7,8 +7,11 @@
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_DOUT = GPIO_NUM_14; // shifted since pcb pins are swapped when you plug directly in
-const gpio_num_t PIN_PD_SCK = GPIO_NUM_15; // shifted for same reason. 15 used by servo, cant use servo on pin 15 simultaneously.
+// ESP32-CAM is 2, WROVER is 2 
+const gpio_num_t PIN_DOUT = GPIO_NUM_2; // shifted since pcb pins are swapped when you plug directly in
+
+// ESP32-CAM is 14, WROVER is 14 
+const gpio_num_t PIN_PD_SCK = GPIO_NUM_14; // shifted for same reason. 15 used by servo, cant use servo on pin 15 simultaneously.
 static TaskHandle_t xTaskToNotify = NULL;
 
 const gpio_config_t PIN_PD_SCK_CONFIG = {
@@ -59,12 +62,11 @@ float WeightTask::getWeight(){
 void WeightTask::loop()
 {
 
+    // TODO: taring or something in this code block causes all sensors to stop and not work properly
+    // and all other sensors properly resume work when the hx711 sensor is disconnected for some reason
+    // this is very reproducible so we can probably find that the blocking issue is due to 
+    // a taring issue
     
-
-    while(1){
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-    }
-
     ESP_ERROR_CHECK(gpio_config(&PIN_DOUT_CONFIG)); // ensure pins is configured as gpio, especially necessary for pins 12-15 and just in case for other pins
     ESP_ERROR_CHECK(gpio_config(&PIN_PD_SCK_CONFIG));
 
@@ -200,6 +202,7 @@ void WeightTask::loop()
     while (1)
     {
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+        ESP_LOGI(name, "Hello from Weight Task");
 
         ESP_ERROR_CHECK(gpio_set_level(wm.pd_sck, 0)); // reset clock pulse
         ready = false; // reset hx711 ready status
@@ -227,10 +230,9 @@ void WeightTask::loop()
         // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
         weight = weight / calibration_factor;
         // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
-        //Client::clientPublish("weight", static_cast<void*>(&weight));
-
+        Client::clientPublish("weight", static_cast<void*>(&weight));
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-        ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
+        ESP_LOGI(name, "Weighing bin : %f", (weight));
         xTaskToNotify = xTaskGetHandle("usageTask");        
         vTaskResume(xTaskToNotify);
     }

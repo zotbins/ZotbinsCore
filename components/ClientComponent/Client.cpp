@@ -146,56 +146,51 @@ static void mqtt_app_start(void)
 }
 
 // TODO: optimize this into a dictionary or something
-// #ifdef MCU_TYPE == CAMERA
-    // bool payload;
-// #elif MCU_TYPE == SENSOR
-bool payload_distance = false;
-bool payload_weight = false;
 bool payload_camera = false;
 char* imageData;
-float distance;
-int32_t weight;
-// #endif 
+bool payload_distance = false;
+bool payload_weight = false;
+bool payload_usage = false;
+float distance = 0;
+int32_t weight = 0;
+int usage = 0;
 
 // TODO: change temp to include the actual value through variadics
-void Client::clientPublish(char* data_type, char* mcu_type, void* value)
+void Client::clientPublish(char* data_type, void* value)
 {
-    if(strcmp(mcu_type, "CAMERA") == 0){
+    cJSON* data = NULL;
+    #if MCU_TYPE == CAMERA
         if(strcmp(data_type, "camera") == 0){
             payload_camera = true;
             imageData = static_cast<char*>(value); 
         }
-    }
-        // cJSON* data = serialize(message, len);
-    else if (strcmp(mcu_type, "SENSOR") == 0){
-        if (strcmp(data_type, "distance") == 0){
+        if(payload_camera){
+            ESP_LOGI(TAG, "sending camera payload");
+            data = serialize("Camera result", imageData, strlen(imageData));
+        }
+    #elif MCU_TYPE == SENSOR
+        if (strcmp(data_type, "usage") == 0){
+            payload_usage = true;
+            usage = *(int*)value;
+        }else if (strcmp(data_type, "distance") == 0){
             payload_distance = true;
             distance = *(float*)value; 
-            payload_weight = true;
         }else if (strcmp(data_type, "weight") == 0){
             payload_weight = true;
             weight = *(int32_t*)value;
         }
-    }
 
-    cJSON* data; 
-    if (payload_distance && payload_weight){
-        ESP_LOGI(TAG, "sending sensor payload");
-        ESP_LOGI(TAG, "distance = %d, weight = %d", payload_distance, payload_weight);
-        data = serialize("Sensor result", distance, false, weight);
-        payload_distance = false;
-        payload_weight = false;
-        distance = weight = 0;
-    }
-    else if(payload_camera){
-        ESP_LOGI(TAG, "sending camera payload");
-        data = serializeImage("Camera result", imageData, strlen(imageData));
-        payload_camera = false;
-        imageData = NULL;
-    }
-    else{data = NULL;}
+        // only send when both distance and weight payloads are specified
+        ESP_LOGI(TAG, "payload check use = %d, dis = %d, wei = %d", payload_usage, payload_distance, payload_weight);
+        if (payload_usage && payload_distance && payload_weight){
+            ESP_LOGI(TAG, "sending payload");
+            ESP_LOGI(TAG, "uses = %i, distance = %f, weight = %ld", usage, distance, weight);
+            data = serialize("Sensor result", distance, false, weight, usage);            
+        }
+    #endif
 
-    if (data) {
+    // cleanup
+    if (data != NULL) {
         char* json_str = cJSON_PrintUnformatted(data);  // Convert cJSON object to string
         if (json_str) {
             ESP_LOGI(TAG, "json string: %s", json_str);
@@ -203,6 +198,16 @@ void Client::clientPublish(char* data_type, char* mcu_type, void* value)
             free(json_str);  // Free the allocated string after publishing
         }
         cJSON_Delete(data);  // Free cJSON object
+        #if MCU_TYPE == CAMERA
+            payload_camera = false;
+            imageData = NULL;
+        #elif MCU_TYPE == SENSOR
+            payload_usage = false;
+            payload_distance = false;
+            payload_weight = false;
+            distance = 0;
+            weight = 0;
+        #endif
     }
 }
 
@@ -236,6 +241,14 @@ void Client::clientStart()
      * examples/protocols/README.md for more information about this function.
      */
     ESP_ERROR_CHECK(example_connect());
+
+    // TODO: when you disconnect make sure w reconnect socket if hostname fails
+    /*
+        E (2957998) esp-tls: couldn't get hostname for :a1wqr7kl6hd1sm-ats.iot.us-west-1.amazonaws.com: getaddrinfo() returns 202, addrinfo=0x0
+        E (2957998) esp-tls: Failed to open new connection
+        E (2957998) transport_base: Failed to open a new connection
+        E (2958008) mqtt_client: Error transport connect
+    */
 
     mqtt_app_start();
 }
