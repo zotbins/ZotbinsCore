@@ -106,86 +106,29 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_UXGA, // UXGA, VGA
+    .frame_size = FRAMESIZE_VGA, // UXGA, VGA
     .jpeg_quality = 12,
-    .fb_count = 2,
+    .fb_count = 20,
     .fb_location = CAMERA_FB_IN_PSRAM,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
 };
 
-// Pin Declarations
 const gpio_num_t flashPIN = GPIO_NUM_4;
-const gpio_num_t inputPIN = GPIO_NUM_14;
-const gpio_num_t ledPin1 = GPIO_NUM_1;
-const gpio_num_t ledPin2 = GPIO_NUM_3;
 TaskHandle_t camera_capture = NULL;
 TaskHandle_t camera_countdown = NULL;
 
-// Possible to get 3 LEDS if you solder an AND gate
-bool takePicture = false;
-bool allowPicture = true;
-
-int id[100] = {0};
-int getPhotoID(){
-    for(int i = 0; i<100; i++){
-        if(id[i] == 0){
-            id[i] = 1;
-            return i;
-        }
-    }
-    return -1;
-
-
-}
-
-void returnPhotoID(int i){id[i] = 0;}
-
-void vCountdown(void *pvParameters)
-{
-    // The LED System
-    // takePicture = false;
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    gpio_set_level(ledPin1, 1);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    gpio_set_level(ledPin2, 1);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    // takePicture = true;
-    xTaskNotifyGive(camera_capture); // capture camera parallel task
-
-    gpio_set_level(flashPIN, 1);
-    vTaskDelay(250 / portTICK_PERIOD_MS);
-    gpio_set_level(flashPIN, 0);
-    // vTaskDelete(camera_countdown);
-}
-
-size_t buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_t output_size)
+void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_t output_size)
 {
     size_t pos = 0;
-
     for (size_t i = 0; i < buffer_length; i++)
     {
         if (i > 0)
         {
-            int written = snprintf(output + pos, output_size - pos, ",");
-            if (written < 0 || (size_t)written >= output_size - pos) break;  // Prevent overflow
-            pos += written;
+            pos += snprintf(output + pos, output_size - pos, ",");
         }
-
-        int written = snprintf(output + pos, output_size - pos, "%u", buffer[i]);
-        if (written < 0 || (size_t)written >= output_size - pos) break;  // Prevent overflow
-        pos += written;
+        pos += snprintf(output + pos, output_size - pos, "%u", buffer[i]);
     }
-
-    return pos;  // Return the actual number of bytes written
 }
-
-// THIS ONLY WORKS IF ONLY Camera Task
-void startSleep()
-{
-    esp_sleep_enable_ext0_wakeup(inputPIN, 1);
-    esp_light_sleep_start();
-}
-
 
 static esp_err_t init_camera(void)
 {
@@ -223,46 +166,23 @@ void CameraTask::setup()
 
 void CameraTask::loop()
 {
-
-    //  xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
     gpio_reset_pin(flashPIN);
     gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
     gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
     gpio_set_level(flashPIN, 0);
 
-    gpio_reset_pin(inputPIN);
-    gpio_set_direction(inputPIN, GPIO_MODE_INPUT);
-    gpio_set_pull_mode(inputPIN, GPIO_PULLDOWN_ONLY);
-    gpio_set_level(inputPIN, 0);
-
-    gpio_reset_pin(GPIO_NUM_0);
-    gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
-    gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
-    gpio_set_level(flashPIN, 0);
-
-    Client::clientPublishStr("Wrover Wifi Working");
-
     // Initialize NVS
     ESP_ERROR_CHECK(nvs_flash_init());
-
-    
-    
+ 
     // Initialize the camera
-    if (ESP_OK != init_camera())
-    {
-        
-        // Client::clientPublishStr("Camera Failed");
-    }
-
-    // Client::clientPublishStr("Started Camera");
+    if (ESP_OK != init_camera()){Client::clientPublishStr("Camera Failed");}
+    else{Client::clientPublishStr("Started Camera");}
 
     sensor_t *s = esp_camera_sensor_get();
-    if (s != NULL)
-    {
+    if (s != NULL){
         s->set_sharpness(s, 1);
         s->set_gain_ctrl(s, 1);
         s->set_whitebal(s, 1);
-        // Client::clientPublishStr("Adjusted Camera");
     }
 
     camera_fb_t *fb = NULL;
@@ -283,52 +203,15 @@ void CameraTask::loop()
                 vTaskDelay(33 / portTICK_PERIOD_MS);
                 esp_camera_fb_return(fb);
             }
-            
             vTaskDelay(200 / portTICK_PERIOD_MS);
             gpio_set_level(flashPIN, 0);
 
-            size_t output_size = 262144; 
+            size_t output_size = 131072; 
             char *output = (char *)malloc(output_size);
-            size_t actual_length = buffer_to_string(fb->buf, fb->len, output, output_size);
-
-            int n = 10;
-            size_t chunk_size = actual_length / n;
-            size_t remainder = actual_length % n;  // Handle uneven division
-            int currentID = getPhotoID(); 
-
-            for (size_t i = 0; i < n; i++) {
-                size_t start = i * chunk_size;
-                size_t end = start + chunk_size;
-            
-                // Add remainder bytes to the last chunk
-                if (n== 10) {
-                    end += remainder;
-                }
-            
-                size_t len = end - start;  // Actual length of this chunk
-            
-                
-                char *temp_chunk = (char *)malloc(len + 1);
-                if (temp_chunk == NULL) {
-                    ESP_LOGE(TAG, "Memory allocation failed!");
-                    break;
-                }
-            
-                memcpy(temp_chunk, output + start, len);
-                temp_chunk[len] = '\0';  // Null-terminate
-            
-                // Send the chunk
-                ESP_LOGI(TAG, "Sending chunk %zu/%d: %.*s", i + 1, n, (int)len, temp_chunk);
-                //Client::clientPublishStr(temp_chunk);
-            
-                free(temp_chunk);  // Free memory after sending
-            }
-            free(output);
-            ESP_LOGE(TAG, "Hello");
-            returnPhotoID(currentID);
-            
-            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            buffer_to_string(fb->buf, fb->len, output, output_size);
+            Client::clientPublish("camera", "CAMERA", output);
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
         }
-        vTaskDelay(33 / portTICK_PERIOD_MS);
+        vTaskDelay(35 / portTICK_PERIOD_MS);
     }
 }

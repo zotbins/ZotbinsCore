@@ -58,6 +58,13 @@ float WeightTask::getWeight(){
 
 void WeightTask::loop()
 {
+
+    
+
+    while(1){
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+    }
+
     ESP_ERROR_CHECK(gpio_config(&PIN_DOUT_CONFIG)); // ensure pins is configured as gpio, especially necessary for pins 12-15 and just in case for other pins
     ESP_ERROR_CHECK(gpio_config(&PIN_PD_SCK_CONFIG));
 

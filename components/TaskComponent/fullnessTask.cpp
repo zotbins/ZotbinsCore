@@ -62,7 +62,6 @@ float FullnessTask::getFullness(){
 
 void FullnessTask::loop()
 {
-
     ESP_ERROR_CHECK(gpio_config(&PIN_TRIGGER_CONFIG));
     ESP_ERROR_CHECK(gpio_config(&PIN_ECHO_CONFIG));
 
@@ -76,7 +75,6 @@ void FullnessTask::loop()
     // TODO: this is the bad thing, if not inited it will not allow getDistance
     // find a way to initialize this via constructor
     Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
-
     while (1)
     {
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);

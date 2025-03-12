@@ -28,8 +28,6 @@ namespace Client
      *         Make sure to free this after use.
      */
     cJSON *serialize(char* message, const void* img_str, size_t buffer_length);
-    cJSON *serializeInitImage(int photoID, int totalCount);
-    cJSON *serializeSendImage(int photoID, int imageNumber, char* image)
 }
 
 #elif MCU_TYPE == SENSOR
@@ -52,6 +50,7 @@ namespace Client
      *         Make sure to free this after use.
      */
     cJSON *serialize(char* message, float fullness, bool overflow, int32_t weight);
+    cJSON *serializeImage(char* message, char* img_str, size_t buffer_length);
 }
 
 #endif // MCU_TYPE

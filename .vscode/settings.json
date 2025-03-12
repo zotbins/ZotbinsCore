@@ -3,7 +3,10 @@
     "idf.flashType": "UART",
     "files.associations": {
         "iostream": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "array": "cpp",
+        "string": "cpp",
+        "string_view": "cpp"
     },
-    "idf.portWin": "COM20"
+    "idf.portWin": "COM7"
 }

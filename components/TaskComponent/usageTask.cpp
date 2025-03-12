@@ -7,6 +7,7 @@
 #include <ets_sys.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include "Client.hpp"
 
 using namespace Zotbins;
 
@@ -58,6 +59,15 @@ void UsageTask::loop()
     // GPIO pads 34-39 are input-only.
     ESP_LOGI(name, "Hello from Usage Task"); // init
 
+    int32_t example_weight = 75;
+    float distance = 22.5;
+
+    Client::clientPublish("weight", "SENSOR", &example_weight);  
+    Client::clientPublish("distance", "SENSOR", &distance);
+
+    while(1){
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
     // Setup GPIO pin sensors
     gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
     while (1)
@@ -78,7 +88,7 @@ void UsageTask::loop()
             beamBroken = false;
             xTaskToNotify = xTaskGetHandle("fullnessTask"); 
             xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
-
+            ESP_LOGI(name, "Notified Fullness Task");
             vTaskSuspend(NULL);
         }
         ESP_LOGI(name, "Ready to detect.");

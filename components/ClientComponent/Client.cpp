@@ -35,7 +35,8 @@ static const char *TAG = "mqtts_example";
 static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
     int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
-    ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
+    //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
+    //ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
 }
 
 /*
@@ -148,46 +149,60 @@ static void mqtt_app_start(void)
 // #ifdef MCU_TYPE == CAMERA
     // bool payload;
 // #elif MCU_TYPE == SENSOR
-    bool payload_distance = false;
-    bool payload_weight = false;
-    float distance;
-    int32_t weight;
+bool payload_distance = false;
+bool payload_weight = false;
+bool payload_camera = false;
+char* imageData;
+float distance;
+int32_t weight;
 // #endif 
 
 // TODO: change temp to include the actual value through variadics
-void Client::clientPublish(char* data_type, void* value)
+void Client::clientPublish(char* data_type, char* mcu_type, void* value)
 {
-    #if MCU_TYPE == CAMERA
+    if(strcmp(mcu_type, "CAMERA") == 0){
+        if(strcmp(data_type, "camera") == 0){
+            payload_camera = true;
+            imageData = static_cast<char*>(value); 
+        }
+    }
         // cJSON* data = serialize(message, len);
-    #elif MCU_TYPE == SENSOR
+    else if (strcmp(mcu_type, "SENSOR") == 0){
         if (strcmp(data_type, "distance") == 0){
             payload_distance = true;
             distance = *(float*)value; 
             payload_weight = true;
-            weight = 0;
-
         }else if (strcmp(data_type, "weight") == 0){
             payload_weight = true;
             weight = *(int32_t*)value;
         }
-    #endif
+    }
 
-    // only send when both distance and weight payloads are specified
+    cJSON* data; 
     if (payload_distance && payload_weight){
-        ESP_LOGI(TAG, "sending payload");
+        ESP_LOGI(TAG, "sending sensor payload");
         ESP_LOGI(TAG, "distance = %d, weight = %d", payload_distance, payload_weight);
-        cJSON* data = serialize("Sensor result", distance, false, weight);
-        if (data) {
-            char* json_str = cJSON_PrintUnformatted(data);  // Convert cJSON object to string
-            if (json_str) {
-                ESP_LOGI(TAG, "json string: %s", json_str);
-                publish(test_client, json_str, strlen(json_str));  // Use strlen to get the size
-                free(json_str);  // Free the allocated string after publishing
-            }
-            cJSON_Delete(data);  // Free cJSON object
-        }
+        data = serialize("Sensor result", distance, false, weight);
         payload_distance = false;
         payload_weight = false;
+        distance = weight = 0;
+    }
+    else if(payload_camera){
+        ESP_LOGI(TAG, "sending camera payload");
+        data = serializeImage("Camera result", imageData, strlen(imageData));
+        payload_camera = false;
+        imageData = NULL;
+    }
+    else{data = NULL;}
+
+    if (data) {
+        char* json_str = cJSON_PrintUnformatted(data);  // Convert cJSON object to string
+        if (json_str) {
+            ESP_LOGI(TAG, "json string: %s", json_str);
+            publish(test_client, json_str, strlen(json_str));  // Use strlen to get the size
+            free(json_str);  // Free the allocated string after publishing
+        }
+        cJSON_Delete(data);  // Free cJSON object
     }
 }
 
