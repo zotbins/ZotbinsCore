@@ -26,43 +26,16 @@ extern "C" void app_main(void)
 		cameraTask.start();
 
 	#elif MCU_TYPE == SENSOR
-		Zotbins::UsageTask usageTask(messageQueue);
-		usageTask.start();
+
+		// order matters, weight > fullness > usage
+		Zotbins::WeightTask weightTask(messageQueue);
+		weightTask.start();
 
 		Zotbins::FullnessTask fullnessTask(messageQueue);
 		fullnessTask.start();
 
-		Zotbins::WeightTask weightTask(messageQueue);
-		weightTask.start();
+		Zotbins::UsageTask usageTask(messageQueue);
+		usageTask.start();
 
-	#endif 
-	
-    // Zotbins::WeightTask weightTask(messageQueue);
-	// weightTask.start();
-	// Zotbins::UsageTask usageTask(messageQueue);
-	// usageTask.start();
-	
-	// Zotbins::CameraTask cameraTask(messageQueue);
-	// cameraTask.start();
-
-
-	// Zotbins::GpsTask gpsTask(messageQueue);
-	// gpsTask.start();
-
-	/*
-	Zotbins::UsageTask usageTask(messageQueue);
-	usageTask.start();
-
-	Zotbins::FullnessTask fullnessTask(messageQueue);
-	fullnessTask.start();
-
-  	Zotbins::ServoTask servoTask(messageQueue);
-  	servoTask.start();
-
-	Zotbins::WeightTask weightTask(messageQueue);
-	weightTask.start();
-	*/
-
-    // Zotbins::ServoTask servoTask(messageQueue);
-    // servoTask.start();
+	#endif     
 }

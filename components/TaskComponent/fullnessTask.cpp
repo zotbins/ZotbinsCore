@@ -89,9 +89,9 @@ void FullnessTask::loop()
         Client::clientPublish("distance", static_cast<void*>(&distance));
         xTaskToNotify = xTaskGetHandle("weightTask");
         xTaskNotifyGive(xTaskToNotify);
-        // gpio_set_level(PIN_TRIGGER, 0);
-        // gpio_set_level(PIN_ECHO, 0);
-        // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+        gpio_set_level(PIN_TRIGGER, 0);
+        gpio_set_level(PIN_ECHO, 0);
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
 
         // TODO: remove if no longer needed
         // xTaskToNotify = xTaskGetHandle("usageTask");        

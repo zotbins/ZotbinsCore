@@ -8,21 +8,21 @@
 using namespace Zotbins;
 
 // ESP32-CAM is 2, WROVER is 2 
-const gpio_num_t PIN_DOUT = GPIO_NUM_2; // shifted since pcb pins are swapped when you plug directly in
+const gpio_num_t PIN_DOUT = GPIO_NUM_12; // shifted since pcb pins are swapped when you plug directly in
 
 // ESP32-CAM is 14, WROVER is 14 
 const gpio_num_t PIN_PD_SCK = GPIO_NUM_14; // shifted for same reason. 15 used by servo, cant use servo on pin 15 simultaneously.
 static TaskHandle_t xTaskToNotify = NULL;
 
 const gpio_config_t PIN_PD_SCK_CONFIG = {
-    .pin_bit_mask = 0x00008000,
+    .pin_bit_mask = (1ULL << PIN_PD_SCK),
     .mode = GPIO_MODE_OUTPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_ENABLE,
     .intr_type = GPIO_INTR_DISABLE};
 
 const gpio_config_t PIN_DOUT_CONFIG = {
-    .pin_bit_mask = 0x00004000,
+    .pin_bit_mask = (1ULL << PIN_DOUT),
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
@@ -50,40 +50,35 @@ void WeightTask::taskFunction(void *task)
     weightTask->loop();
 }
 
+
+int32_t weight_raw;
+int32_t tare_factor;
+int32_t calibration_factor;
+bool ready; // variable storing the status of the weight sensor measurement (measurement ready to be read or not)
+bool tare_factor_initialized;
+bool calibration_factor_initialized; // factor to scale raw weight reading to grams
+
+/* sensor initialization */
+hx711_gain_t gain_setting = HX711_GAIN_A_128;
+
+// TODO: make a warning that errors if your DOUT and SCK are misaligned on bitmask
+// to actual pin number
+hx711_t wm = {// construct weight object that specifies the pins to use and the gain of the hx711 amplifier
+                .dout = PIN_DOUT,
+                .pd_sck = PIN_PD_SCK,
+                .gain = gain_setting};
+
 void WeightTask::setup()
 {
     // TODO: move all necessary setup variables to members of a weighttask object
-}
-
-float WeightTask::getWeight(){
-    return weight;
-}
-
-void WeightTask::loop()
-{
 
     // TODO: taring or something in this code block causes all sensors to stop and not work properly
     // and all other sensors properly resume work when the hx711 sensor is disconnected for some reason
     // this is very reproducible so we can probably find that the blocking issue is due to 
     // a taring issue
-    
+
     ESP_ERROR_CHECK(gpio_config(&PIN_DOUT_CONFIG)); // ensure pins is configured as gpio, especially necessary for pins 12-15 and just in case for other pins
     ESP_ERROR_CHECK(gpio_config(&PIN_PD_SCK_CONFIG));
-
-    int32_t weight_raw;
-    int32_t tare_factor;
-    int32_t calibration_factor;
-    bool ready; // variable storing the status of the weight sensor measurement (measurement ready to be read or not)
-    bool tare_factor_initialized;
-    bool calibration_factor_initialized; // factor to scale raw weight reading to grams
-
-    /* sensor initialization */
-    hx711_gain_t gain_setting = HX711_GAIN_A_128;
-
-    hx711_t wm = {// construct weight object that specifies the pins to use and the gain of the hx711 amplifier
-                  .dout = PIN_DOUT,
-                  .pd_sck = PIN_PD_SCK,
-                  .gain = gain_setting};
 
     hx711_init(&wm);
     /* end of initialization */
@@ -98,6 +93,21 @@ void WeightTask::loop()
     }
     hx711_read_average(&wm, 10, &tare_factor); // tare the scale during initialization when sensor is ready
     calibration_factor = 10000; // callibrate scale to lbs, empirically determined
+}
+
+void sign_extend(int32_t *raw_weight) {
+    if (*raw_weight & 0x800000) { // If the 24th bit is set (negative number)
+        *raw_weight |= 0xFF000000; // Sign-extend to 32 bits
+    }
+}
+
+
+float WeightTask::getWeight(){
+    return weight;
+}
+
+void WeightTask::loop()
+{
     /* end of calibration */
 
     // ALTERNATIVE TO TARE ON INITIALIZATION: STORE TARE VALUE IN FLASH SO IT DOESN'T RESET ON STARTUP
@@ -213,7 +223,8 @@ void WeightTask::loop()
         }
         if (ready) // if dout is low, ready = !dout, read the weight
         {
-            hx711_read_average(&wm, 10, &weight_raw); 
+            hx711_read_average(&wm, 10, &weight_raw);
+            sign_extend(&weight_raw);
             ESP_LOGI(name, "Raw weight: %ld", weight_raw);
 
             weight = tare_factor + (-1) * (weight_raw);

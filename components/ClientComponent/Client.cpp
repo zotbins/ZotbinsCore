@@ -34,7 +34,11 @@ static const char *TAG = "mqtts_example";
 
 static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
-    int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
+    #if MCU_TYPE == SENSOR
+        int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
+    #elif MCU_TYPE == CAMERA
+        int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
+    #endif
     //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
     //ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
 }

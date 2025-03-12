@@ -175,8 +175,13 @@ void CameraTask::loop()
     ESP_ERROR_CHECK(nvs_flash_init());
  
     // Initialize the camera
-    if (ESP_OK != init_camera()){Client::clientPublishStr("Camera Failed");}
-    else{Client::clientPublishStr("Started Camera");}
+    if (ESP_OK != init_camera()){
+        // Client::clientPublishStr("Camera Failed");
+        ESP_LOGE(TAG, "Camera Failed");
+    }else{
+        // Client::clientPublishStr("Started Camera");
+        ESP_LOGI(TAG, "Camera started");
+    }
 
     sensor_t *s = esp_camera_sensor_get();
     if (s != NULL){
