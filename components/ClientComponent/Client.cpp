@@ -162,11 +162,13 @@ int usage = 0;
 // TODO: change temp to include the actual value through variadics
 void Client::clientPublish(char* data_type, void* value)
 {
+    ESP_LOGI(TAG, "clientpubbed");
     cJSON* data = NULL;
     #if MCU_TYPE == CAMERA
         if(strcmp(data_type, "camera") == 0){
             payload_camera = true;
             imageData = static_cast<char*>(value); 
+            ESP_LOGI(TAG, "image data");
         }
         if(payload_camera){
             ESP_LOGI(TAG, "sending camera payload");

@@ -83,7 +83,7 @@ void UsageTask::loop()
             // TODO: usage for some reason goes to 1 million out of nowhere, needs testing
             ESP_LOGI(name, "Item no longer detected. Incrementing usage: %i", usage);
             usage += 1;
-            Client::clientPublish("usage", static_cast<void*>(&usage));
+            // Client::clientPublish("usage", static_cast<void*>(&usage));
             beamBroken = false;
 
             #if MCU_TYPE == CAMERA

@@ -108,10 +108,10 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_VGA, // UXGA, VGA
-    .jpeg_quality = 12,
-    .fb_count = 20,
-    .fb_location = CAMERA_FB_IN_PSRAM,
+    .frame_size = FRAMESIZE_QQVGA, // UXGA, VGA
+    .jpeg_quality = 64,
+    .fb_count = 1,
+    .fb_location = CAMERA_FB_IN_DRAM,// CAMERA_FB_IN_PSRAM,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
 };
 
@@ -124,6 +124,7 @@ void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_
     size_t pos = 0;
     for (size_t i = 0; i < buffer_length; i++)
     {
+        vTaskDelay(2 / portTICK_PERIOD_MS);
         if (i > 0)
         {
             pos += snprintf(output + pos, output_size - pos, ",");
@@ -153,7 +154,7 @@ CameraTask::CameraTask(QueueHandle_t &messageQueue)
 void CameraTask::start()
 {
     // xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
-    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, 1);
 }
 
 void CameraTask::taskFunction(void *task)
@@ -186,7 +187,7 @@ void CameraTask::loop()
         ESP_LOGE(TAG, "Camera Failed");
     }else{
         // Client::clientPublishStr("Started Camera");
-        ESP_LOGI(TAG, "Camera started");
+        ESP_LOGI(TAG, "Camera started, getting sensor");
     }
 
     sensor_t *s = esp_camera_sensor_get();
@@ -196,6 +197,8 @@ void CameraTask::loop()
         s->set_whitebal(s, 1);
     }
 
+    ESP_LOGI(TAG, "Camera sensor gotted, loop start");
+
     camera_fb_t *fb = NULL;
     int cnt = 0;
     while (1)
@@ -203,28 +206,32 @@ void CameraTask::loop()
         cnt++;
         if (cnt == 30)
         {
-            for (int i = 0; i < 30; i++)
-            {
-                if (i == 29)
-                {
-                    gpio_set_level(flashPIN, 1);
-                }
-
-                fb = esp_camera_fb_get();
-                vTaskDelay(33 / portTICK_PERIOD_MS);
+            // for (int i = 0; i < 30; i++)
+            // {
+            //     if (i == 29)
+            //     {
+            //         gpio_set_level(flashPIN, 1);
+            //     }
+            //     ESP_LOGI(TAG, "Camera fb get");
+            //     fb = esp_camera_fb_get();
+            //     vTaskDelay(33 / portTICK_PERIOD_MS);
                 esp_camera_fb_return(fb);
-            }
+            // }
+
+            ESP_LOGI(TAG, "Camera fb get done, sending");
             vTaskDelay(200 / portTICK_PERIOD_MS);
             gpio_set_level(flashPIN, 0);
 
-            size_t output_size = 131072; 
+            size_t output_size = 6000; 
             char *output = (char *)malloc(output_size);
             buffer_to_string(fb->buf, fb->len, output, output_size);
             Client::clientPublish("camera", output);
+            ESP_LOGI(TAG, "Camera published");
             vTaskDelay(1000 / portTICK_PERIOD_MS);
             
-            // xTaskToNotify = xTaskGetHandle("servoTask");
-            // xTaskNotifyGive(xTaskToNotify);
+            xTaskToNotify = xTaskGetHandle("usageTask"); // servoTask");
+            xTaskNotifyGive(xTaskToNotify);
+            break;
         }
         vTaskDelay(35 / portTICK_PERIOD_MS);
     }

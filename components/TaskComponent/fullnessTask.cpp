@@ -10,7 +10,7 @@
 using namespace Zotbins;
 
 // ESP32-CAM is 12, WROVER is 22 
-const gpio_num_t PIN_TRIGGER = GPIO_NUM_2;
+const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
 
 // ESP32-CAM is 13, WROVER is 23 
 const gpio_num_t PIN_ECHO = GPIO_NUM_13;
@@ -86,7 +86,7 @@ void FullnessTask::loop()
         ESP_LOGI(name, "Got distance in m: %f", distance);
         
         // TODO: Publish to MQTT broker when done 
-        Client::clientPublish("distance", static_cast<void*>(&distance));
+        // Client::clientPublish("distance", static_cast<void*>(&distance));
         // xTaskToNotify = xTaskGetHandle("weightTask");
         // xTaskNotifyGive(xTaskToNotify);
         // gpio_set_level(PIN_TRIGGER, 0);
