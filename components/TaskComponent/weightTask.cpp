@@ -87,8 +87,8 @@ void WeightTask::setup()
     ESP_ERROR_CHECK(gpio_set_level(wm.pd_sck, 0));
     ready = false;
 
+    ESP_LOGI(name, "Waiting for hx711...");
     while(!ready) {
-        ESP_LOGI(name, "Waiting for hx711...");
         hx711_is_ready(&wm, &ready); // checks if dout is low
     }
     hx711_read_average(&wm, 10, &tare_factor); // tare the scale during initialization when sensor is ready
@@ -217,8 +217,8 @@ void WeightTask::loop()
         ESP_ERROR_CHECK(gpio_set_level(wm.pd_sck, 0)); // reset clock pulse
         ready = false; // reset hx711 ready status
 
+        ESP_LOGI(name, "Waiting for hx711...");
         while(!ready) {
-            ESP_LOGI(name, "Waiting for hx711...");
             hx711_is_ready(&wm, &ready); // checks if dout is low
         }
         if (ready) // if dout is low, ready = !dout, read the weight
