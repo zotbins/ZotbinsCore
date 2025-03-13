@@ -186,7 +186,7 @@ void Client::clientPublish(char* data_type, void* value)
 
         // only send when both distance and weight payloads are specified
         ESP_LOGI(TAG, "payload check use = %d, dis = %d, wei = %d", payload_usage, payload_distance, payload_weight);
-        if (payload_usage && payload_distance && payload_weight){
+        if (payload_usage && payload_distance ){ // && payload_weight){
             ESP_LOGI(TAG, "sending payload");
             ESP_LOGI(TAG, "uses = %i, distance = %f, weight = %ld", usage, distance, weight);
             data = serialize("Sensor result", distance, false, weight, usage);            

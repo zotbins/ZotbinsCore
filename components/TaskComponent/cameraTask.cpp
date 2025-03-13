@@ -75,6 +75,8 @@ static const char *_STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %
 
 static EventGroupHandle_t s_wifi_event_group;
 static esp_ip4_addr_t s_ip_addr;
+static TaskHandle_t xTaskToNotify = NULL;
+static const int core = 1;
 
 #define WIFI_CONNECTED_BIT BIT0
 
@@ -150,6 +152,7 @@ CameraTask::CameraTask(QueueHandle_t &messageQueue)
 
 void CameraTask::start()
 {
+    // xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
     xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
 }
 
@@ -166,6 +169,9 @@ void CameraTask::setup()
 
 void CameraTask::loop()
 {
+    ESP_LOGI(TAG, "Hello from Camera Task");
+    ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+
     gpio_reset_pin(flashPIN);
     gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
     gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
@@ -216,7 +222,11 @@ void CameraTask::loop()
             buffer_to_string(fb->buf, fb->len, output, output_size);
             Client::clientPublish("camera", output);
             vTaskDelay(1000 / portTICK_PERIOD_MS);
+            
+            // xTaskToNotify = xTaskGetHandle("servoTask");
+            // xTaskNotifyGive(xTaskToNotify);
         }
         vTaskDelay(35 / portTICK_PERIOD_MS);
     }
+    vTaskDelete(NULL);
 }

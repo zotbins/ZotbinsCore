@@ -8,19 +8,20 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include "Client.hpp"
+#include "Serialize.hpp"
 
 using namespace Zotbins;
 
 // ESP32-CAM is 16, WROVER is 18 
-const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
 
 static const char *name = "usageTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 static TaskHandle_t usageHandle = NULL;
-static const int core = 1;
 static bool beamBroken = false;
 static TaskHandle_t xTaskToNotify = NULL;
+static const int core = 1;
 
 UsageTask::UsageTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -84,9 +85,16 @@ void UsageTask::loop()
             usage += 1;
             Client::clientPublish("usage", static_cast<void*>(&usage));
             beamBroken = false;
-            xTaskToNotify = xTaskGetHandle("fullnessTask"); 
-            xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
-            ESP_LOGI(name, "Notified Fullness Task");
+
+            #if MCU_TYPE == CAMERA
+                xTaskToNotify = xTaskGetHandle("cameraTask"); 
+                xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
+                ESP_LOGI(name, "Notified Camera Task");
+            #elif MCU_TYPE == SENSOR
+                xTaskToNotify = xTaskGetHandle("fullnessTask"); 
+                xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
+                ESP_LOGI(name, "Notified Fullness Task");
+            #endif
             vTaskSuspend(NULL);
         }
         ESP_LOGI(name, "Ready to detect.");

@@ -10,10 +10,10 @@
 using namespace Zotbins;
 
 // ESP32-CAM is 12, WROVER is 22 
-const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
+const gpio_num_t PIN_TRIGGER = GPIO_NUM_2;
 
 // ESP32-CAM is 13, WROVER is 23 
-const gpio_num_t PIN_ECHO = GPIO_NUM_23;
+const gpio_num_t PIN_ECHO = GPIO_NUM_13;
 const float BIN_HEIGHT = 100;
 
 const gpio_config_t PIN_TRIGGER_CONFIG = {
@@ -87,15 +87,15 @@ void FullnessTask::loop()
         
         // TODO: Publish to MQTT broker when done 
         Client::clientPublish("distance", static_cast<void*>(&distance));
-        xTaskToNotify = xTaskGetHandle("weightTask");
-        xTaskNotifyGive(xTaskToNotify);
-        gpio_set_level(PIN_TRIGGER, 0);
-        gpio_set_level(PIN_ECHO, 0);
+        // xTaskToNotify = xTaskGetHandle("weightTask");
+        // xTaskNotifyGive(xTaskToNotify);
+        // gpio_set_level(PIN_TRIGGER, 0);
+        // gpio_set_level(PIN_ECHO, 0);
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
 
         // TODO: remove if no longer needed
-        // xTaskToNotify = xTaskGetHandle("usageTask");        
-        // vTaskResume(xTaskToNotify);
+        xTaskToNotify = xTaskGetHandle("usageTask");        
+        vTaskResume(xTaskToNotify);
     }
     vTaskDelete(NULL);
 }

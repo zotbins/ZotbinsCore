@@ -27,6 +27,8 @@ static inline uint32_t example_angle_to_compare(int angle)
 static const char *name = "servoTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+static TaskHandle_t usageHandle = NULL;
+static TaskHandle_t xTaskToNotify = NULL;
 
 // Servo Constants
 int angle = 0;
@@ -112,50 +114,30 @@ void ServoTask::loop()
     ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
     ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer, MCPWM_TIMER_START_NO_STOP));
 
-    ESP_LOGE(name, "Hello");
-    gpio_reset_pin(inputPIN);
-    gpio_set_direction(inputPIN, GPIO_MODE_INPUT);
-    gpio_set_pull_mode(inputPIN, GPIO_PULLDOWN_ONLY);
-    gpio_set_level(inputPIN, 0);
-
-    while(1){
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        int pin_value = gpio_get_level(inputPIN);
-        ESP_LOGE(name, "Pin %d state: %d", inputPIN, pin_value);
-        
-    }
-
     
-    // while (1)
-    // {
-    //     ESP_LOGI(name, "Angle of rotation: %d", angle);
-    //     ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
-    //     // Add delay, since it takes time for servo to rotate, usually 200ms/60degree rotation under 5V power supply
-    //     vTaskDelay(pdMS_TO_TICKS(angleDelay));
-    //     if ((angle + step) > targetAngle || (angle + step) < -targetAngle)
-    //     {
-
-    //         step *= -1;
-    //         vTaskDelay(waitTime / portTICK_PERIOD_MS);
-    //     }
-    //     angle += step;
-    // }
+    // Call the rotate function whenever necessary 
+    rotate();
+    xTaskToNotify = xTaskGetHandle("usageTask");        
+    vTaskResume(xTaskToNotify);
     vTaskDelete(NULL);
 }
 
 
+
+
 void ServoTask::rotate() {
+    step = 1;  // Reverse the direction
     while (angle <= targetAngle) {
         ESP_LOGI(name, "Angle of rotation: %d", angle);
         ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
         vTaskDelay(pdMS_TO_TICKS(angleDelay));
-        angle += step;  // Move the servo in the positive direction (up)
+        angle += step;  // Move the servo in the negative direction (down)
     }
 
-    step *= -1;  // Reverse the direction
+    step *= -1; 
     vTaskDelay(1000 / portTICK_PERIOD_MS);
 
-    while (angle >= -targetAngle) {
+    while (angle >= 0) {
         ESP_LOGI(name, "Angle of rotation: %d", angle);
         ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
         vTaskDelay(pdMS_TO_TICKS(angleDelay));
