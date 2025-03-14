@@ -8,8 +8,8 @@
 using namespace Zotbins;
 
 // Please consult the datasheet of your servo before changing the following parameters
-#define SERVO_MIN_PULSEWIDTH_US 500  // Minimum pulse width in microsecond
-#define SERVO_MAX_PULSEWIDTH_US 2500 // Maximum pulse width in microsecond
+#define SERVO_MIN_PULSEWIDTH_US 1000  // Minimum pulse width in microsecond (original 1000)
+#define SERVO_MAX_PULSEWIDTH_US 2000 // Maximum pulse width in microsecond (originally 2000)
 #define SERVO_MIN_DEGREE -90         // Minimum angle
 #define SERVO_MAX_DEGREE 90          // Maximum angle
 
@@ -17,6 +17,11 @@ using namespace Zotbins;
 #define SERVO_TIMEBASE_PERIOD 20000          // 20000 ticks, 20ms
 
 const gpio_num_t PIN_SERVO = GPIO_NUM_15;
+const gpio_num_t inputPIN = GPIO_NUM_32;
+
+// TODO: get a direct access mapping to MCU's available GPIO pins or something instead
+const gpio_num_t PIN_SEND_MCU = GPIO_NUM_13;
+const gpio_num_t PIN_RECEIVE_MCU = GPIO_NUM_14;
 
 static inline uint32_t example_angle_to_compare(int angle)
 {
@@ -26,6 +31,15 @@ static inline uint32_t example_angle_to_compare(int angle)
 static const char *name = "servoTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+static TaskHandle_t xTaskToNotify = NULL;
+
+// Servo Constants
+int angle = 0;
+int step = 1;
+float angleDelay = 10;
+int waitTime = 1000;
+int targetAngle = 270;
+
 
 ServoTask::ServoTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -35,7 +49,8 @@ ServoTask::ServoTask(QueueHandle_t &messageQueue)
 // TODO: implement servo with task notifs
 void ServoTask::start()
 {
-    xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, 1);
+    // xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
 }
 
 void ServoTask::taskFunction(void *task)
@@ -47,8 +62,11 @@ void ServoTask::taskFunction(void *task)
 
 void ServoTask::setup() // TODO: could refactor into setup later but there are a lot of issues with scope
 {
+
 }
 
+mcpwm_cmpr_handle_t comparator = NULL;
+mcpwm_gen_handle_t generator = NULL;
 void ServoTask::loop()
 {
     ESP_LOGI(name, "Create timer and operator");
@@ -72,26 +90,26 @@ void ServoTask::loop()
     ESP_ERROR_CHECK(mcpwm_operator_connect_timer(oper, timer));
 
     ESP_LOGI(name, "Create comparator and generator from the operator");
-    mcpwm_cmpr_handle_t comparator = NULL;
+    //mcpwm_cmpr_handle_t comparator = NULL;
     mcpwm_comparator_config_t comparator_config = {
         .flags = {
             .update_cmp_on_tez = true,
         }};
     ESP_ERROR_CHECK(mcpwm_new_comparator(oper, &comparator_config, &comparator));
 
-    mcpwm_gen_handle_t generator = NULL;
+    // mcpwm_gen_handle_t generator = NULL;
     mcpwm_generator_config_t generator_config = {
         .gen_gpio_num = PIN_SERVO,
     };
     ESP_ERROR_CHECK(mcpwm_new_generator(oper, &generator_config, &generator));
 
     // set the initial compare value, so that the servo will spin to the center position
-    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(0)));
+    // ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(0)));
 
     ESP_LOGI(name, "Set generator action on timer and compare event");
     // go high on counter empty
     ESP_ERROR_CHECK(mcpwm_generator_set_action_on_timer_event(generator,
-                                                              MCPWM_GEN_TIMER_EVENT_ACTION(MCPWM_TIMER_DIRECTION_UP, MCPWM_TIMER_EVENT_EMPTY, MCPWM_GEN_ACTION_HIGH)));
+                                                            MCPWM_GEN_TIMER_EVENT_ACTION(MCPWM_TIMER_DIRECTION_UP, MCPWM_TIMER_EVENT_EMPTY, MCPWM_GEN_ACTION_HIGH)));
     // go low on compare threshold
     ESP_ERROR_CHECK(mcpwm_generator_set_action_on_compare_event(generator,
                                                                 MCPWM_GEN_COMPARE_EVENT_ACTION(MCPWM_TIMER_DIRECTION_UP, comparator, MCPWM_GEN_ACTION_LOW)));
@@ -100,19 +118,70 @@ void ServoTask::loop()
     ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
     ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer, MCPWM_TIMER_START_NO_STOP));
 
-    int angle = 0;
-    int step = 2;
     while (1)
     {
-        ESP_LOGI(name, "Angle of rotation: %d", angle);
-        ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
-        // Add delay, since it takes time for servo to rotate, usually 200ms/60degree rotation under 5V power supply
-        vTaskDelay(pdMS_TO_TICKS(500));
-        if ((angle + step) > 60 || (angle + step) < -60)
-        {
-            step *= -1;
-        }
-        angle += step;
+        ESP_LOGI(name, "waiting for task response");
+        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+
+        // Call the rotate function whenever necessary
+        angle = 0;
+        ESP_LOGI(name, "Go to -200 degrees");
+        // vTaskDelay(5000  / portTICK_PERIOD_MS);
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-200));
+        // // now attempt -270
+
+        // TO DEASSERT: set angle to -100 degrees (bring tray down)
+        ESP_LOGI(name, "Go to -100 degrees");
+        vTaskDelay(5000  / portTICK_PERIOD_MS);
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-100));
+        
+        xTaskToNotify = xTaskGetHandle("cameraTask");        
+        xTaskNotifyGive(xTaskToNotify);
+        
+        // set ultrasonic of SENSOR esp32 to low, telling it to activate
+        ESP_LOGI("Servo", "starting servo thingy");
+        gpio_set_level(GPIO_NUM_13, 1);
+        gpio_set_level(GPIO_NUM_14, 0);
+
+        // while (1){
+        //     int level = gpio_get_level(GPIO_NUM_14);  
+        //     ESP_LOGI(name, "level: %d", level);
+
+        //     // Read input GPIO on HI (meaning trigger)
+        //     if (level == 1){
+        //         gpio_set_level(GPIO_NUM_13, 0);
+        //         break;
+        //     }
+        //     vTaskDelay(100 / portTICK_PERIOD_MS);  
+        // }
+
+        // go back to usage 
+        xTaskToNotify = xTaskGetHandle("usageTask");        
+        vTaskResume(xTaskToNotify);
+        vTaskDelay(100 / portTICK_PERIOD_MS);  
     }
     vTaskDelete(NULL);
+}
+
+
+
+
+void ServoTask::rotate() {
+    step = 1;  // Reverse the direction
+    while (angle <= targetAngle) {
+        ESP_LOGI(name, "Angle of rotation: %d", angle);
+        ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
+        vTaskDelay(pdMS_TO_TICKS(angleDelay));
+        angle += step;  // Move the servo in the negative direction (down)
+    }
+
+    step *= -1; 
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    while (angle >= 0) {
+        ESP_LOGI(name, "Angle of rotation: %d", angle);
+        ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(angle)));
+        vTaskDelay(pdMS_TO_TICKS(angleDelay));
+        angle += step;  // Move the servo in the negative direction (down)
+    }
 }

@@ -34,8 +34,13 @@ static const char *TAG = "mqtts_example";
 
 static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
-    int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
-    ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
+    #if MCU_TYPE == SENSOR
+        int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
+    #elif MCU_TYPE == CAMERA
+        int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
+    #endif
+    //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
+    //ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
 }
 
 /*
@@ -124,7 +129,7 @@ static void mqtt_app_start(void)
         .broker = {
             .address = {
                 // TODO: make sure address isn't hardcoded and go back to config files
-                .uri = "mqtts://a1wqr7kl6hd1sm-ats.iot.us-west-1.amazonaws.com:8883",
+                .uri = (const char *)AWS_URL,
             },
             .verification = {
 
@@ -145,46 +150,70 @@ static void mqtt_app_start(void)
 }
 
 // TODO: optimize this into a dictionary or something
-// #ifdef MCU_TYPE == CAMERA
-    // bool payload;
-// #elif MCU_TYPE == SENSOR
-    bool payload_distance = false;
-    bool payload_weight = false;
-    float distance;
-    int32_t weight;
-// #endif 
+bool payload_camera = false;
+char* imageData;
+bool payload_distance = false;
+bool payload_weight = false;
+bool payload_usage = false;
+float distance = 0;
+int32_t weight = 0;
+int usage = 0;
 
 // TODO: change temp to include the actual value through variadics
 void Client::clientPublish(char* data_type, void* value)
 {
+    ESP_LOGI(TAG, "clientpubbed");
+    cJSON* data = NULL;
     #if MCU_TYPE == CAMERA
-        // cJSON* data = serialize(message, len);
+        if(strcmp(data_type, "camera") == 0){
+            payload_camera = true;
+            imageData = static_cast<char*>(value); 
+            ESP_LOGI(TAG, "image data");
+        }
+        if(payload_camera){
+            ESP_LOGI(TAG, "sending camera payload");
+            data = serialize("Camera result", imageData, strlen(imageData));
+        }
     #elif MCU_TYPE == SENSOR
-        if (strcmp(data_type, "distance") == 0){
+        if (strcmp(data_type, "usage") == 0){
+            payload_usage = true;
+            usage = *(int*)value;
+        }else if (strcmp(data_type, "distance") == 0){
             payload_distance = true;
-            distance = *(float*)value;
+            distance = *(float*)value; 
         }else if (strcmp(data_type, "weight") == 0){
             payload_weight = true;
             weight = *(int32_t*)value;
         }
+
+        // only send when both distance and weight payloads are specified
+        ESP_LOGI(TAG, "payload check use = %d, dis = %d, wei = %d", payload_usage, payload_distance, payload_weight);
+        if (payload_distance ){ // && payload_usage && payload_weight){
+            ESP_LOGI(TAG, "sending payload");
+            ESP_LOGI(TAG, "uses = %i, distance = %f, weight = %ld", usage, distance, weight);
+            data = serialize("Sensor result", distance, false, weight, usage);            
+        }
     #endif
 
-    // only send when both distance and weight payloads are specified
-    if (payload_distance && payload_weight){
-        ESP_LOGI(TAG, "sending payload");
-        ESP_LOGI(TAG, "distance = %d, weight = %d", payload_distance, payload_weight);
-        cJSON* data = serialize("Sensor result", distance, false, weight);
-        if (data) {
-            char* json_str = cJSON_PrintUnformatted(data);  // Convert cJSON object to string
-            if (json_str) {
-                ESP_LOGI(TAG, "json string: %s", json_str);
-                publish(test_client, json_str, strlen(json_str));  // Use strlen to get the size
-                free(json_str);  // Free the allocated string after publishing
-            }
-            cJSON_Delete(data);  // Free cJSON object
+    // cleanup
+    if (data != NULL) {
+        char* json_str = cJSON_PrintUnformatted(data);  // Convert cJSON object to string
+        if (json_str) {
+            ESP_LOGI(TAG, "json string: %s", json_str);
+            publish(test_client, json_str, strlen(json_str));  // Use strlen to get the size
+            free(json_str);  // Free the allocated string after publishing
         }
-        payload_distance = false;
-        payload_weight = false;
+        cJSON_Delete(data);  // Free cJSON object
+        #if MCU_TYPE == CAMERA
+            payload_camera = false;
+            imageData = NULL;
+        #elif MCU_TYPE == SENSOR
+            payload_usage = false;
+            payload_distance = false;
+            payload_weight = false;
+            distance = 0;
+            weight = 0;
+        #endif
     }
 }
 
@@ -218,6 +247,14 @@ void Client::clientStart()
      * examples/protocols/README.md for more information about this function.
      */
     ESP_ERROR_CHECK(example_connect());
+
+    // TODO: when you disconnect make sure w reconnect socket if hostname fails
+    /*
+        E (2957998) esp-tls: couldn't get hostname for :a1wqr7kl6hd1sm-ats.iot.us-west-1.amazonaws.com: getaddrinfo() returns 202, addrinfo=0x0
+        E (2957998) esp-tls: Failed to open new connection
+        E (2957998) transport_base: Failed to open a new connection
+        E (2958008) mqtt_client: Error transport connect
+    */
 
     mqtt_app_start();
 }

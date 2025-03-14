@@ -75,6 +75,8 @@ static const char *_STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %
 
 static EventGroupHandle_t s_wifi_event_group;
 static esp_ip4_addr_t s_ip_addr;
+static TaskHandle_t xTaskToNotify = NULL;
+static const int core = 1;
 
 #define WIFI_CONNECTED_BIT BIT0
 
@@ -106,66 +108,30 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_VGA, // UXGA, VGA
-    .jpeg_quality = 12,
+    .frame_size = FRAMESIZE_QQVGA, // UXGA, VGA
+    .jpeg_quality = 64,
     .fb_count = 2,
-    .fb_location = CAMERA_FB_IN_PSRAM,
+    .fb_location = CAMERA_FB_IN_DRAM,// CAMERA_FB_IN_PSRAM,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
 };
 
-// Pin Declarations
 const gpio_num_t flashPIN = GPIO_NUM_4;
-const gpio_num_t inputPIN = GPIO_NUM_14;
-const gpio_num_t ledPin1 = GPIO_NUM_1;
-const gpio_num_t ledPin2 = GPIO_NUM_3;
 TaskHandle_t camera_capture = NULL;
 TaskHandle_t camera_countdown = NULL;
-
-// Possible to get 3 LEDS if you solder an AND gate
-bool takePicture = false;
-bool allowPicture = true;
-
-
-void vCountdown(void *pvParameters)
-{
-    // The LED System
-    // takePicture = false;
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    gpio_set_level(ledPin1, 1);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    gpio_set_level(ledPin2, 1);
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    // takePicture = true;
-    xTaskNotifyGive(camera_capture); // capture camera parallel task
-
-    gpio_set_level(flashPIN, 1);
-    vTaskDelay(250 / portTICK_PERIOD_MS);
-    gpio_set_level(flashPIN, 0);
-    // vTaskDelete(camera_countdown);
-}
 
 void buffer_to_string(uint8_t *buffer, size_t buffer_length, char *output, size_t output_size)
 {
     size_t pos = 0;
-    // pos += snprintf(output + pos, output_size - pos, "[");
     for (size_t i = 0; i < buffer_length; i++)
     {
+        // vTaskDelay(2 / portTICK_PERIOD_MS);
         if (i > 0)
         {
             pos += snprintf(output + pos, output_size - pos, ",");
         }
         pos += snprintf(output + pos, output_size - pos, "%u", buffer[i]);
     }
-    // snprintf(output + pos, output_size - pos, "]");
 }
-
-// THIS ONLY WORKS IF ONLY Camera Task
-void startSleep()
-{
-    esp_sleep_enable_ext0_wakeup(inputPIN, 1);
-    esp_light_sleep_start();
-}
-
 
 static esp_err_t init_camera(void)
 {
@@ -187,7 +153,9 @@ CameraTask::CameraTask(QueueHandle_t &messageQueue)
 
 void CameraTask::start()
 {
-    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
+    // xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
+    // TODO: for some stupid reason core 0 works for this, we need an explanation!!!
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, 0);
 }
 
 void CameraTask::taskFunction(void *task)
@@ -203,19 +171,10 @@ void CameraTask::setup()
 
 void CameraTask::loop()
 {
+    ESP_LOGI(TAG, "Hello from Camera Task");
+    ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
-    //  xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, nullptr, 1);
     gpio_reset_pin(flashPIN);
-    gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
-    gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
-    gpio_set_level(flashPIN, 0);
-
-    gpio_reset_pin(inputPIN);
-    gpio_set_direction(inputPIN, GPIO_MODE_INPUT);
-    gpio_set_pull_mode(inputPIN, GPIO_PULLDOWN_ONLY);
-    gpio_set_level(inputPIN, 0);
-
-    gpio_reset_pin(GPIO_NUM_0);
     gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
     gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
     gpio_set_level(flashPIN, 0);
@@ -224,64 +183,49 @@ void CameraTask::loop()
     ESP_ERROR_CHECK(nvs_flash_init());
  
     // Initialize the camera
-    if (ESP_OK != init_camera())
-    {
-        
+    if (ESP_OK != init_camera()){
         // Client::clientPublishStr("Camera Failed");
+        ESP_LOGE(TAG, "Camera Failed");
+    }else{
+        // Client::clientPublishStr("Started Camera");
+        ESP_LOGI(TAG, "Camera started, getting sensor");
     }
 
-    // Client::clientPublishStr("Started Camera");
-
     sensor_t *s = esp_camera_sensor_get();
-    if (s != NULL)
-    {
+    if (s != NULL){
         s->set_sharpness(s, 1);
         s->set_gain_ctrl(s, 1);
         s->set_whitebal(s, 1);
-        // Client::clientPublishStr("Adjusted Camera");
     }
+
+    ESP_LOGI(TAG, "Camera sensor gotted, loop start");
 
     camera_fb_t *fb = NULL;
     int cnt = 0;
     while (1)
     {
         cnt++;
-        if (cnt == 30)
+        if (cnt == 5)
         {
-            for (int i = 0; i < 30; i++)
-            {
-                if (i == 29)
-                {
-                    gpio_set_level(flashPIN, 1);
-                }
+            fb = esp_camera_fb_get();
 
-                fb = esp_camera_fb_get();
-                vTaskDelay(33 / portTICK_PERIOD_MS);
-                esp_camera_fb_return(fb);
-            }
-            vTaskDelay(200 / portTICK_PERIOD_MS);
-            gpio_set_level(flashPIN, 0);
+            ESP_LOGI(TAG, "Camera fb get done, sending");
 
-            size_t output_size = 262144; 
+            size_t output_size = 2000; 
             char *output = (char *)malloc(output_size);
+            // needs time to allocate 
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
             buffer_to_string(fb->buf, fb->len, output, output_size);
+            Client::clientPublish("camera", output);
+            ESP_LOGI(TAG, "Camera published"); 
 
-            //size_t b64_len;
-            //char *b64_output = base64_encode(fb->buf, fb->len, &b64_len);
-            //Client::clientPublishStr(b64_output);
-
-            ESP_LOGE(TAG, "Hello");
-            Client::clientPublishStr(output);
-            //compress_and_publish(fb->buf, fb->len);
-
-
-
-
-
-
-
-            vTaskDelay(4500 / portTICK_PERIOD_MS);
+            // TODO: fix inconsistent bootloops
+            esp_camera_fb_return(fb);
+            // xTaskToNotify = xTaskGetHandle("usageTask"); // servoTask");
+            // xTaskNotifyGive(xTaskToNotify);
+            break;
         }
-        vTaskDelay(33 / portTICK_PERIOD_MS);
+        vTaskDelay(35 / portTICK_PERIOD_MS);
     }
+    vTaskDelete(NULL);
 }
