@@ -72,13 +72,13 @@ void UsageTask::loop()
             vTaskSuspend(NULL); // Suspend the task until notified
         }
         bool DETECTED = !gpio_get_level(PIN_BREAKBEAM); // Read in signal from breakbeam
-        if (DETECTED) // If breakbeam is disconnected
+        if (!DETECTED) // If breakbeam is disconnected
         {
             ESP_LOGI(name, "Detected item.");
-            while (DETECTED)
-            {
-                DETECTED = !gpio_get_level(PIN_BREAKBEAM);
-            }
+            // while (DETECTED)
+            // {
+            //     DETECTED = !gpio_get_level(PIN_BREAKBEAM);
+            // }
 
             // TODO: usage for some reason goes to 1 million out of nowhere, needs testing
             ESP_LOGI(name, "Item no longer detected. Incrementing usage: %i", usage);
@@ -87,14 +87,16 @@ void UsageTask::loop()
             beamBroken = false;
 
             #if MCU_TYPE == CAMERA
-                xTaskToNotify = xTaskGetHandle("cameraTask"); 
+                xTaskToNotify = xTaskGetHandle("servoTask"); 
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
-                ESP_LOGI(name, "Notified Camera Task");
+                ESP_LOGI(name, "Notified Serco Task");
             #elif MCU_TYPE == SENSOR
                 xTaskToNotify = xTaskGetHandle("fullnessTask"); 
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
                 ESP_LOGI(name, "Notified Fullness Task");
             #endif
+
+            // TODO: vTaskSuspend doesn't stop ready to detect printing
             vTaskSuspend(NULL);
         }
         ESP_LOGI(name, "Ready to detect.");

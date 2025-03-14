@@ -78,24 +78,41 @@ void FullnessTask::loop()
     // TODO: this is the bad thing, if not inited it will not allow getDistance
     // find a way to initialize this via constructor
     Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
+    
+    // ensure comm pins are both low
+    gpio_set_level(GPIO_NUM_13, 0);
+    gpio_set_level(GPIO_NUM_14, 0);
+
     while (1)
     {
-        ESP_LOGI(name, "Hello from Fullness Task");
-        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
-        distance = ultrasonic.getDistance();
-        ESP_LOGI(name, "Got distance in m: %f", distance);
-        
-        // TODO: Publish to MQTT broker when done 
-        // Client::clientPublish("distance", static_cast<void*>(&distance));
-        // xTaskToNotify = xTaskGetHandle("weightTask");
-        // xTaskNotifyGive(xTaskToNotify);
-        // gpio_set_level(PIN_TRIGGER, 0);
-        // gpio_set_level(PIN_ECHO, 0);
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+        // TODO: for now, ultrasonic only sends on GPIO read to HIGH 
+        int level = gpio_get_level(GPIO_NUM_13);  
+		// ESP_LOGI(name, "level: %d", level);
 
-        // TODO: remove if no longer needed
-        xTaskToNotify = xTaskGetHandle("usageTask");        
-        vTaskResume(xTaskToNotify);
+		// Read input GPIO on HI (meaning trigger)
+		if (level == 1){
+            ESP_LOGI(name, "Hello from Fullness Task");
+            // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+            distance = ultrasonic.getDistance();
+            ESP_LOGI(name, "Got distance in m: %f", distance);
+            
+            // TODO: Publish to MQTT broker when done 
+            Client::clientPublish("distance", static_cast<void*>(&distance));
+            // xTaskToNotify = xTaskGetHandle("weightTask");
+            // xTaskNotifyGive(xTaskToNotify);
+            gpio_set_level(PIN_TRIGGER, 0);
+            gpio_set_level(PIN_ECHO, 0);
+            
+            // set GPIO back to CAMERA to HIGH (telling it to resume its own task)
+            gpio_set_level(GPIO_NUM_14, 1);
+            vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+            gpio_set_level(GPIO_NUM_14, 0);
+
+            // // TODO: remove if no longer needed
+            // xTaskToNotify = xTaskGetHandle("usageTask");        
+            // vTaskResume(xTaskToNotify);
+        }
+        vTaskDelay(100 / portTICK_PERIOD_MS);  
     }
     vTaskDelete(NULL);
 }
