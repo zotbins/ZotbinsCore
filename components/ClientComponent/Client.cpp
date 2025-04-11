@@ -150,6 +150,10 @@ static void mqtt_app_start(void)
 }
 
 // TODO: optimize this into a dictionary or something
+// okay I did this but I reverted it back, I would just suggest only putting
+// payload as a key and bool as a value and then making sure that gets checked to true 
+// for publishing. The values in each are too specific and concatenation from void is a pain,
+// so you don't need to optimize that part
 bool payload_camera = false;
 char* imageData;
 bool payload_distance = false;

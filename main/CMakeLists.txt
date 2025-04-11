@@ -1,4 +1,4 @@
-idf_component_register(SRCS "main.cpp"
+idf_component_register(SRCS
                     INCLUDE_DIRS "."
                     REQUIRES ClientComponent FullnessComponent TaskComponent
                     )

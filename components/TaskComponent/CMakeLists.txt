@@ -1,7 +1,7 @@
 idf_component_register(SRCS 
                             # "gpsTask.cpp" 
                             "fullnessTask.cpp"
-                            "usageTask.cpp"
+                           
                             # "weightTask.cpp"
                             "clientTask.cpp"
                             "servoTask.cpp"
