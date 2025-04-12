@@ -10,5 +10,8 @@
         "span": "cpp",
         "cstdint": "cpp"
     },
-    "idf.portWin": "COM7"
+    "idf.portWin": "COM7",
+    "idf.espIdfPath": "/Users/anthonychen/esp/v5.4.1/esp-idf",
+    "idf.toolsPath": "/Users/anthonychen/.espressif",
+    "idf.pythonInstallPath": "/usr/bin/python3"
 }
