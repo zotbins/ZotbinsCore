@@ -8,7 +8,7 @@
 using namespace Zotbins;
 
 // ESP32-CAM is 2, WROVER is 2 
-const gpio_num_t PIN_DOUT = GPIO_NUM_12; // shifted since pcb pins are swapped when you plug directly in
+const gpio_num_t PIN_DOUT = GPIO_NUM_2; // shifted since pcb pins are swapped when you plug directly in
 
 // ESP32-CAM is 14, WROVER is 14 
 const gpio_num_t PIN_PD_SCK = GPIO_NUM_14; // shifted for same reason. 15 used by servo, cant use servo on pin 15 simultaneously.

@@ -30,6 +30,10 @@ void ClientTask::setup()
 
 void ClientTask::loop()
 {
+
+    
+
+
     while (1)
     {
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds

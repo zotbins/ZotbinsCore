@@ -10,7 +10,7 @@
 using namespace Zotbins;
 
 // ESP32-CAM is 12, WROVER is 22 
-const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
+const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
 
 // ESP32-CAM is 13, WROVER is 23 
 const gpio_num_t PIN_ECHO = GPIO_NUM_13;
@@ -83,35 +83,45 @@ void FullnessTask::loop()
     gpio_set_level(GPIO_NUM_13, 0);
     gpio_set_level(GPIO_NUM_14, 0);
 
+    float threshold = 0.35; 
+    bool sent = false;
+    
+
+    ESP_LOGI(name, "Started Fullness Task");
     while (1)
     {
+
         // TODO: for now, ultrasonic only sends on GPIO read to HIGH 
-        int level = gpio_get_level(GPIO_NUM_13);  
-		// ESP_LOGI(name, "level: %d", level);
+        distance = ultrasonic.getDistance();
+        ESP_LOGI(name, "Got distance in m: %f", distance);
 
-		// Read input GPIO on HI (meaning trigger)
-		if (level == 1){
-            ESP_LOGI(name, "Hello from Fullness Task");
-            // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
-            distance = ultrasonic.getDistance();
-            ESP_LOGI(name, "Got distance in m: %f", distance);
-            
-            // TODO: Publish to MQTT broker when done 
+        if(distance > threshold && sent == false){
             Client::clientPublish("distance", static_cast<void*>(&distance));
-            // xTaskToNotify = xTaskGetHandle("weightTask");
-            // xTaskNotifyGive(xTaskToNotify);
-            gpio_set_level(PIN_TRIGGER, 0);
-            gpio_set_level(PIN_ECHO, 0);
-            
-            // set GPIO back to CAMERA to HIGH (telling it to resume its own task)
-            gpio_set_level(GPIO_NUM_14, 1);
-            vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-            gpio_set_level(GPIO_NUM_14, 0);
-
-            // // TODO: remove if no longer needed
-            // xTaskToNotify = xTaskGetHandle("usageTask");        
-            // vTaskResume(xTaskToNotify);
+            ESP_LOGI(name, "Sent Distance %f", distance);
+            sent = true;
         }
+        else if (distance < threshold && sent == true){
+            sent = false; 
+        }
+
+
+        gpio_set_level(PIN_TRIGGER, 0);
+        gpio_set_level(PIN_ECHO, 0);
+      
+        // TODO: Publish to MQTT broker when done 
+        // xTaskToNotify = xTaskGetHandle("weightTask");
+        // xTaskNotifyGive(xTaskToNotify);
+        
+        
+        // set GPIO back to CAMERA to HIGH (telling it to resume its own task)
+        // gpio_set_level(GPIO_NUM_14, 1);
+        // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+        // gpio_set_level(GPIO_NUM_14, 0);
+
+        // // TODO: remove if no longer needed
+        // xTaskToNotify = xTaskGetHandle("usageTask");        
+        // vTaskResume(xTaskToNotify);
+        
         vTaskDelay(100 / portTICK_PERIOD_MS);  
     }
     vTaskDelete(NULL);

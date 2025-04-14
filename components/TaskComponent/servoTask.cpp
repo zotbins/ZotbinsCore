@@ -125,15 +125,15 @@ void ServoTask::loop()
 
         // Call the rotate function whenever necessary
         angle = 0;
-        ESP_LOGI(name, "Go to -200 degrees");
+        ESP_LOGI(name, "Go to -90 degrees");
         // vTaskDelay(5000  / portTICK_PERIOD_MS);
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-200));
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-90));
         // // now attempt -270
 
         // TO DEASSERT: set angle to -100 degrees (bring tray down)
-        ESP_LOGI(name, "Go to -100 degrees");
+        ESP_LOGI(name, "Go to 0 degrees");
         vTaskDelay(5000  / portTICK_PERIOD_MS);
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-100));
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(0));
         
         xTaskToNotify = xTaskGetHandle("cameraTask");        
         xTaskNotifyGive(xTaskToNotify);

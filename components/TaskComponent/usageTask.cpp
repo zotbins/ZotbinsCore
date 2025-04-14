@@ -80,6 +80,8 @@ void UsageTask::loop()
             //     DETECTED = !gpio_get_level(PIN_BREAKBEAM);
             // }
 
+            
+
             // TODO: usage for some reason goes to 1 million out of nowhere, needs testing
             ESP_LOGI(name, "Item no longer detected. Incrementing usage: %i", usage);
             usage += 1;

@@ -32,12 +32,17 @@
 
 static const char *TAG = "mqtts_example";
 
+#define MCU_TYPE CAMERA
+
 static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
     #if MCU_TYPE == SENSOR
         int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
     #elif MCU_TYPE == CAMERA
-        int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
+        //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 1, 0);
+        printf("%zu\n", len); 
+
+        int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
     #endif
     //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
     //ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
@@ -152,6 +157,8 @@ static void mqtt_app_start(void)
 // TODO: optimize this into a dictionary or something
 bool payload_camera = false;
 char* imageData;
+int uncompressedSize;
+int compressedSize;
 bool payload_distance = false;
 bool payload_weight = false;
 bool payload_usage = false;
@@ -165,14 +172,23 @@ void Client::clientPublish(char* data_type, void* value)
     ESP_LOGI(TAG, "clientpubbed");
     cJSON* data = NULL;
     #if MCU_TYPE == CAMERA
-        if(strcmp(data_type, "camera") == 0){
+        if(strcmp(data_type, "cameraImage") == 0){
             payload_camera = true;
             imageData = static_cast<char*>(value); 
-            ESP_LOGI(TAG, "image data");
+            ESP_LOGE(TAG, "Camera Image Data Received");
+        }
+        // Potentially move the compression to Client task or somethign
+        else if (strcmp(data_type, "cameraCompressed") == 0){
+            compressedSize = *static_cast<int*>(value);
+            ESP_LOGE(TAG, "Camera Compressed Size Received");
+        }
+        else if (strcmp(data_type, "cameraUncompressed") == 0){ // Necessary for sending compressed length 
+            uncompressedSize = *static_cast<int*>(value);
+            ESP_LOGE(TAG, "Camera Uncompressed Size Received");
         }
         if(payload_camera){
             ESP_LOGI(TAG, "sending camera payload");
-            data = serialize("Camera result", imageData, strlen(imageData));
+            data = serialize("Camera result", imageData, strlen(imageData), compressedSize, uncompressedSize); // Change compressed and uncompresed size from 1,1
         }
     #elif MCU_TYPE == SENSOR
         if (strcmp(data_type, "usage") == 0){
