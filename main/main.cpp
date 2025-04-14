@@ -23,31 +23,31 @@ extern "C" void app_main(void)
 
 	#if MCU_TYPE == CAMERA
 
-		// GPIO13 as OUTPUT (sends signal)
-		// GPIO14 as INPUT (receives signal)
-		gpio_config_t io_conf = {};
+		// // GPIO13 as OUTPUT (sends signal)
+		// // GPIO14 as INPUT (receives signal)
+		// gpio_config_t io_conf = {};
 
-		// Configure GPIO13 as OUTPUT
-		io_conf.pin_bit_mask = (1ULL << GPIO_NUM_13);
-		io_conf.mode = GPIO_MODE_OUTPUT;
-		io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;  
-		io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
-		gpio_config(&io_conf);
+		// // Configure GPIO13 as OUTPUT
+		// io_conf.pin_bit_mask = (1ULL << GPIO_NUM_13);
+		// io_conf.mode = GPIO_MODE_OUTPUT;
+		// io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;  
+		// io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+		// gpio_config(&io_conf);
 
-		// Configure GPIO14 as INPUT
-		io_conf.pin_bit_mask = (1ULL << GPIO_NUM_14);
-		io_conf.mode = GPIO_MODE_INPUT;
-		io_conf.pull_down_en = GPIO_PULLDOWN_ENABLE;  // Prevent floating
-		gpio_config(&io_conf);
+		// // Configure GPIO14 as INPUT
+		// io_conf.pin_bit_mask = (1ULL << GPIO_NUM_14);
+		// io_conf.mode = GPIO_MODE_INPUT;
+		// io_conf.pull_down_en = GPIO_PULLDOWN_ENABLE;  // Prevent floating
+		// gpio_config(&io_conf);
 
-		Zotbins::ServoTask servoTask(messageQueue);
-		servoTask.start();
+		// Zotbins::ServoTask servoTask(messageQueue);
+		// servoTask.start();
 
-		Zotbins::CameraTask cameraTask(messageQueue);
-		cameraTask.start();
+		// Zotbins::CameraTask cameraTask(messageQueue);
+		// cameraTask.start();
 
-		Zotbins::UsageTask usageTask( messageQueue);
-		usageTask.start();
+		// Zotbins::UsageTask usageTask( messageQueue);
+		// usageTask.start();
 
 	#elif MCU_TYPE == SENSOR
 		// GPIO13 as INPUT (receives signal)

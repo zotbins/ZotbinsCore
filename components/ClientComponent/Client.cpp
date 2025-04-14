@@ -38,6 +38,8 @@ static void publish(esp_mqtt_client_handle_t client, const void *data, size_t le
         int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
     #elif MCU_TYPE == CAMERA
         int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
+        // TODO: add PING stuff here
+        // esp_mqtt_client_publish(client, "PING", "esp32 stuff", 10, 0, 0);
     #endif
     //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
     //ESP_LOGI(TAG, "message published with msg_id=%d", msg_id);
@@ -54,6 +56,7 @@ static void publish(esp_mqtt_client_handle_t client, const void *data, size_t le
  * @param event_data The data for the event, esp_mqtt_event_handle_t.
  */
 esp_mqtt_client_handle_t test_client;
+bool client_connected = false;
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32, base, event_id);
@@ -65,9 +68,10 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+        client_connected = true;
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
         // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
-        // publish(client, "Test");
+        // publish(client, "Test", 5);
 
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
         // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
@@ -94,10 +98,15 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
         ESP_LOGI(TAG, "TOPIC=%.*s\r\n", event->topic_len, event->topic);
         ESP_LOGI(TAG, "DATA=%.*s\r\n", event->data_len, event->data);
-        // if (strncmp(event->data, "send binary please", event->data_len) == 0) {
-        //     ESP_LOGI(TAG, "Sending the binary");
-        //     publish(client, data);
-        // }
+
+        // TODO: add that conditions determining TOPIC as either "OTA" or "PING"
+        if (strncmp(event->topic, "PING", event->topic_len) == 0) {
+            // do ping to other ESP stuff
+            ESP_LOGI(TAG, "Ping info received: %s", event->data);
+        }else if (strncmp(event->topic, "OTA", event->topic_len) == 0) {
+            // do ota stuff
+            // not implemented yet so make a policy under AWS certs for allowing pub/connect/receive
+        }
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
@@ -146,13 +155,28 @@ static void mqtt_app_start(void)
     esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, NULL);
-    esp_mqtt_client_start(client);
+    bool yield = esp_mqtt_client_start(client);
+
+    // we don't need to worry too much on QoS so set at lvl 0
+    // if we really need packet info connectivity set as lvl 1 or 2 
+    // https://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels/
+    while (!client_connected){
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        ESP_LOGI(TAG, "yield for client connection");
+    }
+    ESP_LOGI(TAG, "connecting to test subscribe");
+    esp_mqtt_client_subscribe_single(client, "PING", 0); 
+    ESP_LOGI(TAG, "success subscribed");
+
+    // send example data (like payload stuff)
+    ESP_LOGI(TAG, "sending ping stuff");
+    esp_mqtt_client_publish(client, "PING", "esp32 stuff", 12, 0, 0);
 }
 
 // TODO: optimize this into a dictionary or something
 // okay I did this but I reverted it back, I would just suggest only putting
 // payload as a key and bool as a value and then making sure that gets checked to true 
-// for publishing. The values in each are too specific and concatenation from void is a pain,
+// for publishing. The values in each are too specific` and concatenation from void is a pain,
 // so you don't need to optimize that part
 bool payload_camera = false;
 char* imageData;
