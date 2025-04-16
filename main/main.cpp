@@ -5,6 +5,7 @@
 #include "message.hpp"
 #include "servoTask.hpp"
 #include "usageTask.hpp"
+#include "communicationTask.hpp"
 // #include "weightTask.hpp"
 #include <driver/gpio.h>
 #include <iostream>
@@ -49,6 +50,11 @@ extern "C" void app_main(void)
 
 		// Zotbins::ServoTask servoTask(messageQueue);
 		// servoTask.start();
+
+		
+		
+		Zotbins::CommunicationTask communicationTask(messageQueue);
+		communicationTask.start();
 
 		Zotbins::CameraTask cameraTask(messageQueue);
 		cameraTask.start();

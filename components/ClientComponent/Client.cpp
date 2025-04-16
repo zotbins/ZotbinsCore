@@ -30,6 +30,12 @@
 #include <cstdarg>
 #include <cstring>
 
+#include "esp_wifi.h"
+// #include "esp_event.h"
+// #include "esp_log.h"
+// #include "esp_netif.h"
+
+
 static const char *TAG = "mqtts_example";
 
 #define MCU_TYPE CAMERA
@@ -240,6 +246,12 @@ void Client::clientPublishStr(const char *message)
     publish(test_client, message, strlen(message));  // Use strlen to get the size
 }
 
+
+#define ESPNOW_MAXDELAY 512
+#define CONFIG_ESPNOW_CHANNEL 1
+#define ESPNOW_WIFI_MODE WIFI_MODE_STA
+#define ESPNOW_WIFI_IF WIFI_IF_STA
+
 void Client::clientStart()
 {
     ESP_LOGI(TAG, "[APP] Startup..");
@@ -256,13 +268,27 @@ void Client::clientStart()
 
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
+
     ESP_ERROR_CHECK(esp_event_loop_create_default());
+    
 
     /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
      * Read "Establishing Wi-Fi or Ethernet Connection" section in
      * examples/protocols/README.md for more information about this function.
      */
+
+
     ESP_ERROR_CHECK(example_connect());
+
+    // printf("fsdjfosdjfosdjfosd");
+    // wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+    // ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    // ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    // ESP_ERROR_CHECK(esp_wifi_set_channel(, WIFI_SECOND_CHAN_NONE));  // both on channel 1
+    // ESP_ERROR_CHECK(esp_wifi_start());
+    
+        
+    
 
     // TODO: when you disconnect make sure w reconnect socket if hostname fails
     /*
@@ -273,4 +299,6 @@ void Client::clientStart()
     */
 
     mqtt_app_start();
+
+    
 }
