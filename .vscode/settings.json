@@ -10,8 +10,8 @@
         "span": "cpp",
         "cstdint": "cpp"
     },
-    "idf.portWin": "COM7",
+    "idf.portWin": "COM6",
     "idf.espIdfPath": "/Users/anthonychen/esp/v5.4.1/esp-idf",
     "idf.toolsPath": "/Users/anthonychen/.espressif",
-    "idf.pythonInstallPath": "/usr/bin/python3"
+    "idf.pythonInstallPath": "C:\\Users\\jeral\\.espressif\\tools\\idf-python\\3.11.2\\python.exe"
 }
