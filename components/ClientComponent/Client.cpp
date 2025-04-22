@@ -40,9 +40,9 @@ static const char *name = "mqtts_example";
 
 static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
-    #if MCU_TYPE == SENSOR
+    #if defined(SENSOR)
         int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
-    #elif MCU_TYPE == CAMERA
+    #elif defined(CAMERA)
         //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 1, 0);
         printf("%zu\n", len); 
 
@@ -175,7 +175,7 @@ void Client::clientPublish(char* data_type, void* value)
 {
     ESP_LOGI(name, "clientpubbed");
     cJSON* data = NULL;
-    #if MCU_TYPE == CAMERA
+    #if defined(CAMERA)
         if(strcmp(data_type, "cameraImage") == 0){
             payload_camera = true;
             imageData = static_cast<char*>(value); 
@@ -194,7 +194,7 @@ void Client::clientPublish(char* data_type, void* value)
             ESP_LOGI(name, "sending camera payload");
             data = serialize("Camera result", imageData, strlen(imageData), compressedSize, uncompressedSize); // Change compressed and uncompresed size from 1,1
         }
-    #elif MCU_TYPE == SENSOR
+    #elif defined(SENSOR)
         if (strcmp(data_type, "usage") == 0){
             payload_usage = true;
             usage = *(int*)value;
@@ -224,10 +224,10 @@ void Client::clientPublish(char* data_type, void* value)
             free(json_str);  // Free the allocated string after publishing
         }
         cJSON_Delete(data);  // Free cJSON object
-        #if MCU_TYPE == CAMERA
+        #if defined(CAMERA)
             payload_camera = false;
             imageData = NULL;
-        #elif MCU_TYPE == SENSOR
+        #elif defined(SENSOR)
             payload_usage = false;
             payload_distance = false;
             payload_weight = false;

@@ -11,10 +11,10 @@ using namespace Zotbins;
 
 // TRIGGER: ESP32-CAM is 12, WROVER is 22 
 // ECHO:    ESP32-CAM is 13, WROVER is 23 
-#if MCU_TYPE == SENSOR
+#if defined(SENSOR)
     const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
     const gpio_num_t PIN_ECHO = GPIO_NUM_23;
-#elif MCU_TYPE == CAMERA
+#elif defined(CAMERA)
     const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
     const gpio_num_t PIN_ECHO = GPIO_NUM_13;
 #endif
@@ -64,6 +64,8 @@ void FullnessTask::taskFunction(void *task)
 
 void FullnessTask::setup()
 {
+    ESP_ERROR_CHECK(gpio_config(&PIN_TRIGGER_CONFIG));
+    ESP_ERROR_CHECK(gpio_config(&PIN_ECHO_CONFIG));
 }
 
 float FullnessTask::getFullness(){
@@ -73,8 +75,6 @@ float FullnessTask::getFullness(){
 
 void FullnessTask::loop()
 {
-    ESP_ERROR_CHECK(gpio_config(&PIN_TRIGGER_CONFIG));
-    ESP_ERROR_CHECK(gpio_config(&PIN_ECHO_CONFIG));
 
     // TODO: use distance buffer to get averages and discard outliers
     // uint32_t bin_height = BIN_HEIGHT; // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE
@@ -94,14 +94,14 @@ void FullnessTask::loop()
     float threshold = 0.35; 
     bool sent = false;
     
-
-    ESP_LOGI(name, "Started Fullness Task");
     while (1)
     {
 
+        ESP_LOGI(name, "Hello from Fullness Task");
+
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
-        // TODO: for now, ultrasonic only sends on GPIO read to HIGH 
+        // TODO: for now, ultrasonic only sends on GPIO read to HIGH
         distance = ultrasonic.getDistance();
         ESP_LOGI(name, "Got distance in m: %f", distance);
 
@@ -116,23 +116,16 @@ void FullnessTask::loop()
 
         gpio_set_level(PIN_TRIGGER, 0);
         gpio_set_level(PIN_ECHO, 0);
-      
-        // TODO: Publish to MQTT broker when done 
-        // xTaskToNotify = xTaskGetHandle("weightTask");
-        // xTaskNotifyGive(xTaskToNotify);
-        
         
         // set GPIO back to CAMERA to HIGH (telling it to resume its own task)
         // gpio_set_level(GPIO_NUM_14, 1);
         // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         // gpio_set_level(GPIO_NUM_14, 0);
 
-        // // TODO: remove if no longer needed
         xTaskToNotify = xTaskGetHandle("weightTask"); 
         xTaskNotifyGive(xTaskToNotify); // once fullness is collected notify weight
         ESP_LOGI(name, "Notified Weight Task");
         
-        vTaskDelay(100 / portTICK_PERIOD_MS);  
     }
     vTaskDelete(NULL);
 }

@@ -79,8 +79,8 @@ void ServoTask::taskFunction(void *task)
 
 void ServoTask::setup()
 {
-    gpio_config(&PIN_SEND_MCU_CONFIG);
-    gpio_config(&PIN_RECEIVE_MCU_CONFIG);
+    ESP_ERROR_CHECK(gpio_config(&PIN_SEND_MCU_CONFIG));
+    ESP_ERROR_CHECK(gpio_config(&PIN_RECEIVE_MCU_CONFIG));
 }
 
 mcpwm_cmpr_handle_t comparator = NULL;

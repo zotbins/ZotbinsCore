@@ -4,7 +4,7 @@
 #include <cJSON.h>
 #include <stdint.h>
 
-#if MCU_TYPE == CAMERA
+#if defined(CAMERA)
 namespace Client
 {
     /*
@@ -24,7 +24,7 @@ namespace Client
     cJSON *serialize(char* message, char* img_str, size_t buffer_length, int compressedSize, int uncompressedSize);
 }
 
-#elif MCU_TYPE == SENSOR
+#elif defined(SENSOR)
 namespace Client
 {
     /*

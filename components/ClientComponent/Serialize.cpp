@@ -20,7 +20,7 @@ uint64_t getMAC(){
     return mac_addr;
 }
 
-#if MCU_TYPE == CAMERA
+#if defined(CAMERA)
 cJSON *Client::serialize(char* message, char* img_str, size_t buffer_length, int compressedSize, int uncompressedSize)
 {
     uint64_t mac_addr = getMAC();
@@ -39,7 +39,7 @@ cJSON *Client::serialize(char* message, char* img_str, size_t buffer_length, int
     return root;
 }
 
-#elif MCU_TYPE == SENSOR
+#elif defined(SENSOR)
 cJSON *Client::serialize(char* message, float fullness, bool overflow, int32_t weight, int usage)
 {
     // Use the ESP32's MAC address as a UUID (since it is a UUID)

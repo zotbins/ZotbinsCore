@@ -14,9 +14,9 @@ using namespace Zotbins;
 
 // ESP32-CAM is 16, WROVER is 18
 
-#if MCU_TYPE == SENSOR
+#if defined(SENSOR)
     const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
-#elif MCU_TYPE == CAMERA
+#elif defined(CAMERA)
     const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
 #endif
 
@@ -63,7 +63,7 @@ void UsageTask::taskFunction(void *task)
 
 void UsageTask::setup()
 {
-    gpio_config(&PIN_BREAKBEAM_CONFIG);
+    ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG));
     gpio_install_isr_service(0);
     gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL);
     gpio_intr_enable(PIN_BREAKBEAM);
@@ -94,11 +94,13 @@ void UsageTask::loop()
 
             // Client::clientPublish("usage", static_cast<void*>(&usage));
 
-            #if MCU_TYPE == CAMERA
+            #if defined(CAMERA)
+    		    ESP_LOGW(name, "MCU_TYPE is set as camera. Running camera config.");
                 xTaskToNotify = xTaskGetHandle("servoTask"); 
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
-                ESP_LOGI(name, "Notified Serco Task");
-            #elif MCU_TYPE == SENSOR
+                ESP_LOGI(name, "Notified Servo Task");
+            #elif defined(SENSOR)
+    		    ESP_LOGW(name, "MCU_TYPE is set as sensor. Running sensor config.");
                 xTaskToNotify = xTaskGetHandle("fullnessTask"); 
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
                 ESP_LOGI(name, "Notified Fullness Task");

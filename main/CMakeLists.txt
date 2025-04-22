@@ -3,10 +3,8 @@ idf_component_register(
     INCLUDE_DIRS "."
     REQUIRES ClientComponent FullnessComponent TaskComponent
 )
+
+# you also need to change this compile definition in the taskcomponent cmakelists.txt
                     
-add_compile_definitions(
-    SENSOR=1
-    CAMERA=2
-)
-add_compile_definitions(MCU_TYPE=SENSOR)
-# add_compile_definitions(MCU_TYPE=CAMERA)
+add_compile_definitions(SENSOR)
+# add_compile_definitions(CAMERA)
