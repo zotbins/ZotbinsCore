@@ -63,10 +63,10 @@ void UsageTask::taskFunction(void *task)
 
 void UsageTask::setup()
 {
-    ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG));
-    gpio_install_isr_service(0);
-    gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL);
-    gpio_intr_enable(PIN_BREAKBEAM);
+    ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG)); // NECESSARY FOR SOME PINS!!
+    ESP_ERROR_CHECK(gpio_install_isr_service(0));
+    ESP_ERROR_CHECK(gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL));
+    ESP_ERROR_CHECK(gpio_intr_enable(PIN_BREAKBEAM));
 }
 
 void UsageTask::loop()
@@ -74,6 +74,8 @@ void UsageTask::loop()
     // From https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf#iomuxgpio
     // GPIO pads 34-39 are input-only.
     ESP_LOGI(name, "Hello from Usage Task"); // init
+
+    usage = 0;
 
     while (1)
     {
@@ -88,20 +90,26 @@ void UsageTask::loop()
                 DETECTED = !gpio_get_level(PIN_BREAKBEAM);
             }
 
-            // TODO: usage for some reason goes to 1 million out of nowhere, needs testing
-            ESP_LOGI(name, "Item no longer detected. Incrementing usage: %i", usage);
-            usage += 1;
-
-            // Client::clientPublish("usage", static_cast<void*>(&usage));
+            ESP_LOGI(name, "Item no longer detected.");
 
             #if defined(CAMERA)
-                xTaskToNotify = xTaskGetHandle("servoTask"); 
-                xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
-                ESP_LOGI(name, "Notified Servo Task");
+
+                ESP_LOGI(name, "Notifying Camera Task.");
+                xTaskToNotify = xTaskGetHandle("cameraTask"); 
+                xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect image data
+                ESP_LOGI(name, "Notified Camera Task");
+
             #elif defined(SENSOR)
+
+                // increment and publish usage data
+                ESP_LOGI(name, "Incrementing usage: %i", usage);
+                usage += 1;
+                Client::clientPublish("usage", static_cast<void*>(&usage));
+            
                 xTaskToNotify = xTaskGetHandle("fullnessTask"); 
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
                 ESP_LOGI(name, "Notified Fullness Task");
+
             #endif
 
             DETECTED = false; // Reset variable.

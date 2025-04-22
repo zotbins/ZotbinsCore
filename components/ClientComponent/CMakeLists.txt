@@ -22,3 +22,8 @@ idf_component_register(SRCS "Client.cpp" "Serialize.cpp"
 if(HAS_AWS_CREDENTIALS)
     target_compile_definitions("${COMPONENT_TARGET}" PRIVATE HAS_AWS_CREDENTIALS)
 endif()
+
+# you also need to change this compile definition in the main and taskcomponent cmakelists.txt
+
+# add_compile_definitions(SENSOR)
+add_compile_definitions(CAMERA)

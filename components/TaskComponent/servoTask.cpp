@@ -79,7 +79,7 @@ void ServoTask::taskFunction(void *task)
 
 void ServoTask::setup()
 {
-    ESP_ERROR_CHECK(gpio_config(&PIN_SEND_MCU_CONFIG));
+    ESP_ERROR_CHECK(gpio_config(&PIN_SEND_MCU_CONFIG)); // NECESSARY FOR SOME PINS!!
     ESP_ERROR_CHECK(gpio_config(&PIN_RECEIVE_MCU_CONFIG));
 }
 

@@ -19,11 +19,17 @@ static const char *name = "main";
 extern "C" void app_main(void)
 {
 
+	// start mqtt task
     Client::clientStart();
 
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);	
 
+	// // not using communication task in favor of breakbeam interrupting both esps simultaneously, at a hardware level
+	// Zotbins::CommunicationTask communicationTask(messageQueue);
+	// communicationTask.start();
+
+	/* esp device specific tasks */
 	#if defined(CAMERA)
 
 		ESP_LOGW(name, "MCU_TYPE is set as camera. Running camera config.");
@@ -31,17 +37,8 @@ extern "C" void app_main(void)
 		// WARNING: ENABLE PSRAM BEFORE USE
 		// order matters, usage last
 
-		// Zotbins::ServoTask servoTask(messageQueue);
-		// servoTask.start();		
-		
-		// Zotbins::CommunicationTask communicationTask(messageQueue);
-		// communicationTask.start();
-
 		// Zotbins::CameraTask cameraTask(messageQueue);
 		// cameraTask.start();
-
-		// Zotbins::UsageTask usageTask( messageQueue);
-		// usageTask.start();
 
 	#elif defined(SENSOR)
 
@@ -50,15 +47,20 @@ extern "C" void app_main(void)
 		// WARNING: DISABLE PSRAM BEFORE USE
 		// order matters, weight > fullness > usage
 
+		// Zotbins::ServoTask servoTask(messageQueue);
+		// servoTask.start();
+
 		// not using weight for sustainable food fair
 		// Zotbins::WeightTask weightTask(messageQueue);
 		// weightTask.start();
  
 		Zotbins::FullnessTask fullnessTask(messageQueue);
 		fullnessTask.start();
-
-		Zotbins::UsageTask usageTask(messageQueue);
-		usageTask.start();
     
 	#endif     
+	/* end of esp device specific tasks */
+
+	Zotbins::UsageTask usageTask( messageQueue);
+	usageTask.start();
+
 }

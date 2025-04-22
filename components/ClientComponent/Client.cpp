@@ -134,27 +134,39 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
 static void mqtt_app_start(void)
 {
+    // // mqtts
+    // const esp_mqtt_client_config_t mqtt_cfg = {
+    //     .broker = {
+    //         .address = {
+    //             // TODO: make sure address isn't hardcoded and go back to config files
+    //             .uri = (const char *)AWS_URL,
+    //         },
+    //         .verification = {
+
+    //             .certificate = (const char *)AWS_CA_CRT,
+    //         },
+    //     },
+    //     .credentials = {.client_id = "SensorBin", .authentication = {
+    //                                                   .certificate = (const char *)AWS_CLIENT_CRT,
+    //                                                   .key = (const char *)AWS_CLIENT_KEY,
+    //                                               }}};
+
+    // mqtt
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
                 // TODO: make sure address isn't hardcoded and go back to config files
                 .uri = (const char *)AWS_URL,
-            },
-            .verification = {
-
-                .certificate = (const char *)AWS_CA_CRT,
-            },
-        },
-        .credentials = {.client_id = "SensorBin", .authentication = {
-                                                      .certificate = (const char *)AWS_CLIENT_CRT,
-                                                      .key = (const char *)AWS_CLIENT_KEY,
-                                                  }}};
+            }}};
 
     ESP_LOGI(name, "Connecting to AWS server %s", AWS_URL);
     ESP_LOGI(name, "[APP] Free memory: %" PRIu32 " bytes", esp_get_free_heap_size());
     esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
+    ESP_LOGI(name, "Initialized client.");
+
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, NULL);
+    ESP_LOGI(name, "Registered event handler.");
     esp_mqtt_client_start(client);
 }
 
@@ -173,7 +185,7 @@ int usage = 0;
 // TODO: change temp to include the actual value through variadics
 void Client::clientPublish(char* data_type, void* value)
 {
-    ESP_LOGI(name, "clientpubbed");
+    ESP_LOGI(name, "Publishing to broker.");
     cJSON* data = NULL;
     #if defined(CAMERA)
         if(strcmp(data_type, "cameraImage") == 0){
@@ -208,7 +220,7 @@ void Client::clientPublish(char* data_type, void* value)
 
         // only send when both distance and weight payloads are specified
         ESP_LOGI(name, "payload check use = %d, dis = %d, wei = %d", payload_usage, payload_distance, payload_weight);
-        if (payload_distance ){ // && payload_usage && payload_weight){
+        if (payload_distance) { // && payload_usage && payload_weight){
             ESP_LOGI(name, "sending payload");
             ESP_LOGI(name, "uses = %i, distance = %f, weight = %ld", usage, distance, weight);
             data = serialize("Sensor result", distance, false, weight, usage);            

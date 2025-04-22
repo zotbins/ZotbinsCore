@@ -64,7 +64,7 @@ void FullnessTask::taskFunction(void *task)
 
 void FullnessTask::setup()
 {
-    ESP_ERROR_CHECK(gpio_config(&PIN_TRIGGER_CONFIG));
+    ESP_ERROR_CHECK(gpio_config(&PIN_TRIGGER_CONFIG)); // NECESSARY FOR SOME PINS!!
     ESP_ERROR_CHECK(gpio_config(&PIN_ECHO_CONFIG));
 }
 
@@ -79,22 +79,16 @@ void FullnessTask::loop()
     ESP_LOGI(name, "Hello from Fullness Task");
 
     // TODO: use distance buffer to get averages and discard outliers
-    // uint32_t bin_height = BIN_HEIGHT; // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE
-    gpio_set_direction(PIN_TRIGGER, GPIO_MODE_OUTPUT);
-    gpio_set_direction(PIN_ECHO, GPIO_MODE_OUTPUT);
-
+    // TODO: use BIN_HEIGHT to calculate a percentage fullness
 
     float distance;
-    // TODO: this is the bad thing, if not inited it will not allow getDistance
-    // find a way to initialize this via constructor
     Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
     
-    // ensure comm pins are both low
-    gpio_set_level(GPIO_NUM_13, 0);
-    gpio_set_level(GPIO_NUM_14, 0);
+    // ensure trigger pin is low
+    gpio_set_level(PIN_TRIGGER, 0);
 
-    float threshold = 0.35; 
-    bool sent = false;
+    // float threshold = 0.35;
+    // bool SENT = false;
     
     while (1)
     {
@@ -104,24 +98,20 @@ void FullnessTask::loop()
         // TODO: for now, ultrasonic only sends on GPIO read to HIGH
         distance = ultrasonic.getDistance();
         ESP_LOGI(name, "Got distance in m: %f", distance);
+        Client::clientPublish("distance", static_cast<void*>(&distance));
 
-        if(distance > threshold && sent == false){
-            Client::clientPublish("distance", static_cast<void*>(&distance));
-            ESP_LOGI(name, "Sent Distance %f", distance);
-            sent = true;
-        }
-        else if (distance < threshold && sent == true){
-            sent = false; 
-        }
+        // if(distance > threshold && SENT == false){
+        //     Client::clientPublish("distance", static_cast<void*>(&distance));
+        //     ESP_LOGI(name, "Sent Distance %f", distance);
+        //     SENT = true;
+        // }
+        // else if (distance < threshold && SENT == true){
+        //     SENT = false; 
+        // }
 
         gpio_set_level(PIN_TRIGGER, 0);
-        gpio_set_level(PIN_ECHO, 0);
-        
-        // set GPIO back to CAMERA to HIGH (telling it to resume its own task)
-        // gpio_set_level(GPIO_NUM_14, 1);
-        // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-        // gpio_set_level(GPIO_NUM_14, 0);
 
+        /* task notifications */
 
         // // if weightTask is enabled
         // xTaskToNotify = xTaskGetHandle("weightTask"); 
@@ -132,6 +122,8 @@ void FullnessTask::loop()
         xTaskToNotify = xTaskGetHandle("usageTask");      
         vTaskResume(xTaskToNotify);
         ESP_LOGI(name, "Notified Usage Task");
+
+
         
     }
     vTaskDelete(NULL);
