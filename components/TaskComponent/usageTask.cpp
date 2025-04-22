@@ -80,7 +80,7 @@ void UsageTask::loop()
         // Double check breakbeam is broken and bool has tracked that.
         if (DETECTED)
         {
-            ESP_LOGD(name, "Detected item.");
+            ESP_LOGI(name, "Detected item.");
 
             // Breakbeam is broken by an object. Halt until the object leaves the breakbeam's path.
             while (DETECTED)
@@ -89,7 +89,7 @@ void UsageTask::loop()
             }
 
             // TODO: usage for some reason goes to 1 million out of nowhere, needs testing
-            ESP_LOGD(name, "Item no longer detected. Incrementing usage: %i", usage);
+            ESP_LOGI(name, "Item no longer detected. Incrementing usage: %i", usage);
             usage += 1;
 
             // Client::clientPublish("usage", static_cast<void*>(&usage));

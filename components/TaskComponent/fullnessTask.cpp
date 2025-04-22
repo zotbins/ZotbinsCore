@@ -76,6 +76,8 @@ float FullnessTask::getFullness(){
 void FullnessTask::loop()
 {
 
+    ESP_LOGI(name, "Hello from Fullness Task");
+
     // TODO: use distance buffer to get averages and discard outliers
     // uint32_t bin_height = BIN_HEIGHT; // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE
     gpio_set_direction(PIN_TRIGGER, GPIO_MODE_OUTPUT);
@@ -96,8 +98,6 @@ void FullnessTask::loop()
     
     while (1)
     {
-
-        ESP_LOGI(name, "Hello from Fullness Task");
 
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
@@ -121,7 +121,7 @@ void FullnessTask::loop()
         // gpio_set_level(GPIO_NUM_14, 1);
         // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         // gpio_set_level(GPIO_NUM_14, 0);
-        
+
 
         // // if weightTask is enabled
         // xTaskToNotify = xTaskGetHandle("weightTask"); 

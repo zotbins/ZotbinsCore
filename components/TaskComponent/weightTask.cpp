@@ -103,6 +103,8 @@ float WeightTask::getWeight(){
 
 void WeightTask::loop()
 {
+
+    ESP_LOGI(name, "Hello from Weight Task");
     
     {
     /* end of calibration */
@@ -209,9 +211,7 @@ void WeightTask::loop()
 
     while (1)
     {
-        
-        ESP_LOGI(name, "Hello from Weight Task");
-
+    
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
         ESP_ERROR_CHECK(gpio_set_level(wm.pd_sck, 0)); // reset clock pulse
@@ -243,7 +243,7 @@ void WeightTask::loop()
         // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
 
         ESP_LOGI(name, "Weighing bin : %f", (weight));
-        
+
         // Client::clientPublish("weight", static_cast<void*>(&weight));
 
         xTaskToNotify = xTaskGetHandle("usageTask");      
