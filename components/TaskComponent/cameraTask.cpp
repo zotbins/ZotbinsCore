@@ -86,7 +86,6 @@ static const uint32_t stackSize = 4096;
 
 #define PART_BOUNDARY "123456789000000000000987654321"
 
-static const char *TAG = "example:take_picture";
 static const char *_STREAM_CONTENT_TYPE = "multipart/x-mixed-replace;boundary=" PART_BOUNDARY;
 static const char *_STREAM_BOUNDARY = "\r\n--" PART_BOUNDARY "\r\n";
 static const char *_STREAM_PART = "Content-Type: image/jpeg\r\nContent-Length: %u\r\n\r\n";
@@ -170,10 +169,10 @@ static esp_err_t init_camera(void)
     esp_err_t err = esp_camera_init(&camera_config);
     if (err != ESP_OK)
     {
-        ESP_LOGE(TAG, "Camera Init Failed");
+        ESP_LOGE(name, "Camera Init Failed");
         return err;
     }
-    ESP_LOGI(TAG, "Camera Init Worked");
+    ESP_LOGI(name, "Camera Init Worked");
     return ESP_OK;
 }
 
@@ -227,25 +226,25 @@ esp_err_t init_sd_card() {
 void read_text_file(const char *path) {
     FILE *file = fopen(path, "r");
     if (!file) {
-        ESP_LOGE(TAG, "Failed to open file: %s", path);
+        ESP_LOGE(name, "Failed to open file: %s", path);
         return;
     }
 
-    ESP_LOGI(TAG, "Reading file: %s", path);
+    ESP_LOGI(name, "Reading file: %s", path);
     char line[256]; // Buffer to store lines from the file
     while (fgets(line, sizeof(line), file)) {
         printf("%s", line); // Print each line
     }
 
     fclose(file);
-    ESP_LOGI(TAG, "Finished reading: %s", path);
+    ESP_LOGI(name, "Finished reading: %s", path);
 }
 
 // Iterates through the SD card and publishes to mqtt server
 void publishSD(const char *dir_path) {
     DIR *dir = opendir(dir_path);
     if (!dir) {
-        ESP_LOGE(TAG, "Failed to open directory: %s", dir_path);
+        ESP_LOGE(name, "Failed to open directory: %s", dir_path);
         return;
     }
 
@@ -358,7 +357,7 @@ void CameraTask::loop()
 
     // Wait for Notification
     //ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY); 
-    ESP_LOGI(TAG, "Hello from Camera Task");
+    ESP_LOGI(name, "Hello from Camera Task");
 
     // Intialize SD Card
     // esp_err_t ret = init_sd_card();
@@ -380,9 +379,9 @@ void CameraTask::loop()
  
     // Initialize the camera
     if (ESP_OK != init_camera()){
-        ESP_LOGE(TAG, "Camera Failed");
+        ESP_LOGE(name, "Camera Failed");
     }else{
-        ESP_LOGI(TAG, "Camera started, getting sensor");
+        ESP_LOGI(name, "Camera started, getting sensor");
     }
 
     // Setup Camera 
@@ -413,7 +412,7 @@ void CameraTask::loop()
             free(output);
             
 
-            // ESP_LOGE(TAG, "Helo");
+            // ESP_LOGE(name, "Helo");
             // char *compressed_data = NULL;
             // int compressed_size = 0;
             // printf("Compressed size: %d\n", compressed_size);
@@ -431,10 +430,10 @@ void CameraTask::loop()
             // Open a file for writing (FILE_WRITE flag ensures data is written)
             // FILE *f = fopen("/sdcard/test.txt", "w");
             // if (f == NULL) {
-            //     ESP_LOGE(TAG, "Failed to open file for writing");
+            //     ESP_LOGE(name, "Failed to open file for writing");
             // }
             // else{
-            //     ESP_LOGI(TAG, "File written successfully!");
+            //     ESP_LOGI(name, "File written successfully!");
             //     fprintf(f, compressed_data);
             // }
 

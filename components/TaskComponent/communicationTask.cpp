@@ -18,7 +18,6 @@
 using namespace Zotbins;
 
 static const char *name = "communicationTask";
-static const char *TAG = "example:communication";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
 static TaskHandle_t usageHandle = NULL;
@@ -42,31 +41,31 @@ static uint8_t s_broadcast_mac[ESP_NOW_ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 /* ESP-NOW send callback */
 static void espnow_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status) {
     if (mac_addr == NULL) {
-        ESP_LOGE(TAG, "Send callback error");
+        ESP_LOGE(name, "Send callback error");
         return;
     }
     char mac_str[18]; // Buffer for MAC address string (17 chars + null terminator)
     snprintf(mac_str, sizeof(mac_str), MACSTR, MAC2STR(mac_addr));
-    ESP_LOGI(TAG, "Sent to %s, status: %s", mac_str, status == ESP_NOW_SEND_SUCCESS ? "Success" : "Fail");
+    ESP_LOGI(name, "Sent to %s, status: %s", mac_str, status == ESP_NOW_SEND_SUCCESS ? "Success" : "Fail");
 }
 
 /* ESP-NOW receive callback */
 static void espnow_recv_cb(const esp_now_recv_info_t *recv_info, const uint8_t *data, int len) {
     if (recv_info->src_addr == NULL || data == NULL || len <= 0) {
-        ESP_LOGE(TAG, "Receive callback error");
+        ESP_LOGE(name, "Receive callback error");
         return;
     }
 
     char *received_msg = (char *)malloc(len + 1);
     if (received_msg == NULL) {
-        ESP_LOGE(TAG, "Malloc receive buffer fail");
+        ESP_LOGE(name, "Malloc receive buffer fail");
         return;
     }
     memcpy(received_msg, data, len);
     received_msg[len] = '\0'; // Null-terminate string
     char mac_str[18]; // Buffer for MAC address string (17 chars + null terminator)
     snprintf(mac_str, sizeof(mac_str), MACSTR, MAC2STR(recv_info->src_addr));
-    ESP_LOGI(TAG, "Received from %s: %s", mac_str, received_msg);
+    ESP_LOGI(name, "Received from %s: %s", mac_str, received_msg);
     free(received_msg);
 }
 
@@ -74,11 +73,11 @@ static void espnow_recv_cb(const esp_now_recv_info_t *recv_info, const uint8_t *
 // void espnow_send_message(const char *message) {
 //     uint32_t message_len = strlen(message) + 1; // Include null terminator
 
-//     ESP_LOGI(TAG, "Start sending: %s", message);
+//     ESP_LOGI(name, "Start sending: %s", message);
 
 //     // Send the message using ESP-NOW
 //     if (esp_now_send(s_broadcast_mac, (uint8_t *)message, message_len) != ESP_OK) {
-//         ESP_LOGE(TAG, "Send error");
+//         ESP_LOGE(name, "Send error");
 //     }
 // }
 
@@ -87,7 +86,7 @@ static void espnow_recv_cb(const esp_now_recv_info_t *recv_info, const uint8_t *
 static esp_err_t espnow_init(void) {
     s_espnow_queue = xQueueCreate(10, sizeof(uint32_t)); // Simplified queue for events
     if (s_espnow_queue == NULL) {
-        ESP_LOGE(TAG, "Create queue fail");
+        ESP_LOGE(name, "Create queue fail");
         return ESP_FAIL;
     }
 
@@ -98,7 +97,7 @@ static esp_err_t espnow_init(void) {
     // Add broadcast peer
     esp_now_peer_info_t *peer = (esp_now_peer_info_t *)malloc(sizeof(esp_now_peer_info_t));
     if (peer == NULL) {
-        ESP_LOGE(TAG, "Malloc peer info fail");
+        ESP_LOGE(name, "Malloc peer info fail");
         vQueueDelete(s_espnow_queue);
         esp_now_deinit();
         return ESP_FAIL;
@@ -135,18 +134,18 @@ void CommunicationTask::taskFunction(void *task)
 void CommunicationTask::sendMessage(const char *message){
     uint32_t message_len = strlen(message) + 1; // Include null terminator
 
-    ESP_LOGI(TAG, "Start sending: %s", message);
+    ESP_LOGI(name, "Start sending: %s", message);
 
     // Send the message using ESP-NOW
     if (esp_now_send(s_broadcast_mac, (uint8_t *)message, message_len) != ESP_OK) {
-        ESP_LOGE(TAG, "Send error");
+        ESP_LOGE(name, "Send error");
     }
 
 }
 
 void CommunicationTask::setup()
 {
-    ESP_LOGE(TAG, "Hello from Communication Task");
+    ESP_LOGE(name, "Hello from Communication Task");
 
     espnow_init();
 

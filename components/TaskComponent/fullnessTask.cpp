@@ -13,7 +13,7 @@ using namespace Zotbins;
 const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
 
 // ESP32-CAM is 13, WROVER is 23 
-const gpio_num_t PIN_ECHO = GPIO_NUM_13;
+const gpio_num_t PIN_ECHO = GPIO_NUM_23;
 const float BIN_HEIGHT = 100;
 
 const gpio_config_t PIN_TRIGGER_CONFIG = {
@@ -91,6 +91,8 @@ void FullnessTask::loop()
     while (1)
     {
 
+        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+
         // TODO: for now, ultrasonic only sends on GPIO read to HIGH 
         distance = ultrasonic.getDistance();
         ESP_LOGI(name, "Got distance in m: %f", distance);
@@ -103,7 +105,6 @@ void FullnessTask::loop()
         else if (distance < threshold && sent == true){
             sent = false; 
         }
-
 
         gpio_set_level(PIN_TRIGGER, 0);
         gpio_set_level(PIN_ECHO, 0);
@@ -119,8 +120,9 @@ void FullnessTask::loop()
         // gpio_set_level(GPIO_NUM_14, 0);
 
         // // TODO: remove if no longer needed
-        // xTaskToNotify = xTaskGetHandle("usageTask");        
-        // vTaskResume(xTaskToNotify);
+        xTaskToNotify = xTaskGetHandle("weightTask"); 
+        xTaskNotifyGive(xTaskToNotify); // once fullness is collected notify weight
+        ESP_LOGI(name, "Notified Weight Task");
         
         vTaskDelay(100 / portTICK_PERIOD_MS);  
     }

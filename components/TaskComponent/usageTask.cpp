@@ -12,8 +12,24 @@
 
 using namespace Zotbins;
 
-// ESP32-CAM is 16, WROVER is 18 
+// ESP32-CAM is 16, WROVER is 18
+
+#if MCU_TYPE == SENSOR
+
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18; // shifted for same reason. 15 used by servo, cant use servo on pin 15 simultaneously.
+
+#elif MCU_TYPE == CAMERA
+
 const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
+
+#endif
+
+const gpio_config_t PIN_BREAKBEAM_CONFIG = {
+    .pin_bit_mask = (1ULL << PIN_BREAKBEAM),
+    .mode = GPIO_MODE_INPUT,
+    .pull_up_en = GPIO_PULLUP_ENABLE,
+    .pull_down_en = GPIO_PULLDOWN_DISABLE,
+    .intr_type = GPIO_INTR_NEGEDGE};
 
 static const char *name = "usageTask";
 static const int priority = 1;
@@ -49,8 +65,7 @@ void UsageTask::taskFunction(void *task)
 void UsageTask::setup()
 {
     gpio_install_isr_service(0);
-    gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
-    gpio_set_intr_type(PIN_BREAKBEAM, GPIO_INTR_NEGEDGE); // Falling edge interrupt
+    gpio_config(&PIN_BREAKBEAM_CONFIG);
     gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL);
     gpio_intr_enable(PIN_BREAKBEAM);
 
@@ -72,13 +87,13 @@ void UsageTask::loop()
             vTaskSuspend(NULL); // Suspend the task until notified
         }
         bool DETECTED = !gpio_get_level(PIN_BREAKBEAM); // Read in signal from breakbeam
-        if (!DETECTED) // If breakbeam is disconnected
+        if (DETECTED) // If breakbeam is disconnected
         {
             ESP_LOGI(name, "Detected item.");
-            // while (DETECTED)
-            // {
-            //     DETECTED = !gpio_get_level(PIN_BREAKBEAM);
-            // }
+            while (DETECTED)
+            {
+                DETECTED = !gpio_get_level(PIN_BREAKBEAM);
+            }
 
             
 

@@ -4,12 +4,6 @@
 #include <cJSON.h>
 #include <stdint.h>
 
-#define SENSOR 1
-#define CAMERA 2
-
-// TODO: write a global config file that other files can require to preconfigure code
-#define MCU_TYPE CAMERA  // Change to SENSOR or CAMERA if needed
-
 #if MCU_TYPE == CAMERA
 namespace Client
 {

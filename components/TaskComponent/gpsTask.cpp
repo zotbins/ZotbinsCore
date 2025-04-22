@@ -17,7 +17,6 @@ static const char *name = "gpsTask";
 static const int priority = 2; // Maybe change priority later
 static const uint32_t stackSize = 4096;
 
-static const char *TAG = "gpsTask:sendData";
 const gpio_num_t flashPIN = GPIO_NUM_4;
 
 #define GPS_UART_NUM      UART_NUM_0
@@ -96,7 +95,7 @@ void GpsTask::loop()
 
     while(1){
         gps_read_data();
-        ESP_LOGE(TAG, "GPS Working");
+        ESP_LOGE(name, "GPS Working");
         Client::clientPublishStr("Amongus");
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
