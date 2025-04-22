@@ -40,14 +40,14 @@ extern "C" void app_main(void)
 		io_conf.pull_down_en = GPIO_PULLDOWN_ENABLE;  // Prevent floating
 		gpio_config(&io_conf);
 
-		Zotbins::ServoTask servoTask(messageQueue);
-		servoTask.start();
+		// Zotbins::ServoTask servoTask(messageQueue);
+		// servoTask.start();
 
 		Zotbins::CameraTask cameraTask(messageQueue);
 		cameraTask.start();
 
-		Zotbins::UsageTask usageTask( messageQueue);
-		usageTask.start();
+		// Zotbins::UsageTask usageTask( messageQueue);
+		// usageTask.start();
 
 	#elif MCU_TYPE == SENSOR
 		// GPIO13 as INPUT (receives signal)

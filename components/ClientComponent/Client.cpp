@@ -30,7 +30,13 @@
 #include <cstdarg>
 #include <cstring>
 
-static const char *TAG = "mqtts_example";
+#define AWS 0
+#define TURINGPI 1
+
+#define SERVER TURINGPI
+#define TURINGPI_URL "mqtt://128.200.218.101:1883"
+
+static const char *TAG = "zotbins_mqtt_client";
 
 static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
@@ -121,27 +127,42 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(TAG, "Other event id:%d", event->event_id);
         break;
     }
+
+            ESP_LOGI(TAG, "TOPIC=%.*s\r\n", event->topic_len, event->topic);
+
 }
 
 static void mqtt_app_start(void)
 {
-    const esp_mqtt_client_config_t mqtt_cfg = {
-        .broker = {
-            .address = {
-                // TODO: make sure address isn't hardcoded and go back to config files
-                .uri = (const char *)AWS_URL,
-            },
-            .verification = {
+    #if SERVER == AWS
+        const esp_mqtt_client_config_t mqtt_cfg = {
+            .broker = {
+                .address = {
+                    // TODO: make sure address isn't hardcoded and go back to config files
+                    .uri = (const char *)AWS_URL,
+                },
+                .verification = {
 
-                .certificate = (const char *)AWS_CA_CRT,
+                    .certificate = (const char *)AWS_CA_CRT,
+                },
             },
-        },
-        .credentials = {.client_id = "SensorBin", .authentication = {
-                                                      .certificate = (const char *)AWS_CLIENT_CRT,
-                                                      .key = (const char *)AWS_CLIENT_KEY,
-                                                  }}};
+            .credentials = {.client_id = "SensorBin", .authentication = {
+                                                        .certificate = (const char *)AWS_CLIENT_CRT,
+                                                        .key = (const char *)AWS_CLIENT_KEY,
+                                                    }}};
+        ESP_LOGI(TAG, "Connecting to AWS server %s", AWS_URL);
 
-    ESP_LOGI(TAG, "Connecting to AWS server %s", AWS_URL);
+    #elif SERVER == TURINGPI
+        const esp_mqtt_client_config_t mqtt_cfg = {
+            .broker = {
+                .address= {
+                    .uri = TURINGPI_URL
+                }
+            }
+        };
+        ESP_LOGI(TAG, "Connecting to TuringPi %s", TURINGPI_URL);
+    #endif
+
     ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes", esp_get_free_heap_size());
     esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */

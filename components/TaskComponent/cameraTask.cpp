@@ -108,10 +108,10 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_QQVGA, // UXGA, VGA
+    .frame_size = FRAMESIZE_VGA, // UXGA, VGA
     .jpeg_quality = 64,
-    .fb_count = 2,
-    .fb_location = CAMERA_FB_IN_DRAM,// CAMERA_FB_IN_PSRAM,
+    .fb_count = 8,
+    .fb_location = CAMERA_FB_IN_PSRAM,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
 };
 
@@ -172,7 +172,7 @@ void CameraTask::setup()
 void CameraTask::loop()
 {
     ESP_LOGI(TAG, "Hello from Camera Task");
-    ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+    // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
     gpio_reset_pin(flashPIN);
     gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
@@ -211,7 +211,7 @@ void CameraTask::loop()
 
             ESP_LOGI(TAG, "Camera fb get done, sending");
 
-            size_t output_size = 2000; 
+            size_t output_size = fb->len * 4;
             char *output = (char *)malloc(output_size);
             // needs time to allocate 
             vTaskDelay(2000 / portTICK_PERIOD_MS);
