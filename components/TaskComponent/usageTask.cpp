@@ -80,7 +80,7 @@ void UsageTask::loop()
         // Double check breakbeam is broken and bool has tracked that.
         if (DETECTED)
         {
-            ESP_LOGI(name, "Detected item.");
+            ESP_LOGD(name, "Detected item.");
 
             // Breakbeam is broken by an object. Halt until the object leaves the breakbeam's path.
             while (DETECTED)
@@ -89,18 +89,16 @@ void UsageTask::loop()
             }
 
             // TODO: usage for some reason goes to 1 million out of nowhere, needs testing
-            ESP_LOGI(name, "Item no longer detected. Incrementing usage: %i", usage);
+            ESP_LOGD(name, "Item no longer detected. Incrementing usage: %i", usage);
             usage += 1;
 
             // Client::clientPublish("usage", static_cast<void*>(&usage));
 
             #if defined(CAMERA)
-    		    ESP_LOGW(name, "MCU_TYPE is set as camera. Running camera config.");
                 xTaskToNotify = xTaskGetHandle("servoTask"); 
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
                 ESP_LOGI(name, "Notified Servo Task");
             #elif defined(SENSOR)
-    		    ESP_LOGW(name, "MCU_TYPE is set as sensor. Running sensor config.");
                 xTaskToNotify = xTaskGetHandle("fullnessTask"); 
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
                 ESP_LOGI(name, "Notified Fullness Task");

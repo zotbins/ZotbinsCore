@@ -121,10 +121,17 @@ void FullnessTask::loop()
         // gpio_set_level(GPIO_NUM_14, 1);
         // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         // gpio_set_level(GPIO_NUM_14, 0);
+        
 
-        xTaskToNotify = xTaskGetHandle("weightTask"); 
-        xTaskNotifyGive(xTaskToNotify); // once fullness is collected notify weight
-        ESP_LOGI(name, "Notified Weight Task");
+        // // if weightTask is enabled
+        // xTaskToNotify = xTaskGetHandle("weightTask"); 
+        // xTaskNotifyGive(xTaskToNotify); // once fullness is collected notify weight
+        // ESP_LOGI(name, "Notified Weight Task");
+
+        // if weightTask is disabled
+        xTaskToNotify = xTaskGetHandle("usageTask");      
+        vTaskResume(xTaskToNotify);
+        ESP_LOGI(name, "Notified Usage Task");
         
     }
     vTaskDelete(NULL);
