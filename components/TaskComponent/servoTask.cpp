@@ -23,6 +23,22 @@ const gpio_num_t inputPIN = GPIO_NUM_32;
 const gpio_num_t PIN_SEND_MCU = GPIO_NUM_13;
 const gpio_num_t PIN_RECEIVE_MCU = GPIO_NUM_14;
 
+const gpio_config_t PIN_SEND_MCU_CONFIG = {
+    .pin_bit_mask = (1ULL << PIN_SEND_MCU),
+    .mode = GPIO_MODE_OUTPUT,
+    .pull_up_en = GPIO_PULLUP_DISABLE,
+    .pull_down_en = GPIO_PULLDOWN_DISABLE,
+    .intr_type = GPIO_INTR_DISABLE
+};
+
+const gpio_config_t PIN_RECEIVE_MCU_CONFIG = {
+    .pin_bit_mask = (1ULL << PIN_RECEIVE_MCU),
+    .mode = GPIO_MODE_INPUT,
+    .pull_up_en = GPIO_PULLUP_DISABLE,
+    .pull_down_en = GPIO_PULLDOWN_ENABLE, // Prevent floating
+    .intr_type = GPIO_INTR_DISABLE
+};
+
 static inline uint32_t example_angle_to_compare(int angle)
 {
     return (angle - SERVO_MIN_DEGREE) * (SERVO_MAX_PULSEWIDTH_US - SERVO_MIN_PULSEWIDTH_US) / (SERVO_MAX_DEGREE - SERVO_MIN_DEGREE) + SERVO_MIN_PULSEWIDTH_US;
@@ -31,6 +47,7 @@ static inline uint32_t example_angle_to_compare(int angle)
 static const char *name = "servoTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+
 static TaskHandle_t xTaskToNotify = NULL;
 
 // Servo Constants
@@ -60,9 +77,10 @@ void ServoTask::taskFunction(void *task)
     servoTask->loop();
 }
 
-void ServoTask::setup() // TODO: could refactor into setup later but there are a lot of issues with scope
+void ServoTask::setup()
 {
-
+    gpio_config(&PIN_SEND_MCU_CONFIG);
+    gpio_config(&PIN_RECEIVE_MCU_CONFIG);
 }
 
 mcpwm_cmpr_handle_t comparator = NULL;

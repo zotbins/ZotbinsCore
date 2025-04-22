@@ -15,13 +15,9 @@ using namespace Zotbins;
 // ESP32-CAM is 16, WROVER is 18
 
 #if MCU_TYPE == SENSOR
-
-const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18; // shifted for same reason. 15 used by servo, cant use servo on pin 15 simultaneously.
-
+    const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
 #elif MCU_TYPE == CAMERA
-
-const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
-
+    const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
 #endif
 
 const gpio_config_t PIN_BREAKBEAM_CONFIG = {
@@ -29,15 +25,18 @@ const gpio_config_t PIN_BREAKBEAM_CONFIG = {
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_ENABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_NEGEDGE};
+    .intr_type = GPIO_INTR_NEGEDGE
+};
 
 static const char *name = "usageTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+
 static TaskHandle_t usageHandle = NULL;
-static bool beamBroken = false;
 static TaskHandle_t xTaskToNotify = NULL;
 static const int core = 1;
+
+static bool DETECTED = false;
 
 UsageTask::UsageTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -46,7 +45,7 @@ UsageTask::UsageTask(QueueHandle_t &messageQueue)
 
 void IRAM_ATTR breakbeamISR(void *arg)
 {
-    beamBroken = true;
+    DETECTED = true;
     vTaskResume(usageHandle);
 }
 
@@ -64,12 +63,10 @@ void UsageTask::taskFunction(void *task)
 
 void UsageTask::setup()
 {
-    gpio_install_isr_service(0);
     gpio_config(&PIN_BREAKBEAM_CONFIG);
+    gpio_install_isr_service(0);
     gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL);
     gpio_intr_enable(PIN_BREAKBEAM);
-
-    // TODO: make a int tracker that detects how many times usagetask is used
 }
 
 void UsageTask::loop()
@@ -78,30 +75,24 @@ void UsageTask::loop()
     // GPIO pads 34-39 are input-only.
     ESP_LOGI(name, "Hello from Usage Task"); // init
 
-    // Setup GPIO pin sensors
-    gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
     while (1)
     {
-        if (!beamBroken)
-        {
-            vTaskSuspend(NULL); // Suspend the task until notified
-        }
-        bool DETECTED = !gpio_get_level(PIN_BREAKBEAM); // Read in signal from breakbeam
-        if (DETECTED) // If breakbeam is disconnected
+        // Double check breakbeam is broken and bool has tracked that.
+        if (DETECTED)
         {
             ESP_LOGI(name, "Detected item.");
+
+            // Breakbeam is broken by an object. Halt until the object leaves the breakbeam's path.
             while (DETECTED)
             {
                 DETECTED = !gpio_get_level(PIN_BREAKBEAM);
             }
 
-            
-
             // TODO: usage for some reason goes to 1 million out of nowhere, needs testing
             ESP_LOGI(name, "Item no longer detected. Incrementing usage: %i", usage);
             usage += 1;
+
             // Client::clientPublish("usage", static_cast<void*>(&usage));
-            beamBroken = false;
 
             #if MCU_TYPE == CAMERA
                 xTaskToNotify = xTaskGetHandle("servoTask"); 
@@ -113,10 +104,16 @@ void UsageTask::loop()
                 ESP_LOGI(name, "Notified Fullness Task");
             #endif
 
-            // TODO: vTaskSuspend doesn't stop ready to detect printing
-            vTaskSuspend(NULL);
+            DETECTED = false; // Reset variable.
+            vTaskSuspend(NULL); // Suspend task until next interrupt.
+
         }
-        ESP_LOGI(name, "Ready to detect.");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+        else {
+
+            ESP_LOGI(name, "Ready to detect.");
+            vTaskSuspend(NULL); // Suspend task until next interrupt.
+
+        }
     }
 }

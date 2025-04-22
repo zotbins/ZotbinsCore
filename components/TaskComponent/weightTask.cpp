@@ -19,14 +19,16 @@ const gpio_config_t PIN_PD_SCK_CONFIG = {
     .mode = GPIO_MODE_OUTPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_ENABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+    .intr_type = GPIO_INTR_DISABLE
+};
 
 const gpio_config_t PIN_DOUT_CONFIG = {
     .pin_bit_mask = (1ULL << PIN_DOUT),
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+    .intr_type = GPIO_INTR_DISABLE
+};
 
 static const char *name = "weightTask";
 static const int priority = 1;

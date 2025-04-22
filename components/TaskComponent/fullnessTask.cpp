@@ -9,30 +9,38 @@
 
 using namespace Zotbins;
 
-// ESP32-CAM is 12, WROVER is 22 
-const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
+// TRIGGER: ESP32-CAM is 12, WROVER is 22 
+// ECHO:    ESP32-CAM is 13, WROVER is 23 
+#if MCU_TYPE == SENSOR
+    const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
+    const gpio_num_t PIN_ECHO = GPIO_NUM_23;
+#elif MCU_TYPE == CAMERA
+    const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
+    const gpio_num_t PIN_ECHO = GPIO_NUM_13;
+#endif
 
-// ESP32-CAM is 13, WROVER is 23 
-const gpio_num_t PIN_ECHO = GPIO_NUM_23;
-const float BIN_HEIGHT = 100;
+const float BIN_HEIGHT = 100; // don't remember what the units are. someone confirm this and rename the constant appropriately
 
 const gpio_config_t PIN_TRIGGER_CONFIG = {
-    .pin_bit_mask = 0x00001000,
+    .pin_bit_mask = (1ULL << PIN_TRIGGER),
     .mode = GPIO_MODE_OUTPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_ENABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+    .intr_type = GPIO_INTR_DISABLE
+};
 
 const gpio_config_t PIN_ECHO_CONFIG = {
-    .pin_bit_mask = 0x00002000,
+    .pin_bit_mask = (1ULL << PIN_ECHO),
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+    .intr_type = GPIO_INTR_DISABLE
+};
 
 static const char *name = "fullnessTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+
 static TaskHandle_t xTaskToNotify = NULL;
 static const int core = 1;
 
@@ -54,7 +62,7 @@ void FullnessTask::taskFunction(void *task)
     fullnessTask->loop();
 }
 
-void FullnessTask::setup() // could refactor into setup later but there are a lot of issues with scope
+void FullnessTask::setup()
 {
 }
 
