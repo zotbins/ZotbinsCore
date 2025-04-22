@@ -37,8 +37,8 @@ extern "C" void app_main(void)
 		// WARNING: ENABLE PSRAM BEFORE USE
 		// order matters, usage last
 
-		// Zotbins::CameraTask cameraTask(messageQueue);
-		// cameraTask.start();
+		Zotbins::CameraTask cameraTask(messageQueue);
+		cameraTask.start();
 
 	#elif defined(SENSOR)
 
@@ -60,7 +60,8 @@ extern "C" void app_main(void)
 	#endif     
 	/* end of esp device specific tasks */
 
-	Zotbins::UsageTask usageTask( messageQueue);
+	ESP_LOGI(name, "Starting usage task...");
+	Zotbins::UsageTask usageTask(messageQueue);
 	usageTask.start();
 
 }

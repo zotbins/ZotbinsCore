@@ -25,5 +25,5 @@ endif()
 
 # you also need to change this compile definition in the main and taskcomponent cmakelists.txt
 
-# add_compile_definitions(SENSOR)
-add_compile_definitions(CAMERA)
+add_compile_definitions(SENSOR)
+# add_compile_definitions(CAMERA)

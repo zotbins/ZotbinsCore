@@ -17,7 +17,7 @@ using namespace Zotbins;
 #if defined(SENSOR)
     const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
 #elif defined(CAMERA)
-    const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_16;
+    const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_14; // PIN 16 DOES NOT WORK ON THE CAM FOR INTERRUPTS
 #endif
 
 const gpio_config_t PIN_BREAKBEAM_CONFIG = {
@@ -56,6 +56,7 @@ void UsageTask::start()
 
 void UsageTask::taskFunction(void *task)
 {
+    // ESP_LOGI(name, "Usage Task Function pinned to core.");
     UsageTask *usageTask = static_cast<UsageTask *>(task);
     usageTask->setup();
     usageTask->loop();
@@ -63,17 +64,22 @@ void UsageTask::taskFunction(void *task)
 
 void UsageTask::setup()
 {
+    // ESP_LOGI(name, "Running usage setup.");
     ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG)); // NECESSARY FOR SOME PINS!!
+    // ESP_LOGI(name, "1");
     ESP_ERROR_CHECK(gpio_install_isr_service(0));
+    // ESP_LOGI(name, "2");
     ESP_ERROR_CHECK(gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL));
+    // ESP_LOGI(name, "3");
     ESP_ERROR_CHECK(gpio_intr_enable(PIN_BREAKBEAM));
+    // ESP_LOGI(name, "Usage setup complete.");
 }
 
 void UsageTask::loop()
 {
     // From https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf#iomuxgpio
     // GPIO pads 34-39 are input-only.
-    ESP_LOGI(name, "Hello from Usage Task"); // init
+    ESP_LOGI(name, "Hello from Usage Task"); // init\=
 
     usage = 0;
 
