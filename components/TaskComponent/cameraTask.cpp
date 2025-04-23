@@ -435,7 +435,7 @@ void CameraTask::loop()
             cnt = 0;
             
             
-            xTaskToNotify = xTaskGetHandle("usageTask"); // servoTask");
+            xTaskToNotify = xTaskGetHandle("servoTask"); // servoTask");
             xTaskNotifyGive(xTaskToNotify);
         }
         esp_camera_fb_return(fb);

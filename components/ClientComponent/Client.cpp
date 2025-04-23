@@ -46,7 +46,7 @@ static void publish(esp_mqtt_client_handle_t client, const void *data, size_t le
         //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 1, 0);
         printf("%zu\n", len); 
 
-        int msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
+        int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
     #endif
     //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
     //ESP_LOGI(name, "message published with msg_id=%d", msg_id);

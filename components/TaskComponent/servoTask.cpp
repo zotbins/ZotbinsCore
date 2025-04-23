@@ -17,27 +17,26 @@ using namespace Zotbins;
 #define SERVO_TIMEBASE_PERIOD 20000          // 20000 ticks, 20ms
 
 const gpio_num_t PIN_SERVO = GPIO_NUM_15;
-const gpio_num_t inputPIN = GPIO_NUM_32;
 
 // TODO: get a direct access mapping to MCU's available GPIO pins or something instead
-const gpio_num_t PIN_SEND_MCU = GPIO_NUM_13;
-const gpio_num_t PIN_RECEIVE_MCU = GPIO_NUM_14;
+// const gpio_num_t PIN_SEND_MCU = GPIO_NUM_13;
+// const gpio_num_t PIN_RECEIVE_MCU = GPIO_NUM_14;
 
-const gpio_config_t PIN_SEND_MCU_CONFIG = {
-    .pin_bit_mask = (1ULL << PIN_SEND_MCU),
-    .mode = GPIO_MODE_OUTPUT,
-    .pull_up_en = GPIO_PULLUP_DISABLE,
-    .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE
-};
+// const gpio_config_t PIN_SEND_MCU_CONFIG = {
+//     .pin_bit_mask = (1ULL << PIN_SEND_MCU),
+//     .mode = GPIO_MODE_OUTPUT,
+//     .pull_up_en = GPIO_PULLUP_DISABLE,
+//     .pull_down_en = GPIO_PULLDOWN_DISABLE,
+//     .intr_type = GPIO_INTR_DISABLE
+// };
 
-const gpio_config_t PIN_RECEIVE_MCU_CONFIG = {
-    .pin_bit_mask = (1ULL << PIN_RECEIVE_MCU),
-    .mode = GPIO_MODE_INPUT,
-    .pull_up_en = GPIO_PULLUP_DISABLE,
-    .pull_down_en = GPIO_PULLDOWN_ENABLE, // Prevent floating
-    .intr_type = GPIO_INTR_DISABLE
-};
+// const gpio_config_t PIN_RECEIVE_MCU_CONFIG = {
+//     .pin_bit_mask = (1ULL << PIN_RECEIVE_MCU),
+//     .mode = GPIO_MODE_INPUT,
+//     .pull_up_en = GPIO_PULLUP_DISABLE,
+//     .pull_down_en = GPIO_PULLDOWN_ENABLE, // Prevent floating
+//     .intr_type = GPIO_INTR_DISABLE
+// };
 
 static inline uint32_t example_angle_to_compare(int angle)
 {
@@ -47,6 +46,7 @@ static inline uint32_t example_angle_to_compare(int angle)
 static const char *name = "servoTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+static const int core = 1;
 
 static TaskHandle_t xTaskToNotify = NULL;
 
@@ -66,7 +66,7 @@ ServoTask::ServoTask(QueueHandle_t &messageQueue)
 // TODO: implement servo with task notifs
 void ServoTask::start()
 {
-    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, 1);
+    xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
     // xTaskCreate(taskFunction, mName, mStackSize, this, mPriority, nullptr);
 }
 
@@ -79,8 +79,8 @@ void ServoTask::taskFunction(void *task)
 
 void ServoTask::setup()
 {
-    ESP_ERROR_CHECK(gpio_config(&PIN_SEND_MCU_CONFIG)); // NECESSARY FOR SOME PINS!!
-    ESP_ERROR_CHECK(gpio_config(&PIN_RECEIVE_MCU_CONFIG));
+    // ESP_ERROR_CHECK(gpio_config(&PIN_SEND_MCU_CONFIG)); // NECESSARY FOR SOME PINS!!
+    // ESP_ERROR_CHECK(gpio_config(&PIN_RECEIVE_MCU_CONFIG));
 }
 
 mcpwm_cmpr_handle_t comparator = NULL;
@@ -143,15 +143,15 @@ void ServoTask::loop()
 
         // Call the rotate function whenever necessary
         angle = 0;
-        ESP_LOGI(name, "Go to -90 degrees");
-        // vTaskDelay(5000  / portTICK_PERIOD_MS);
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-90));
+        ESP_LOGI(name, "Go to -200 degrees");
+        vTaskDelay(5000  / portTICK_PERIOD_MS);
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-200));
         // // now attempt -270
 
         // TO DEASSERT: set angle to -100 degrees (bring tray down)
-        ESP_LOGI(name, "Go to 0 degrees");
+        ESP_LOGI(name, "Go to -100 degrees");
         vTaskDelay(5000  / portTICK_PERIOD_MS);
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(0));
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-100));
         
         xTaskToNotify = xTaskGetHandle("cameraTask");        
         xTaskNotifyGive(xTaskToNotify);

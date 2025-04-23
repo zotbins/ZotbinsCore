@@ -35,6 +35,8 @@ extern "C" void app_main(void)
 
 		// WARNING: ENABLE PSRAM BEFORE USE
 		// order matters, usage last
+		Zotbins::ServoTask servoTask(messageQueue);
+		servoTask.start();
 
 		Zotbins::CameraTask cameraTask(messageQueue);
 		cameraTask.start();
@@ -45,9 +47,6 @@ extern "C" void app_main(void)
 
 		// WARNING: DISABLE PSRAM BEFORE USE
 		// order matters, weight > fullness > usage
-
-		// Zotbins::ServoTask servoTask(messageQueue);
-		// servoTask.start();
 
 		// not using weight for sustainable food fair
 		Zotbins::WeightTask weightTask(messageQueue);
