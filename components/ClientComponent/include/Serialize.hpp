@@ -21,7 +21,8 @@ namespace Client
      * @return cJSON* root of a JSON object containing camera data. 
      *         Make sure to free this after use.
      */
-    cJSON *serialize(char* message, char* img_str, size_t buffer_length, int compressedSize, int uncompressedSize);
+    cJSON *serialize(char* message, char* img_str, size_t buffer_length);
+    //cJSON *serialize(char* message, char* img_str, size_t buffer_length, int compressedSize, int uncompressedSize);
 }
 
 #elif defined(SENSOR)

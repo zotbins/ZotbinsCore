@@ -124,8 +124,8 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_SVGA, // UXGA, VGA
-    .jpeg_quality = 20,
+    .frame_size = FRAMESIZE_VGA, // UXGA, VGA
+    .jpeg_quality = 12,
     .fb_count = 20,
     .fb_location = CAMERA_FB_IN_PSRAM,// CAMERA_FB_IN_PSRAM,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
@@ -325,6 +325,15 @@ void CameraTask::setup()
 
 void CameraTask::loop()
 {
+
+
+    uint8_t mac[6];  // Array to store the MAC address
+
+    esp_wifi_get_mac(WIFI_IF_STA, mac);  // Get Wi-Fi station MAC address
+
+    printf("ESP32 MAC Address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+           mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
 
     // Wait for Notification
     ESP_LOGE(name, "fdsjfsdijf");

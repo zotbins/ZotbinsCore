@@ -10,5 +10,5 @@
         "span": "cpp",
         "cstdint": "cpp"
     },
-    "idf.portWin": "COM4"
+    "idf.portWin": "COM5"
 }
