@@ -100,10 +100,10 @@ void UsageTask::loop()
 
             #if defined(CAMERA)                
                 // take picture
-                ESP_LOGI(name, "Notifying Camera Task.");
-                xTaskToNotify = xTaskGetHandle("cameraTask"); 
+                ESP_LOGI(name, "Notifying servo Task.");
+                xTaskToNotify = xTaskGetHandle("servoTask"); 
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect image data
-                ESP_LOGI(name, "Notified Camera Task");
+                ESP_LOGI(name, "Notified servo Task");
 
             #elif defined(SENSOR)
                 // increment and publish usage data

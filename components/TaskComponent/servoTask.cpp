@@ -147,14 +147,21 @@ void ServoTask::loop()
         vTaskDelay(5000  / portTICK_PERIOD_MS);
         mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-200));
         // // now attempt -270
+        
+        ESP_LOGI(name, "Notifying Camera Task.");
+        xTaskToNotify = xTaskGetHandle("cameraTask"); 
+        xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect image data
+        ESP_LOGI(name, "Notified Camera Task");
+        vTaskSuspend(NULL); // Suspend task until next interrupt.
+
 
         // TO DEASSERT: set angle to -100 degrees (bring tray down)
         ESP_LOGI(name, "Go to -100 degrees");
         vTaskDelay(5000  / portTICK_PERIOD_MS);
         mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-100));
         
-        xTaskToNotify = xTaskGetHandle("cameraTask");        
-        xTaskNotifyGive(xTaskToNotify);
+        // xTaskToNotify = xTaskGetHandle("cameraTask");        
+        // xTaskNotifyGive(xTaskToNotify);
         
         // set ultrasonic of SENSOR esp32 to low, telling it to activate
         ESP_LOGI("Servo", "starting servo thingy");

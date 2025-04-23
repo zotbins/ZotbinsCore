@@ -125,7 +125,7 @@ static camera_config_t camera_config = {
 
     .pixel_format = PIXFORMAT_JPEG,
     .frame_size = FRAMESIZE_VGA, // UXGA, VGA
-    .jpeg_quality = 12,
+    .jpeg_quality = 16,
     .fb_count = 20,
     .fb_location = CAMERA_FB_IN_PSRAM,// CAMERA_FB_IN_PSRAM,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
@@ -436,7 +436,8 @@ void CameraTask::loop()
             
             
             xTaskToNotify = xTaskGetHandle("servoTask"); // servoTask");
-            xTaskNotifyGive(xTaskToNotify);
+            vTaskResume(xTaskToNotify);   
+                 
         }
         esp_camera_fb_return(fb);
         vTaskDelay(35 / portTICK_PERIOD_MS);
