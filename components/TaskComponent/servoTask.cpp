@@ -16,7 +16,7 @@ using namespace Zotbins;
 #define SERVO_TIMEBASE_RESOLUTION_HZ 1000000 // 1MHz, 1us per tick
 #define SERVO_TIMEBASE_PERIOD 20000          // 20000 ticks, 20ms
 
-const gpio_num_t PIN_SERVO = GPIO_NUM_15;
+const gpio_num_t PIN_SERVO = GPIO_NUM_16;
 
 // TODO: get a direct access mapping to MCU's available GPIO pins or something instead
 // const gpio_num_t PIN_SEND_MCU = GPIO_NUM_13;
@@ -139,7 +139,7 @@ void ServoTask::loop()
     while (1)
     {
         ESP_LOGI(name, "waiting for task response");
-        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+        // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
         // Call the rotate function whenever necessary
         angle = 0;

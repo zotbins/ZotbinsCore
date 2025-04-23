@@ -331,8 +331,20 @@ void Client::clientStart()
         E (2957998) transport_base: Failed to open a new connection
         E (2958008) mqtt_client: Error transport connect
     */
-
     mqtt_app_start();
 
+    // for measuring wifi speeds
+    // while(1){
+    //     vTaskDelay(1000  / portTICK_PERIOD_MS);
+    //     wifi_ap_record_t ap_info;
+    //     esp_err_t ret = esp_wifi_sta_get_ap_info(&ap_info);
+        
+    //     if (ret == ESP_OK) {
+    //         int rssi = ap_info.rssi;
+    //         printf("RSSI: %d dBm\n", rssi);
+    //     } else {
+    //         printf("Failed to get AP info\n");
+    //     }
+    // }
     
 }
