@@ -43,7 +43,7 @@ namespace Client
      * @return cJSON* root of a JSON object containing sensor data. 
      *         Make sure to free this after use.
      */
-    cJSON *serialize(char* message, float fullness, bool overflow, int32_t weight, int usage);
+    cJSON *serialize(char* message, float fullness, bool overflow, float weight, int usage);
 }
 
 #endif // MCU_TYPE

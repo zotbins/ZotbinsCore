@@ -189,7 +189,7 @@ void WeightTask::loop()
 
     while (1)
     {
-        //ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         gpio_set_level(wm.pd_sck, 0);
         hx711_is_ready(&wm, &ready);
         if (ready)
@@ -205,12 +205,12 @@ void WeightTask::loop()
         // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
         weight = weight / calibration_factor;
         // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
-        //Client::clientPublish("weight", static_cast<void*>(&weight));
+        Client::clientPublish("weight", static_cast<void*>(&weight));
 
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
-        //xTaskToNotify = xTaskGetHandle("usageTask");        
-        //vTaskResume(xTaskToNotify);
+        xTaskToNotify = xTaskGetHandle("usageTask");        
+        vTaskResume(xTaskToNotify);
     }
     //vTaskDelete(NULL);
 }

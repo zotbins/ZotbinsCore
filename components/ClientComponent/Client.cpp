@@ -74,7 +74,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     switch ((esp_mqtt_event_id_t)event_id)
     {
     case MQTT_EVENT_CONNECTED:
-        ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+        ESP_LOGI(name, "MQTT_EVENT_CONNECTED");
         client_connected = true;
         // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
         // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
@@ -105,9 +105,14 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(name, "MQTT_EVENT_DATA");
         ESP_LOGI(name, "TOPIC=%.*s\r\n", event->topic_len, event->topic);
         ESP_LOGI(name, "DATA=%.*s\r\n", event->data_len, event->data);
-        // if (strncmp(event->data, "send binary please", event->data_len) == 0) {
-        //     ESP_LOGI(name, "Sending the binary");
-        //     publish(client, data);
+
+        // // TODO: add that conditions determining TOPIC as either "OTA" or "PING"
+        // if (strncmp(event->topic, "PING", event->topic_len) == 0) {
+        //     // do ping to other ESP stuff
+        //     ESP_LOGI(name, "Ping info received: %s", event->data);
+        // }else if (strncmp(event->topic, "OTA", event->topic_len) == 0) {
+        //     // do ota stuff
+        //     // not implemented yet so make a policy under AWS certs for allowing pub/connect/receive
         // }
         break;
     case MQTT_EVENT_ERROR:
@@ -170,20 +175,20 @@ static void mqtt_app_start(void)
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, NULL);
     bool yield = esp_mqtt_client_start(client);
 
-    // we don't need to worry too much on QoS so set at lvl 0
-    // if we really need packet info connectivity set as lvl 1 or 2 
-    // https://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels/
-    while (!client_connected){
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        ESP_LOGI(TAG, "yield for client connection");
-    }
-    ESP_LOGI(TAG, "connecting to test subscribe");
-    esp_mqtt_client_subscribe_single(client, "PING", 0); 
-    ESP_LOGI(TAG, "success subscribed");
+    // // we don't need to worry too much on QoS so set at lvl 0
+    // // if we really need packet info connectivity set as lvl 1 or 2 
+    // // https://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels/
+    // while (!client_connected){
+    //     vTaskDelay(1000 / portTICK_PERIOD_MS);
+    //     ESP_LOGI(name, "yield for client connection");
+    // }
+    // ESP_LOGI(name, "connecting to test subscribe");
+    // esp_mqtt_client_subscribe_single(client, "PING", 0); 
+    // ESP_LOGI(name, "success subscribed");
 
-    // send example data (like payload stuff)
-    ESP_LOGI(TAG, "sending ping stuff");
-    esp_mqtt_client_publish(client, "PING", "esp32 stuff", 12, 0, 0);
+    // // send example data (like payload stuff)
+    // ESP_LOGI(name, "sending ping stuff");
+    // esp_mqtt_client_publish(client, "PING", "esp32 stuff", 12, 0, 0);
 }
 
 // TODO: optimize this into a dictionary or something
@@ -199,7 +204,7 @@ bool payload_distance = false;
 bool payload_weight = false;
 bool payload_usage = false;
 float distance = 0;
-int32_t weight = 0;
+float weight = 0;
 int usage = 0;
 
 // TODO: change temp to include the actual value through variadics
@@ -235,14 +240,14 @@ void Client::clientPublish(char* data_type, void* value)
             distance = *(float*)value; 
         }else if (strcmp(data_type, "weight") == 0){
             payload_weight = true;
-            weight = *(int32_t*)value;
+            weight = *(float*)value;
         }
 
         // only send when both distance and weight payloads are specified
         ESP_LOGI(name, "payload check use = %d, dis = %d, wei = %d", payload_usage, payload_distance, payload_weight);
         if (payload_distance) { // && payload_usage && payload_weight){
             ESP_LOGI(name, "sending payload");
-            ESP_LOGI(name, "uses = %i, distance = %f, weight = %ld", usage, distance, weight);
+            ESP_LOGI(name, "uses = %i, distance = %f, weight = %f", usage, distance, weight);
             data = serialize("Sensor result", distance, false, weight, usage);            
         }
     #endif

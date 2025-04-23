@@ -1,5 +1,5 @@
 {
-    "idf.port": "/dev/tty.usbserial-110",
+    "idf.port": "/dev/tty.usbserial-10",
     "idf.flashType": "UART",
     "files.associations": {
         "iostream": "cpp",

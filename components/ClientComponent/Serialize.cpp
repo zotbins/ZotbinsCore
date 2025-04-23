@@ -40,7 +40,7 @@ cJSON *Client::serialize(char* message, char* img_str, size_t buffer_length, int
 }
 
 #elif defined(SENSOR)
-cJSON *Client::serialize(char* message, float fullness, bool overflow, int32_t weight, int usage)
+cJSON *Client::serialize(char* message, float fullness, bool overflow, float weight, int usage)
 {
     // Use the ESP32's MAC address as a UUID (since it is a UUID)
     uint64_t mac_addr = getMAC();

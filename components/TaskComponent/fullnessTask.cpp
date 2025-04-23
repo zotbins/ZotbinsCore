@@ -114,14 +114,14 @@ void FullnessTask::loop()
         /* task notifications */
 
         // // if weightTask is enabled
-        // xTaskToNotify = xTaskGetHandle("weightTask"); 
-        // xTaskNotifyGive(xTaskToNotify); // once fullness is collected notify weight
-        // ESP_LOGI(name, "Notified Weight Task");
+        xTaskToNotify = xTaskGetHandle("weightTask"); 
+        xTaskNotifyGive(xTaskToNotify); // once fullness is collected notify weight
+        ESP_LOGI(name, "Notified Weight Task");
 
         // if weightTask is disabled
-        xTaskToNotify = xTaskGetHandle("usageTask");      
-        vTaskResume(xTaskToNotify);
-        ESP_LOGI(name, "Notified Usage Task");
+        // xTaskToNotify = xTaskGetHandle("usageTask");      
+        // vTaskResume(xTaskToNotify);
+        // ESP_LOGI(name, "Notified Usage Task");
 
 
         
