@@ -60,8 +60,10 @@ extern "C" void app_main(void)
 	#endif     
 	/* end of esp device specific tasks */
 
+
 	ESP_LOGI(name, "Starting usage task...");
 	Zotbins::UsageTask usageTask(messageQueue);
 	usageTask.start();
 
+	
 }

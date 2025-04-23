@@ -129,5 +129,6 @@ void UsageTask::loop()
             vTaskSuspend(NULL); // Suspend task until next interrupt.
 
         }
+        vTaskDelay(100 /portTICK_PERIOD_MS);
     }
 }

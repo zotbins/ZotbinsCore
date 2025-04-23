@@ -134,30 +134,30 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
 static void mqtt_app_start(void)
 {
-    // // mqtts
-    // const esp_mqtt_client_config_t mqtt_cfg = {
-    //     .broker = {
-    //         .address = {
-    //             // TODO: make sure address isn't hardcoded and go back to config files
-    //             .uri = (const char *)AWS_URL,
-    //         },
-    //         .verification = {
-
-    //             .certificate = (const char *)AWS_CA_CRT,
-    //         },
-    //     },
-    //     .credentials = {.client_id = "SensorBin", .authentication = {
-    //                                                   .certificate = (const char *)AWS_CLIENT_CRT,
-    //                                                   .key = (const char *)AWS_CLIENT_KEY,
-    //                                               }}};
-
-    // mqtt
+    // mqtts
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
                 // TODO: make sure address isn't hardcoded and go back to config files
                 .uri = (const char *)AWS_URL,
-            }}};
+            },
+            .verification = {
+
+                .certificate = (const char *)AWS_CA_CRT,
+            },
+        },
+        .credentials = {.client_id = "SensorBin", .authentication = {
+                                                      .certificate = (const char *)AWS_CLIENT_CRT,
+                                                      .key = (const char *)AWS_CLIENT_KEY,
+                                                  }}};
+
+    // mqtt
+    // const esp_mqtt_client_config_t mqtt_cfg = {
+    //     .broker = {
+    //         .address = {
+    //             // TODO: make sure address isn't hardcoded and go back to config files
+    //             .uri = (const char *)AWS_URL,
+    //         }}};
 
     ESP_LOGI(name, "Connecting to AWS server %s", AWS_URL);
     ESP_LOGI(name, "[APP] Free memory: %" PRIu32 " bytes", esp_get_free_heap_size());
@@ -173,8 +173,8 @@ static void mqtt_app_start(void)
 // TODO: optimize this into a dictionary or something
 bool payload_camera = false;
 char* imageData;
-int uncompressedSize;
-int compressedSize;
+int uncompressedSize = 0;
+int compressedSize = 0;
 bool payload_distance = false;
 bool payload_weight = false;
 bool payload_usage = false;
@@ -188,20 +188,20 @@ void Client::clientPublish(char* data_type, void* value)
     ESP_LOGI(name, "Publishing to broker.");
     cJSON* data = NULL;
     #if defined(CAMERA)
-        if(strcmp(data_type, "cameraImage") == 0){
+        if(strcmp(data_type, "camera") == 0){
             payload_camera = true;
             imageData = static_cast<char*>(value); 
             ESP_LOGE(name, "Camera Image Data Received");
         }
         // Potentially move the compression to Client task or somethign
-        else if (strcmp(data_type, "cameraCompressed") == 0){
-            compressedSize = *static_cast<int*>(value);
-            ESP_LOGE(name, "Camera Compressed Size Received");
-        }
-        else if (strcmp(data_type, "cameraUncompressed") == 0){ // Necessary for sending compressed length 
-            uncompressedSize = *static_cast<int*>(value);
-            ESP_LOGE(name, "Camera Uncompressed Size Received");
-        }
+        // else if (strcmp(data_type, "cameraCompressed") == 0){
+        //     compressedSize = *static_cast<int*>(value);
+        //     ESP_LOGE(name, "Camera Compressed Size Received");
+        // }
+        // else if (strcmp(data_type, "cameraUncompressed") == 0){ // Necessary for sending compressed length 
+        //     uncompressedSize = *static_cast<int*>(value);
+        //     ESP_LOGE(name, "Camera Uncompressed Size Received");
+        // }
         if(payload_camera){
             ESP_LOGI(name, "sending camera payload");
             data = serialize("Camera result", imageData, strlen(imageData), compressedSize, uncompressedSize); // Change compressed and uncompresed size from 1,1

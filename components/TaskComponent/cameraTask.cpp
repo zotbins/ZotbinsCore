@@ -124,9 +124,9 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_QVGA, // UXGA, VGA
-    .jpeg_quality = 64,
-    .fb_count = 8,
+    .frame_size = FRAMESIZE_SVGA, // UXGA, VGA
+    .jpeg_quality = 20,
+    .fb_count = 20,
     .fb_location = CAMERA_FB_IN_PSRAM,// CAMERA_FB_IN_PSRAM,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
 };
@@ -299,11 +299,13 @@ void CameraTask::start()
     // xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
     // TODO: for some stupid reason core 0 works for this, we need an explanation!!!
     // xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, 0);
-    xTaskCreatePinnedToCore(taskFunction, mName, 65536, this, mPriority, &xTaskToNotify, 0);
+    ESP_LOGE(name, "Task Function");
+    xTaskCreatePinnedToCore(taskFunction, mName, 4096, this, mPriority, &xTaskToNotify, 0);
 }
 
 void CameraTask::taskFunction(void *task)
 {
+    
     CameraTask *cameraTask = static_cast<CameraTask *>(task);
     cameraTask->setup();
     cameraTask->loop();
@@ -318,6 +320,7 @@ void CameraTask::loop()
 {
 
     // Wait for Notification
+    ESP_LOGE(name, "fdsjfsdijf");
     ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY); 
     ESP_LOGI(name, "Hello from Camera Task");
 
@@ -358,18 +361,26 @@ void CameraTask::loop()
     camera_fb_t *fb = NULL;
     int cnt = 0;
     
+    ESP_LOGE(name, "Camera Loop Starting");
     while (1)
     {
         cnt++; // need to wait for something...? (green tint, it was initializing too quickly)
-        if (cnt == 5)
+        fb = esp_camera_fb_get();
+        
+        if (cnt == 30)
         {
             // Convert to buffer to readable format
-            fb = esp_camera_fb_get();
+            // fb = esp_camera_fb_get();
+
+            ESP_LOGE(name, "Camera Working");
+
             size_t output_size = 262144; 
             char *output = (char *)malloc(output_size);
             buffer_to_string(fb->buf, fb->len, output, output_size);
 
+            ESP_LOGE(name, "Starting Sned");
             Client::clientPublish("camera", output);
+            ESP_LOGE(name, "Finsihed Sned");
                         
             // free buffer memory
             free(output);
@@ -402,14 +413,16 @@ void CameraTask::loop()
 
 
             // fclose(f);
-            esp_camera_fb_return(fb);
+
 
             // reset count
             cnt = 0;
             
+            
             xTaskToNotify = xTaskGetHandle("usageTask"); // servoTask");
             xTaskNotifyGive(xTaskToNotify);
         }
+        esp_camera_fb_return(fb);
         vTaskDelay(35 / portTICK_PERIOD_MS);
     }
     vTaskDelete(NULL);
