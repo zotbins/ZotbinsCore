@@ -18,7 +18,6 @@ static const char *name = "main";
 
 extern "C" void app_main(void)
 {
-
 	// start mqtt task
     Client::clientStart();
 
@@ -51,8 +50,8 @@ extern "C" void app_main(void)
 		// servoTask.start();
 
 		// not using weight for sustainable food fair
-		// Zotbins::WeightTask weightTask(messageQueue);
-		// weightTask.start();
+		Zotbins::WeightTask weightTask(messageQueue);
+		weightTask.start();
  
 		Zotbins::FullnessTask fullnessTask(messageQueue);
 		fullnessTask.start();

@@ -26,7 +26,7 @@ cJSON *Client::serialize(char* message, char* img_str, size_t buffer_length, int
     uint64_t mac_addr = getMAC();
 
     cJSON *root = cJSON_CreateObject();
-    cJSON_AddNumberToObject(root, "bin_id", 1); // TODO: change to MAC address after senior design
+    cJSON_AddStringToObject(root, "bin_id", "1"); // TODO: change to MAC address after senior design
     cJSON_AddStringToObject(root, "mcu_type", "Camera");
     // cJSON_AddStringToObject(root, "message", message);
     cJSON_AddStringToObject(root, "photo", img_str);
@@ -46,7 +46,7 @@ cJSON *Client::serialize(char* message, float fullness, bool overflow, int32_t w
     uint64_t mac_addr = getMAC();
 
     cJSON *root = cJSON_CreateObject();
-    cJSON_AddNumberToObject(root, "bin_id", 1); // TODO: change to MAC address after senior design
+    cJSON_AddStringToObject(root, "bin_id", "1"); // TODO: change to MAC address after senior design
     cJSON_AddStringToObject(root, "mcu_type", "Sensor");
     // cJSON_AddStringToObject(root, "message", message);
     cJSON_AddNumberToObject(root, "fullness", fullness);
