@@ -299,6 +299,13 @@ void CameraTask::start()
     // xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, core);
     // TODO: for some stupid reason core 0 works for this, we need an explanation!!!
     // xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, 0);
+
+    uint8_t mac[6];  // Array to store the MAC address
+    esp_wifi_get_mac(WIFI_IF_STA, mac);  // Get Wi-Fi station MAC address
+    printf("ESP32 MAC Address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+           mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+
     ESP_LOGE(name, "Task Function");
     xTaskCreatePinnedToCore(taskFunction, mName, 4096, this, mPriority, &xTaskToNotify, 0);
 }

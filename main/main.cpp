@@ -18,7 +18,6 @@ static const char *name = "main";
 
 extern "C" void app_main(void)
 {
-
 	// start mqtt task
     Client::clientStart();
 
