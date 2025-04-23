@@ -20,18 +20,19 @@ uint64_t getMAC(){
     return mac_addr;
 }
 
+// int compressedSize, int uncompressedSize
 #if defined(CAMERA)
-cJSON *Client::serialize(char* message, char* img_str, size_t buffer_length, int compressedSize, int uncompressedSize)
+cJSON *Client::serialize(char* message, char* img_str, size_t buffer_length)
 {
     uint64_t mac_addr = getMAC();
 
     cJSON *root = cJSON_CreateObject();
-    cJSON_AddNumberToObject(root, "bin_id", 1); // TODO: change to MAC address after senior design
+    cJSON_AddStringToObject(root, "bin_id", "1"); // TODO: change to MAC address after senior design
     cJSON_AddStringToObject(root, "mcu_type", "Camera");
     // cJSON_AddStringToObject(root, "message", message);
     cJSON_AddStringToObject(root, "photo", img_str);
-    cJSON_AddNumberToObject(root, "compressedSize", compressedSize);
-    cJSON_AddNumberToObject(root, "uncompressedSize", uncompressedSize);
+    // cJSON_AddNumberToObject(root, "compressedSize", compressedSize);
+    // cJSON_AddNumberToObject(root, "uncompressedSize", uncompressedSize);
 
     
     // cJSON_AddNumberToObject(root, "buffer_length", buffer_length);

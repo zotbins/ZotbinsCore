@@ -204,7 +204,7 @@ void Client::clientPublish(char* data_type, void* value)
         // }
         if(payload_camera){
             ESP_LOGI(name, "sending camera payload");
-            data = serialize("Camera result", imageData, strlen(imageData), compressedSize, uncompressedSize); // Change compressed and uncompresed size from 1,1
+            data = serialize("Camera result", imageData, strlen(imageData)); // Change compressed and uncosmpresed size from 1,1
         }
     #elif defined(SENSOR)
         if (strcmp(data_type, "usage") == 0){
