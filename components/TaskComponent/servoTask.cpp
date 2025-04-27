@@ -16,7 +16,8 @@ using namespace Zotbins;
 #define SERVO_TIMEBASE_RESOLUTION_HZ 1000000 // 1MHz, 1us per tick
 #define SERVO_TIMEBASE_PERIOD 20000          // 20000 ticks, 20ms
 
-const gpio_num_t PIN_SERVO = GPIO_NUM_16;
+const gpio_num_t PIN_SERVO = GPIO_NUM_15; // 16 IS NOT ANALOG SO DONT USE THAT FOR ESPCAM
+// const gpio_num_t inputPIN = GPIO_NUM_32;
 
 // TODO: get a direct access mapping to MCU's available GPIO pins or something instead
 // const gpio_num_t PIN_SEND_MCU = GPIO_NUM_13;
@@ -87,6 +88,7 @@ mcpwm_cmpr_handle_t comparator = NULL;
 mcpwm_gen_handle_t generator = NULL;
 void ServoTask::loop()
 {
+    // FOR SERVO MAKE SURE ALL THE GROUNDS ARE COMMON AND SHARED OR ELSE THIS DOESNT WORK
     ESP_LOGI(name, "Create timer and operator");
     mcpwm_timer_handle_t timer = NULL;
     mcpwm_timer_config_t timer_config = {
