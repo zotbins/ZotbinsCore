@@ -80,18 +80,20 @@ void FullnessTask::loop()
     while (1)
     {
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
-        distance = ultrasonic.getDistance();
-        ESP_LOGI(name, "Hello from Fullness Task %f", distance);
-        
-        // TODO: Publish to MQTT broker when done 
-        // Client::clientPublish("distance", static_cast<void*>(&distance));
-        // xTaskToNotify = xTaskGetHandle("weightTask");
-        // xTaskNotifyGive(xTaskToNotify);
-        // gpio_set_level(PIN_TRIGGER, 0);
-        // gpio_set_level(PIN_ECHO, 0);
-        // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
 
-        // TODO: remove if no longer needed
+        try {
+            distance = ultrasonic.getDistance();
+
+            if (distance < 0 || distance > BIN_HEIGHT) {
+                throw std::runtime_error("Ultrasonic sensor returned invalid distance");
+            }
+
+            ESP_LOGI(name, "Ultrasonic Distance: %.2f cm", distance);
+
+        } catch (const std::exception& e) {
+            ESP_LOGE(name, "Ultrasonic Sensor Error: %s", e.what());
+        }
+        
         xTaskToNotify = xTaskGetHandle("usageTask");        
         vTaskResume(xTaskToNotify);
 

@@ -62,26 +62,35 @@ void UsageTask::loop()
     gpio_set_direction(PIN_BREAKBEAM, GPIO_MODE_INPUT);
     while (1)
     {
-        if (!beamBroken)
-        {
-            vTaskSuspend(NULL); // Suspend the task until notified
-        }
-        bool DETECTED = !gpio_get_level(PIN_BREAKBEAM); // Read in signal from breakbeam
-        if (DETECTED) // If breakbeam is disconnected
-        {
+        if (DETECTED) {
             ESP_LOGI(name, "Detected item.");
-            while (DETECTED)
-            {
-                DETECTED = !gpio_get_level(PIN_BREAKBEAM);
+            
+            try {
+                int waitTimeMs = 0;
+                const int maxWaitMs = 5000; // 5 seconds timeout
+
+                while (DETECTED && waitTimeMs < maxWaitMs)
+                {
+                    vTaskDelay(100 / portTICK_PERIOD_MS);
+                    waitTimeMs += 100;
+                    DETECTED = !gpio_get_level(PIN_BREAKBEAM);
+                }
+
+                if (waitTimeMs >= maxWaitMs) {
+                    throw std::runtime_error("Breakbeam stuck in 'broken' state for too long");
+                }
+
+                ESP_LOGI(name, "Item no longer detected.");
+            } catch (const std::exception& e) {
+                ESP_LOGE(name, "Breakbeam Sensor Error: %s", e.what());
+                beamBroken = false;
+                continue;
             }
-            ESP_LOGI(name, "Item no longer detected.");
+
             beamBroken = false;
             xTaskToNotify = xTaskGetHandle("fullnessTask"); 
-            xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
+            xTaskNotifyGive(xTaskToNotify);
 
             vTaskSuspend(NULL);
-        }
-        ESP_LOGI(name, "Ready to detect.");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 }
