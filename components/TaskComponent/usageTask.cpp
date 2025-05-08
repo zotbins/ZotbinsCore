@@ -14,6 +14,7 @@ using namespace Zotbins;
 
 // ESP32-CAM is 16, WROVER is 18
 
+// MAKE SURE FOR BOTH ESP32WROVER AND CAM THAT THEY SHARE COMMON GROUND PIN
 #if defined(SENSOR)
     const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
 #elif defined(CAMERA)

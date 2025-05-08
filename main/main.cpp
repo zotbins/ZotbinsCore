@@ -38,8 +38,8 @@ extern "C" void app_main(void)
 		Zotbins::ServoTask servoTask(messageQueue);
 		servoTask.start();
 
-		// Zotbins::CameraTask cameraTask(messageQueue);
-		// cameraTask.start();
+		Zotbins::CameraTask cameraTask(messageQueue);
+		cameraTask.start();
 
 	#elif defined(SENSOR)
 
@@ -50,7 +50,7 @@ extern "C" void app_main(void)
 
 		// not using weight for sustainable food fair
 		Zotbins::WeightTask weightTask(messageQueue);
-		weightTask.start()
+		weightTask.start();
  
 		Zotbins::FullnessTask fullnessTask(messageQueue);
 		fullnessTask.start();
@@ -58,10 +58,8 @@ extern "C" void app_main(void)
 	#endif     
 	/* end of esp device specific tasks */
 
-
+	// for now both espcam and wrover use usagetask
+	Zotbins::UsageTask usageTask(messageQueue);
+	usageTask.start();
 	ESP_LOGI(name, "Starting usage task...");
-	// Zotbins::UsageTask usageTask(messageQueue);
-	// usageTask.start();
-
-	
 }

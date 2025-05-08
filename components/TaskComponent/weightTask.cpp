@@ -211,6 +211,7 @@ void WeightTask::loop()
         ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
         xTaskToNotify = xTaskGetHandle("usageTask");        
         vTaskResume(xTaskToNotify);
+        // vTaskSuspend(NULL);
     }
     //vTaskDelete(NULL);
 }

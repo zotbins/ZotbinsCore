@@ -437,6 +437,7 @@ void CameraTask::loop()
             
             xTaskToNotify = xTaskGetHandle("servoTask"); // servoTask");
             vTaskResume(xTaskToNotify);   
+            // vTaskSuspend(NULL);
                  
         }
         esp_camera_fb_return(fb);

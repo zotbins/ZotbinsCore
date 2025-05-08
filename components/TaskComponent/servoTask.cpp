@@ -16,6 +16,7 @@ using namespace Zotbins;
 #define SERVO_TIMEBASE_RESOLUTION_HZ 1000000 // 1MHz, 1us per tick
 #define SERVO_TIMEBASE_PERIOD 20000          // 20000 ticks, 20ms
 
+// MAKE SURE SERVO GROUND PIN SHARES ESP32 GROUND PIN
 const gpio_num_t PIN_SERVO = GPIO_NUM_15; // 16 IS NOT ANALOG SO DONT USE THAT FOR ESPCAM
 // const gpio_num_t inputPIN = GPIO_NUM_32;
 
@@ -141,7 +142,7 @@ void ServoTask::loop()
     while (1)
     {
         ESP_LOGI(name, "waiting for task response");
-        // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
         // Call the rotate function whenever necessary
         angle = 0;
@@ -154,7 +155,8 @@ void ServoTask::loop()
         xTaskToNotify = xTaskGetHandle("cameraTask"); 
         xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect image data
         ESP_LOGI(name, "Notified Camera Task");
-        vTaskSuspend(NULL); // Suspend task until next interrupt.
+        // vTaskSuspend(NULL); // Suspend task until next interrupt.
+        // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
 
         // TO DEASSERT: set angle to -100 degrees (bring tray down)
