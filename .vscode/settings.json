@@ -9,7 +9,14 @@
         "string_view": "cpp",
         "span": "cpp",
         "cstdint": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "unordered_map": "cpp",
+        "vector": "cpp",
+        "format": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp"
     },
     "idf.portWin": "COM5"
 }

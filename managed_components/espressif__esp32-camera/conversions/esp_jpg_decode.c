@@ -131,3 +131,4 @@ esp_err_t esp_jpg_decode(size_t len, jpg_scale_t scale, jpg_reader_cb reader, jp
 
     return ESP_OK;
 }
+

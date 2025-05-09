@@ -256,7 +256,8 @@ void Client::clientPublish(char* data_type, void* value)
     if (data != NULL) {
         char* json_str = cJSON_PrintUnformatted(data);  // Convert cJSON object to string
         if (json_str) {
-            ESP_LOGI(name, "json string: %s", json_str);
+            // TODO: ADD A DEBUG MODE THAT ENABLES THIS, BECAUSE THIS
+            // ESP_LOGI(name, "json string: %s", json_str);
             publish(test_client, json_str, strlen(json_str));  // Use strlen to get the size
             free(json_str);  // Free the allocated string after publishing
         }

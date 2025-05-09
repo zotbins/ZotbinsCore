@@ -378,17 +378,18 @@ void CameraTask::loop()
     int cnt = 0;
     
     ESP_LOGE(name, "Camera Loop Starting");
+           
     while (1)
     {
+        ESP_LOGE(name, "Camera Working");
+        uint64_t start = esp_timer_get_time();  
         cnt++; // need to wait for something...? (green tint, it was initializing too quickly)
         fb = esp_camera_fb_get();
-        
+
         if (cnt == 30)
         {
             // Convert to buffer to readable format
             // fb = esp_camera_fb_get();
-
-            ESP_LOGE(name, "Camera Working");
 
             size_t output_size = 262144; 
             char *output = (char *)malloc(output_size);
@@ -396,6 +397,9 @@ void CameraTask::loop()
 
             ESP_LOGE(name, "Starting Sned");
             Client::clientPublish("camera", output);
+            
+            uint64_t end = esp_timer_get_time();
+            ESP_LOGI(name, "camera took %llu milliseconds\n", (end - start)/1000);
             ESP_LOGE(name, "Finsihed Sned");
                         
             // free buffer memory
