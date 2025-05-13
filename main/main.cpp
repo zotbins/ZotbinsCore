@@ -35,8 +35,8 @@ extern "C" void app_main(void)
 
 		// WARNING: ENABLE PSRAM BEFORE USE
 		// order matters, usage last
-		Zotbins::ServoTask servoTask(messageQueue);
-		servoTask.start();
+		// Zotbins::ServoTask servoTask(messageQueue);
+		// servoTask.start();
 
 		Zotbins::CameraTask cameraTask(messageQueue);
 		cameraTask.start();
@@ -59,7 +59,7 @@ extern "C" void app_main(void)
 	/* end of esp device specific tasks */
 
 	// for now both espcam and wrover use usagetask
-	Zotbins::UsageTask usageTask(messageQueue);
-	usageTask.start();
+	// Zotbins::UsageTask usageTask(messageQueue);
+	// usageTask.start();
 	ESP_LOGI(name, "Starting usage task...");
 }
