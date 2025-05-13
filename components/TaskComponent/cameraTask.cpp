@@ -410,7 +410,16 @@ void CameraTask::loop()
             buffer_to_string(fb->buf, fb->len, output, output_size);
 
             ESP_LOGE(name, "Starting Sned");
+            size_t max_len = 122880; // 120 KB
+            size_t actual_len = strlen(output);
+
+            if (actual_len > max_len) {
+            output[max_len] = '\0'; // Truncate safely at 120 KB
+            ESP_LOGW(name, "Output truncated from %zu to %zu bytes", actual_len, max_len);
+            }
+
             Client::clientPublish("camera", output);
+            
             
             uint64_t end = esp_timer_get_time();
             ESP_LOGI(name, "camera took %llu milliseconds\n", (end - start)/1000);

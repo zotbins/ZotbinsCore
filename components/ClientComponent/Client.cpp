@@ -157,7 +157,8 @@ static void mqtt_app_start(void)
         .credentials = {.client_id = "SensorBin", .authentication = {
                                                       .certificate = (const char *)AWS_CLIENT_CRT,
                                                       .key = (const char *)AWS_CLIENT_KEY,
-                                                  }}};
+                                                  }}
+    };
 
     // mqtt
     // const esp_mqtt_client_config_t mqtt_cfg = {
