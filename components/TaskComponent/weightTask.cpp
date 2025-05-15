@@ -4,13 +4,15 @@
 #include "hx711.h"
 #include "nvs_flash.h" // for storing calibration data
 #include "Client.hpp"
+#include <math.h> // for fabs
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_DOUT = GPIO_NUM_12;
+const gpio_num_t PIN_DOUT = GPIO_NUM_2;
 const gpio_num_t PIN_PD_SCK = GPIO_NUM_14;
+const bool DEBUG_TARE = false;
 static TaskHandle_t xTaskToNotify = NULL;
-bool DEBUG_TARE = false;
+const float CALIB_OFFSET = 5368700; // measured from empirical, keep in mind that the mechanical weights will cause a shift.
 
 const gpio_config_t PIN_DOUT_CONFIG = {
     .pin_bit_mask = 1ULL << PIN_DOUT,
@@ -65,7 +67,7 @@ void WeightTask::loop()
     ESP_ERROR_CHECK(gpio_config(&PIN_PD_SCK_CONFIG));
 
     int32_t weight_raw;
-    int32_t tare_factor;
+    int32_t tare_factor = 0;
     int32_t calibration_factor;
     bool ready; // variable storing the status of the weight sensor measurement (measurement ready to be read or not)
     bool tare_factor_initialized;
@@ -104,10 +106,11 @@ void WeightTask::loop()
 
         // Convert back to int
         calibration_factor = (int32_t)calibration_factor_f;
+        printf("new calib factor %ld\n", calibration_factor);
 
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+        vTaskDelay(5000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
     }else{
-        calibration_factor = 80; // callibrate scale to grams, empirically determined
+        calibration_factor = 80; // callibrate scale to grams, empirically determined from debug
     }
 
     /* end of calibration */
@@ -213,7 +216,7 @@ void WeightTask::loop()
 
     while (1)
     {
-        // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         gpio_set_level(wm.pd_sck, 0);
         hx711_is_ready(&wm, &ready);
         if (ready)
@@ -224,10 +227,12 @@ void WeightTask::loop()
         {
             weight_raw = -1;
         }
+        weight = 0;
 
         weight = tare_factor + (-1) * (weight_raw);
+
         // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
-        weight = abs(weight / calibration_factor);
+        weight = abs(fabs(weight / calibration_factor) - CALIB_OFFSET);
         // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
         Client::clientPublish("weight", static_cast<void*>(&weight));
 
