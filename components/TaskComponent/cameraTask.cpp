@@ -341,7 +341,7 @@ void CameraTask::loop()
 
     // Wait for Notification
     ESP_LOGE(name, "fdsjfsdijf");
-    // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY); 
+    ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY); 
     ESP_LOGI(name, "Hello from Camera Task");
 
     // Intialize SD Card
@@ -462,8 +462,8 @@ void CameraTask::loop()
             cnt = 0;
             
             
-            // xTaskToNotify = xTaskGetHandle("servoTask"); // servoTask");
-            // vTaskResume(xTaskToNotify);  
+            xTaskToNotify = xTaskGetHandle("servoTask"); // servoTask");
+            vTaskResume(xTaskToNotify);  
 
 
             // vTaskSuspend(NULL);     

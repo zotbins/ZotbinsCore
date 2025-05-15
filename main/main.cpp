@@ -19,7 +19,7 @@ static const char *name = "main";
 extern "C" void app_main(void)
 {
 	// start mqtt task
-    Client::clientStart();
+    // Client::clientStart();
 
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
     assert(messageQueue != nullptr);	
@@ -35,8 +35,8 @@ extern "C" void app_main(void)
 
 		// WARNING: ENABLE PSRAM BEFORE USE
 		// order matters, usage last
-		// Zotbins::ServoTask servoTask(messageQueue);
-		// servoTask.start();
+		Zotbins::ServoTask servoTask(messageQueue);
+		servoTask.start();
 
 		Zotbins::CameraTask cameraTask(messageQueue);
 		cameraTask.start();
@@ -52,8 +52,8 @@ extern "C" void app_main(void)
 		Zotbins::WeightTask weightTask(messageQueue);
 		weightTask.start();
  
-		Zotbins::FullnessTask fullnessTask(messageQueue);
-		fullnessTask.start();
+		// Zotbins::FullnessTask fullnessTask(messageQueue);
+		// fullnessTask.start();
     
 	#endif     
 	/* end of esp device specific tasks */
