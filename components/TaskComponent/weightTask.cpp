@@ -233,8 +233,8 @@ void WeightTask::loop()
 
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
-        // xTaskToNotify = xTaskGetHandle("usageTask");        
-        // vTaskResume(xTaskToNotify);
+        xTaskToNotify = xTaskGetHandle("usageTask");        
+        vTaskResume(xTaskToNotify);
         // vTaskSuspend(NULL);
     }
     //vTaskDelete(NULL);
