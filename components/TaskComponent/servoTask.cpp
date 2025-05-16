@@ -161,7 +161,8 @@ void ServoTask::loop()
 
         // go back to usage 
         xTaskToNotify = xTaskGetHandle("usageTask");        
-        vTaskResume(xTaskToNotify);
+        // vTaskResume(xTaskToNotify);
+        xTaskNotifyGive(xTaskToNotify); 
         vTaskDelay(100 / portTICK_PERIOD_MS);  
     }
     vTaskDelete(NULL);

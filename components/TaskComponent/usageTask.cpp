@@ -68,13 +68,15 @@ void UsageTask::setup()
     // ESP_LOGI(name, "Running usage setup.");
     ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG)); // NECESSARY FOR SOME PINS!!
     // ESP_LOGI(name, "1");
-    ESP_ERROR_CHECK(gpio_install_isr_service(0));
+    // ESP_ERROR_CHECK(gpio_install_isr_service(0));
     // ESP_LOGI(name, "2");
-    ESP_ERROR_CHECK(gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL));
+    // ESP_ERROR_CHECK(gpio_isr_handler_add(PIN_BREAKBEAM, breakbeamISR, NULL));
     // ESP_LOGI(name, "3");
-    ESP_ERROR_CHECK(gpio_intr_enable(PIN_BREAKBEAM));
+    // ESP_ERROR_CHECK(gpio_intr_enable(PIN_BREAKBEAM));
     // ESP_LOGI(name, "Usage setup complete.");
 }
+
+bool debounce = false;
 void UsageTask::loop()
 {
     // From https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf#iomuxgpio
@@ -83,11 +85,15 @@ void UsageTask::loop()
     usage = 0;
     while (1)
     {
+        if (debounce){
+            return;
+        }
         // Double check breakbeam is broken and bool has tracked that.
-        DETECTED = !gpio_get_level(PIN_BREAKBEAM);
+        DETECTED = gpio_get_level(PIN_BREAKBEAM) == 1;
+        // printf("I AM RUNNING\n");
         if (DETECTED)
         {
-    
+            debounce = true;
             ESP_LOGI(name, "Item no longer detected.");
             #if defined(CAMERA)
                 // take picture
@@ -105,12 +111,14 @@ void UsageTask::loop()
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
                 ESP_LOGI(name, "Notified Fullness Task");
             #endif
+            // vTaskSuspend(NULL); // Suspend task until next interrupt.
+            // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY); 
+            debounce = false;
             DETECTED = false; // Reset variable.
-            vTaskSuspend(NULL); // Suspend task until next interrupt.
         }
         else {
-            ESP_LOGI(name, "Ready to detect.");
-            vTaskSuspend(NULL); // Suspend task until next interrupt.
+            // ESP_LOGI(name, "Ready to detect.");
+            // vTaskSuspend(NULL); // Suspend task until next interrupt.
         }
         vTaskDelay(100 /portTICK_PERIOD_MS);
     }
