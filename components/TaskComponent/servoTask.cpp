@@ -144,45 +144,20 @@ void ServoTask::loop()
         ESP_LOGI(name, "waiting for task response");
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
-        // Call the rotate function whenever necessary
-        angle = 0;
-        ESP_LOGI(name, "Go to -200 degrees");
-        vTaskDelay(5000  / portTICK_PERIOD_MS);
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-200));
-        // // now attempt -270
-        
-        ESP_LOGI(name, "Notifying Camera Task.");
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(10));
+        for(int i = 0; i>= -180; i--){
+            mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(i));
+            vTaskDelay(3  / portTICK_PERIOD_MS);
+        }
         xTaskToNotify = xTaskGetHandle("cameraTask"); 
-        xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect image data
-        ESP_LOGI(name, "Notified Camera Task");
-        // vTaskSuspend(NULL); // Suspend task until next interrupt.
-        // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+        xTaskNotifyGive(xTaskToNotify); 
+        ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(10));
 
-
-        // TO DEASSERT: set angle to -100 degrees (bring tray down)
-        ESP_LOGI(name, "Go to -100 degrees");
-        vTaskDelay(5000  / portTICK_PERIOD_MS);
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-100));
-        
-        // xTaskToNotify = xTaskGetHandle("cameraTask");        
-        // xTaskNotifyGive(xTaskToNotify);
-        
         // set ultrasonic of SENSOR esp32 to low, telling it to activate
         ESP_LOGI("Servo", "starting servo thingy");
         gpio_set_level(GPIO_NUM_13, 1);
         gpio_set_level(GPIO_NUM_14, 0);
-
-        // while (1){
-        //     int level = gpio_get_level(GPIO_NUM_14);  
-        //     ESP_LOGI(name, "level: %d", level);
-
-        //     // Read input GPIO on HI (meaning trigger)
-        //     if (level == 1){
-        //         gpio_set_level(GPIO_NUM_13, 0);
-        //         break;
-        //     }
-        //     vTaskDelay(100 / portTICK_PERIOD_MS);  
-        // }
 
         // go back to usage 
         xTaskToNotify = xTaskGetHandle("usageTask");        

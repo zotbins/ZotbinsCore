@@ -339,10 +339,6 @@ void CameraTask::loop()
            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
 
-    // Wait for Notification
-    ESP_LOGE(name, "fdsjfsdijf");
-    ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY); 
-    ESP_LOGI(name, "Hello from Camera Task");
 
     // Intialize SD Card
     // esp_err_t ret = init_sd_card();
@@ -391,7 +387,8 @@ void CameraTask::loop()
     // Camera Functionality
     camera_fb_t *fb = NULL;
     int cnt = 0;
-    
+    ESP_LOGE(name, "Camera Setup and Waiting!");
+    ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
     ESP_LOGE(name, "Camera Loop Starting");
     while (1)
     {
@@ -401,72 +398,17 @@ void CameraTask::loop()
 
         if (cnt == 30)
         {
-            // Convert to buffer to readable format
-            // fb = esp_camera_fb_get();
-
-            // size_t output_size = 1048576; // 262144 for 800 x 600; 
-            size_t output_size = fb->len * 4; // conservative estimate
+            size_t output_size = 128000; // 262144 for 800 x 600; 
             char *output = (char *)malloc(output_size);
             buffer_to_string(fb->buf, fb->len, output, output_size);
-
-            ESP_LOGE(name, "Starting Sned");
-            size_t max_len = 122880; // 120 KB
-            size_t actual_len = strlen(output);
-
-            if (actual_len > max_len) {
-            output[max_len] = '\0'; // Truncate safely at 120 KB
-            ESP_LOGW(name, "Output truncated from %zu to %zu bytes", actual_len, max_len);
-            }
-
-            Client::clientPublish("camera", output);
-            
-            
-            uint64_t end = esp_timer_get_time();
-            ESP_LOGI(name, "camera took %llu milliseconds\n", (end - start)/1000);
-            ESP_LOGE(name, "Finsihed Sned");
-                        
-            // free buffer memory
+            //printf("%s\n", output);
+            ESP_LOGE(name, "Taking Picture");
+            vTaskDelay(3000 / portTICK_PERIOD_MS);
             free(output);
-            
-
-            // ESP_LOGE(name, "Helo");
-            // char *compressed_data = NULL;
-            // int compressed_size = 0;
-            // printf("Compressed size: %d\n", compressed_size);
-
-            // Call decompress function
-            // int ret = decompress_data(compressed_data, compressed_size, &decompressed_data, &decompressed_size);
-            // if (ret == Z_OK) {
-            //     printf("Decompression successful\n");
-            //     printf("Decompressed data: %s\n", decompressed_data);
-            // } else {
-            //     printf("Decompression failed with error: %d\n", ret);
-            // }
-
-            // Save Information to SD card
-            // Open a file for writing (FILE_WRITE flag ensures data is written)
-            // FILE *f = fopen("/sdcard/test.txt", "w");
-            // if (f == NULL) {
-            //     ESP_LOGE(name, "Failed to open file for writing");
-            // }
-            // else{
-            //     ESP_LOGI(name, "File written successfully!");
-            //     fprintf(f, compressed_data);
-            // }
-
-
-            // fclose(f);
-
-
-            // reset count
-            cnt = 0;
-            
-            
             xTaskToNotify = xTaskGetHandle("servoTask"); // servoTask");
             vTaskResume(xTaskToNotify);  
-
-
-            // vTaskSuspend(NULL);     
+            ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);   
+            cnt = 0;
         }
         esp_camera_fb_return(fb);
         vTaskDelay(35 / portTICK_PERIOD_MS);

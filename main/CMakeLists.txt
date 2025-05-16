@@ -6,5 +6,5 @@ idf_component_register(
 
 # you also need to change this compile definition in the taskcomponent and clientcomponent cmakelists.txt
                     
-add_compile_definitions(SENSOR)
-# add_compile_definitions(CAMERA)
+# add_compile_definitions(SENSOR)
+add_compile_definitions(CAMERA)
