@@ -106,6 +106,7 @@ void UsageTask::loop()
                 // increment and publish usage data
                 ESP_LOGI(name, "Incrementing usage: %i", usage);
                 usage += 1;
+                vTaskDelay(10000 /portTICK_PERIOD_MS);
                 Client::clientPublish("usage", static_cast<void*>(&usage));
                 xTaskToNotify = xTaskGetHandle("fullnessTask");
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data

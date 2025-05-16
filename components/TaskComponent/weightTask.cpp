@@ -13,7 +13,7 @@ const gpio_num_t PIN_DOUT = GPIO_NUM_2;
 const gpio_num_t PIN_PD_SCK = GPIO_NUM_14;
 const bool DEBUG_TARE = false;
 static TaskHandle_t xTaskToNotify = NULL;
-const float CALIB_OFFSET = 600; // measured from empirical, keep in mind that the mechanical weights will cause a shift.
+const float CALIB_OFFSET = 5368631; // measured from empirical, keep in mind that the mechanical weights will cause a shift.
 
 const gpio_config_t PIN_DOUT_CONFIG = {
     .pin_bit_mask = 1ULL << PIN_DOUT,
