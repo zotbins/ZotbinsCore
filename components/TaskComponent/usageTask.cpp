@@ -89,12 +89,11 @@ void UsageTask::loop()
             return;
         }
         // Double check breakbeam is broken and bool has tracked that.
-        DETECTED = gpio_get_level(PIN_BREAKBEAM) == 1;
+        DETECTED = gpio_get_level(PIN_BREAKBEAM);
         // printf("I AM RUNNING\n");
         if (DETECTED)
         {
             debounce = true;
-            ESP_LOGI(name, "Item no longer detected.");
             #if defined(CAMERA)
                 // take picture
                 ESP_LOGI(name, "Notifying servo Task.");

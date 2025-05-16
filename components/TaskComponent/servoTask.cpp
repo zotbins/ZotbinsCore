@@ -144,15 +144,15 @@ void ServoTask::loop()
         ESP_LOGI(name, "waiting for task response");
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(10));
-        for(int i = 0; i>= -180; i--){
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-10));
+        for(int i = -10; i>= -180; i--){
             mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(i));
             vTaskDelay(3  / portTICK_PERIOD_MS);
         }
         xTaskToNotify = xTaskGetHandle("cameraTask"); 
         xTaskNotifyGive(xTaskToNotify); 
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(10));
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-10));
 
         // set ultrasonic of SENSOR esp32 to low, telling it to activate
         ESP_LOGI("Servo", "starting servo thingy");

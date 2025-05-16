@@ -124,7 +124,7 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_SVGA, // UXGA, VGA, SVGA(800x600)
+    .frame_size = FRAMESIZE_VGA, // UXGA, VGA, SVGA(800x600)
     /* TODO: eventually we want to be able to send UXGA quality (1600x1200)
         however, MQTT doesn't allow sizes above a certain threshold which UXGA exceeds
         so we need to divert the package 
@@ -401,9 +401,8 @@ void CameraTask::loop()
             size_t output_size = 128000; // 262144 for 800 x 600; 
             char *output = (char *)malloc(output_size);
             buffer_to_string(fb->buf, fb->len, output, output_size);
-            //printf("%s\n", output);
             ESP_LOGE(name, "Taking Picture");
-            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            Client::clientPublish("camera", output);
             free(output);
             xTaskToNotify = xTaskGetHandle("servoTask"); // servoTask");
             vTaskResume(xTaskToNotify);  
