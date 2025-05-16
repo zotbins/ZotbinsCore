@@ -109,6 +109,7 @@ void UsageTask::loop()
                 Client::clientPublish("usage", static_cast<void*>(&usage));
                 xTaskToNotify = xTaskGetHandle("fullnessTask");
                 xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
+                vTaskSuspend(NULL); // Suspend task until next interrupt.
                 ESP_LOGI(name, "Notified Fullness Task");
             #endif
             // vTaskSuspend(NULL); // Suspend task until next interrupt.

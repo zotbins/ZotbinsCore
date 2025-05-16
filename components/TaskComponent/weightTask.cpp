@@ -258,7 +258,7 @@ void WeightTask::loop()
                 // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
                 weight = abs(fabs(weight / calibration_factor) - CALIB_OFFSET);
                 ready = false;
-                printf("reading new weight %.2f\n", weight);
+                // printf("reading new weight %.2f\n", weight);
             };
         } while (weight == 0);
 
