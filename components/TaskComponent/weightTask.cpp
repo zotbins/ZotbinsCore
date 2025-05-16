@@ -5,14 +5,15 @@
 #include "nvs_flash.h" // for storing calibration data
 #include "Client.hpp"
 #include <math.h> // for fabs
-
+#include <set>
+    
 using namespace Zotbins;
 
 const gpio_num_t PIN_DOUT = GPIO_NUM_2;
 const gpio_num_t PIN_PD_SCK = GPIO_NUM_14;
 const bool DEBUG_TARE = false;
 static TaskHandle_t xTaskToNotify = NULL;
-const float CALIB_OFFSET = 5368700; // measured from empirical, keep in mind that the mechanical weights will cause a shift.
+const float CALIB_OFFSET = 600; // measured from empirical, keep in mind that the mechanical weights will cause a shift.
 
 const gpio_config_t PIN_DOUT_CONFIG = {
     .pin_bit_mask = 1ULL << PIN_DOUT,
@@ -98,7 +99,6 @@ void WeightTask::loop()
         printf("Raw reading empty: %ld, now place 100g spool\n", tare_factor);
         vTaskDelay(5000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
         float known_weight_grams = 100;
-
         // Compute calibration factor as float for precision
         hx711_read_data(&wm, &weight_raw);
         float calibration_factor_f = abs((float)tare_factor - weight_raw) / known_weight_grams;
@@ -218,21 +218,50 @@ void WeightTask::loop()
     {
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
         gpio_set_level(wm.pd_sck, 0);
-        hx711_is_ready(&wm, &ready);
-        if (ready)
-        {
-            hx711_read_data(&wm, &weight_raw);
-        }
-        else
-        {
-            weight_raw = -1;
-        }
+        // hx711_is_ready(&wm, &ready);
+        // if (ready)
+        // {
+            
+        //     // TODO: below doesnt work :(
+        //     // // take median of potential outlier data sets (take X samples and choose middle)
+        //     // int data_samples = 10;
+        //     // std::set<float> autoSortedSet;
+        //     // for (int i = 0; i < data_samples; i++){
+        //     //     vTaskDelay(50 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+        //     //     // Insert elements
+        //     //     gpio_set_level(wm.pd_sck, 0);
+        //     //     hx711_is_ready(&wm, &ready);
+        //     //     if (ready){
+        //     //         hx711_read_data(&wm, &weight_raw);
+        //     //         weight = tare_factor + (-1) * (weight_raw);
+        //     //         weight = abs(fabs(weight / calibration_factor) - CALIB_OFFSET);
+        //     //         autoSortedSet.insert(weight);
+        //     //     }
+        //     // };
+        //     // auto it = autoSortedSet.begin();
+        //     // std::advance(it, data_samples / 2);
+        //     // weight = *it; // grab median of all sample vals
+        // }
+        // else
+        // {
+        //     weight_raw = -1;
+        // }
+
         weight = 0;
+        do{
+            weight_raw = 0;
+            hx711_is_ready(&wm, &ready);
+            if (ready){
+                hx711_read_data(&wm, &weight_raw);
+                weight = tare_factor + (-1) * (weight_raw);
 
-        weight = tare_factor + (-1) * (weight_raw);
+                // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
+                weight = abs(fabs(weight / calibration_factor) - CALIB_OFFSET);
+                ready = false;
+                printf("reading new weight %.2f\n", weight);
+            };
+        } while (weight == 0);
 
-        // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
-        weight = abs(fabs(weight / calibration_factor) - CALIB_OFFSET);
         // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
         Client::clientPublish("weight", static_cast<void*>(&weight));
 
