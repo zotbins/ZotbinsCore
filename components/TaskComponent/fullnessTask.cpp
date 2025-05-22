@@ -9,27 +9,38 @@
 
 using namespace Zotbins;
 
-const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
-const gpio_num_t PIN_ECHO = GPIO_NUM_23;
-const float BIN_HEIGHT = 100;
+// TRIGGER: ESP32-CAM is 12, WROVER is 22 
+// ECHO:    ESP32-CAM is 13, WROVER is 23 
+#if defined(SENSOR)
+    const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
+    const gpio_num_t PIN_ECHO = GPIO_NUM_23;
+#elif defined(CAMERA)
+    const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
+    const gpio_num_t PIN_ECHO = GPIO_NUM_13;
+#endif
+
+const float BIN_HEIGHT = 100; // don't remember what the units are. someone confirm this and rename the constant appropriately
 
 const gpio_config_t PIN_TRIGGER_CONFIG = {
-    .pin_bit_mask = 0x00001000,
+    .pin_bit_mask = (1ULL << PIN_TRIGGER),
     .mode = GPIO_MODE_OUTPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_ENABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+    .intr_type = GPIO_INTR_DISABLE
+};
 
 const gpio_config_t PIN_ECHO_CONFIG = {
-    .pin_bit_mask = 0x00002000,
+    .pin_bit_mask = (1ULL << PIN_ECHO),
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+    .intr_type = GPIO_INTR_DISABLE
+};
 
 static const char *name = "fullnessTask";
 static const int priority = 1;
 static const uint32_t stackSize = 4096;
+
 static TaskHandle_t xTaskToNotify = NULL;
 static const int core = 1;
 
@@ -51,8 +62,10 @@ void FullnessTask::taskFunction(void *task)
     fullnessTask->loop();
 }
 
-void FullnessTask::setup() // could refactor into setup later but there are a lot of issues with scope
+void FullnessTask::setup()
 {
+    ESP_ERROR_CHECK(gpio_config(&PIN_TRIGGER_CONFIG)); // NECESSARY FOR SOME PINS!!
+    ESP_ERROR_CHECK(gpio_config(&PIN_ECHO_CONFIG));
 }
 
 float FullnessTask::getFullness(){
@@ -63,38 +76,56 @@ float FullnessTask::getFullness(){
 void FullnessTask::loop()
 {
 
-    ESP_ERROR_CHECK(gpio_config(&PIN_TRIGGER_CONFIG));
-    ESP_ERROR_CHECK(gpio_config(&PIN_ECHO_CONFIG));
+    ESP_LOGI(name, "Hello from Fullness Task");
 
     // TODO: use distance buffer to get averages and discard outliers
-    // uint32_t bin_height = BIN_HEIGHT; // TODO: NEED TO OVERLOAD CONSTRUCTOR TO SUPPORT MAX_DISTANCE
-    gpio_set_direction(PIN_TRIGGER, GPIO_MODE_OUTPUT);
-    gpio_set_direction(PIN_ECHO, GPIO_MODE_OUTPUT);
-
+    // TODO: use BIN_HEIGHT to calculate a percentage fullness
 
     float distance;
-    // TODO: this is the bad thing, if not inited it will not allow getDistance
-    // find a way to initialize this via constructor
     Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
+    
+    // ensure trigger pin is low
+    gpio_set_level(PIN_TRIGGER, 0);
 
+    // float threshold = 0.35;
+    // bool SENT = false;
+    
     while (1)
     {
+
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+
+        // TODO: for now, ultrasonic only sends on GPIO read to HIGH
         distance = ultrasonic.getDistance();
-        ESP_LOGI(name, "Hello from Fullness Task %f", distance);
+        ESP_LOGI(name, "Got distance in m: %f", distance);
+        Client::clientPublish("distance", static_cast<void*>(&distance));
+
+        // if(distance > threshold && SENT == false){
+        //     Client::clientPublish("distance", static_cast<void*>(&distance));
+        //     ESP_LOGI(name, "Sent Distance %f", distance);
+        //     SENT = true;
+        // }
+        // else if (distance < threshold && SENT == true){
+        //     SENT = false; 
+        // }
+
+        gpio_set_level(PIN_TRIGGER, 0);
+
+        /* task notifications */
+
+        // // if weightTask is enabled
+        xTaskToNotify = xTaskGetHandle("weightTask"); 
+        xTaskNotifyGive(xTaskToNotify); // once fullness is collected notify weight
+        ESP_LOGI(name, "Notified Weight Task");
+        // vTaskSuspend(NULL);
+
+        // if weightTask is disabled
+        // xTaskToNotify = xTaskGetHandle("usageTask");      
+        // vTaskResume(xTaskToNotify);
+        // ESP_LOGI(name, "Notified Usage Task");
+
+
         
-        // TODO: Publish to MQTT broker when done 
-        // Client::clientPublish("distance", static_cast<void*>(&distance));
-        // xTaskToNotify = xTaskGetHandle("weightTask");
-        // xTaskNotifyGive(xTaskToNotify);
-        // gpio_set_level(PIN_TRIGGER, 0);
-        // gpio_set_level(PIN_ECHO, 0);
-        // vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
-
-        // TODO: remove if no longer needed
-        xTaskToNotify = xTaskGetHandle("usageTask");        
-        vTaskResume(xTaskToNotify);
-
     }
     vTaskDelete(NULL);
 }

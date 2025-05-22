@@ -4,13 +4,7 @@
 #include <cJSON.h>
 #include <stdint.h>
 
-#define SENSOR 1
-#define CAMERA 2
-
-// Set the MCU type here
-#define MCU_TYPE SENSOR  // Change to SENSOR if needed
-
-#if MCU_TYPE == CAMERA
+#if defined(CAMERA)
 namespace Client
 {
     /*
@@ -27,10 +21,11 @@ namespace Client
      * @return cJSON* root of a JSON object containing camera data. 
      *         Make sure to free this after use.
      */
-    cJSON *serialize(char* message, const void* img_str, size_t buffer_length);
+    cJSON *serialize(char* message, char* img_str, size_t buffer_length);
+    //cJSON *serialize(char* message, char* img_str, size_t buffer_length, int compressedSize, int uncompressedSize);
 }
 
-#elif MCU_TYPE == SENSOR
+#elif defined(SENSOR)
 namespace Client
 {
     /*
@@ -49,7 +44,7 @@ namespace Client
      * @return cJSON* root of a JSON object containing sensor data. 
      *         Make sure to free this after use.
      */
-    cJSON *serialize(char* message, float fullness, bool overflow, int32_t weight);
+    cJSON *serialize(char* message, float fullness, bool overflow, float weight, int usage);
 }
 
 #endif // MCU_TYPE

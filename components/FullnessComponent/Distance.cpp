@@ -5,7 +5,7 @@
 
 using namespace Fullness;
 
-static const char *name = "Distance";
+static const char *name = "distance";
 
 Distance::Distance(gpio_num_t trigger, gpio_num_t echo) : sensor{trigger, echo}
 {

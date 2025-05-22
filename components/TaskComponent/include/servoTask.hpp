@@ -33,7 +33,11 @@ namespace Zotbins
          * @brief Start execution of servo Task
          *
          */
+        void rotate();
         void start() override;
+        
+
+        
 
     private:
         /**
@@ -62,6 +66,8 @@ namespace Zotbins
          * @brief Message queue to WiFi Task
          *
          */
+
+        
         QueueHandle_t &mMessageQueue;
     };
 }

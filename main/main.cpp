@@ -5,60 +5,61 @@
 #include "message.hpp"
 #include "servoTask.hpp"
 #include "usageTask.hpp"
+#include "communicationTask.hpp"
 #include "weightTask.hpp"
 #include <driver/gpio.h>
 #include <iostream>
 #include <stdio.h>
+#include "Serialize.hpp"
 
 constexpr size_t messageQueueSize = 20;
 
+static const char *name = "main";
+
 extern "C" void app_main(void)
 {
-
-    // Client::clientStart();
+	// start mqtt task
+    Client::clientStart();
 
     QueueHandle_t messageQueue = xQueueCreate(messageQueueSize, sizeof(Zotbins::Message));
-    assert(messageQueue != nullptr);
+    assert(messageQueue != nullptr);	
 
-    // Zotbins::CameraTask cameraTask(messageQueue);
-    // cameraTask.start();
+	// // not using communication task in favor of breakbeam interrupting both esps simultaneously, at a hardware level
+	// Zotbins::CommunicationTask communicationTask(messageQueue);
+	// communicationTask.start();
 
-    Zotbins::UsageTask usageTask(messageQueue);
-    usageTask.start();
+	/* esp device specific tasks */
+	#if defined(CAMERA)
 
-	Zotbins::FullnessTask fullnessTask(messageQueue);
-    fullnessTask.start();
+		ESP_LOGW(name, "MCU_TYPE is set as camera. Running camera config.");
 
-    // Zotbins::WeightTask weightTask(messageQueue);
-    // weightTask.start();
+		// WARNING: ENABLE PSRAM BEFORE USE
+		// order matters, usage last
+		Zotbins::ServoTask servoTask(messageQueue);
+		servoTask.start();
 
-	
-    // Zotbins::WeightTask weightTask(messageQueue);
-	// weightTask.start();
-	// Zotbins::UsageTask usageTask(messageQueue);
-	// usageTask.start();
-	
-	// Zotbins::CameraTask cameraTask(messageQueue);
-	// cameraTask.start();
+		Zotbins::CameraTask cameraTask(messageQueue);
+		cameraTask.start();
 
+	#elif defined(SENSOR)
 
-	// Zotbins::GpsTask gpsTask(messageQueue);
-	// gpsTask.start();
+		ESP_LOGW(name, "MCU_TYPE is set as sensor. Running sensor config.");
 
-	/*
+		// WARNING: DISABLE PSRAM BEFORE USE
+		// order matters, weight > fullness > usage
+
+		// not using weight for sustainable food fair
+		Zotbins::WeightTask weightTask(messageQueue);
+		weightTask.start();
+ 
+		Zotbins::FullnessTask fullnessTask(messageQueue);
+		fullnessTask.start();
+    
+	#endif     
+	/* end of esp device specific tasks */
+
+	// for now both espcam and wrover use usagetask
 	Zotbins::UsageTask usageTask(messageQueue);
 	usageTask.start();
-
-	Zotbins::FullnessTask fullnessTask(messageQueue);
-	fullnessTask.start();
-
-  	Zotbins::ServoTask servoTask(messageQueue);
-  	servoTask.start();
-
-	Zotbins::WeightTask weightTask(messageQueue);
-	weightTask.start();
-	*/
-
-    // Zotbins::ServoTask servoTask(messageQueue);
-    // servoTask.start();
+	ESP_LOGI(name, "Starting usage task...");
 }

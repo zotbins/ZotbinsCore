@@ -4,26 +4,32 @@
 #include "hx711.h"
 #include "nvs_flash.h" // for storing calibration data
 #include "Client.hpp"
-
+#include <math.h> // for fabs
+#include <set>
+    
 using namespace Zotbins;
 
-const gpio_num_t PIN_DOUT = GPIO_NUM_14; // shifted since pcb pins are swapped when you plug directly in
-const gpio_num_t PIN_PD_SCK = GPIO_NUM_15; // shifted for same reason. 15 used by servo, cant use servo on pin 15 simultaneously.
+const gpio_num_t PIN_DOUT = GPIO_NUM_2;
+const gpio_num_t PIN_PD_SCK = GPIO_NUM_14;
+const bool DEBUG_TARE = false;
 static TaskHandle_t xTaskToNotify = NULL;
-
-const gpio_config_t PIN_PD_SCK_CONFIG = {
-    .pin_bit_mask = 0x00008000,
-    .mode = GPIO_MODE_OUTPUT,
-    .pull_up_en = GPIO_PULLUP_DISABLE,
-    .pull_down_en = GPIO_PULLDOWN_ENABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+const float CALIB_OFFSET = 5368631; // measured from empirical, keep in mind that the mechanical weights will cause a shift.
 
 const gpio_config_t PIN_DOUT_CONFIG = {
-    .pin_bit_mask = 0x00004000,
+    .pin_bit_mask = 1ULL << PIN_DOUT,
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
+    .pull_down_en = GPIO_PULLDOWN_ENABLE,
+    .intr_type = GPIO_INTR_DISABLE
+};
+
+const gpio_config_t PIN_PD_SCK_CONFIG = {
+    .pin_bit_mask = 1ULL << PIN_PD_SCK,
+    .mode = GPIO_MODE_OUTPUT,
+    .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+    .intr_type = GPIO_INTR_DISABLE
+};
 
 static const char *name = "weightTask";
 static const int priority = 1;
@@ -62,7 +68,7 @@ void WeightTask::loop()
     ESP_ERROR_CHECK(gpio_config(&PIN_PD_SCK_CONFIG));
 
     int32_t weight_raw;
-    int32_t tare_factor;
+    int32_t tare_factor = 0;
     int32_t calibration_factor;
     bool ready; // variable storing the status of the weight sensor measurement (measurement ready to be read or not)
     bool tare_factor_initialized;
@@ -81,14 +87,32 @@ void WeightTask::loop()
 
     /* calibration */
     ESP_ERROR_CHECK(gpio_set_level(wm.pd_sck, 0));
-    ready = false;
-
-    while(!ready) {
-        ESP_LOGI(name, "Waiting for hx711...");
-        hx711_is_ready(&wm, &ready); // checks if dout is low
+    hx711_is_ready(&wm, &ready);
+    while (true) {
+        hx711_is_ready(&wm, &ready);
+        if (ready && hx711_read_average(&wm, 10, &tare_factor) == ESP_OK) break;
+        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
-    hx711_read_average(&wm, 10, &tare_factor); // tare the scale during initialization when sensor is ready
-    calibration_factor = 10000; // callibrate scale to lbs, empirically determined
+    
+    // tare debug, use a 100g spool or any definite constant to get calibration factor
+    if (DEBUG_TARE){
+        printf("Raw reading empty: %ld, now place 100g spool\n", tare_factor);
+        vTaskDelay(5000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+        float known_weight_grams = 100;
+        // Compute calibration factor as float for precision
+        hx711_read_data(&wm, &weight_raw);
+        float calibration_factor_f = abs((float)tare_factor - weight_raw) / known_weight_grams;
+        printf("Computed calibration factor: %.2f, now remove spool\n", calibration_factor_f);
+
+        // Convert back to int
+        calibration_factor = (int32_t)calibration_factor_f;
+        printf("new calib factor %ld\n", calibration_factor);
+
+        vTaskDelay(5000 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+    }else{
+        calibration_factor = 80; // callibrate scale to grams, empirically determined from debug
+    }
+
     /* end of calibration */
 
     // ALTERNATIVE TO TARE ON INITIALIZATION: STORE TARE VALUE IN FLASH SO IT DOESN'T RESET ON STARTUP
@@ -193,32 +217,51 @@ void WeightTask::loop()
     while (1)
     {
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+        gpio_set_level(wm.pd_sck, 0);
+        // hx711_is_ready(&wm, &ready);
+        // if (ready)
+        // {
+            
+        //     // TODO: below doesnt work :(
+        //     // // take median of potential outlier data sets (take X samples and choose middle)
+        //     // int data_samples = 10;
+        //     // std::set<float> autoSortedSet;
+        //     // for (int i = 0; i < data_samples; i++){
+        //     //     vTaskDelay(50 / portTICK_PERIOD_MS); // Delay for 1000 milliseconds
+        //     //     // Insert elements
+        //     //     gpio_set_level(wm.pd_sck, 0);
+        //     //     hx711_is_ready(&wm, &ready);
+        //     //     if (ready){
+        //     //         hx711_read_data(&wm, &weight_raw);
+        //     //         weight = tare_factor + (-1) * (weight_raw);
+        //     //         weight = abs(fabs(weight / calibration_factor) - CALIB_OFFSET);
+        //     //         autoSortedSet.insert(weight);
+        //     //     }
+        //     // };
+        //     // auto it = autoSortedSet.begin();
+        //     // std::advance(it, data_samples / 2);
+        //     // weight = *it; // grab median of all sample vals
+        // }
+        // else
+        // {
+        //     weight_raw = -1;
+        // }
 
-        ESP_ERROR_CHECK(gpio_set_level(wm.pd_sck, 0)); // reset clock pulse
-        ready = false; // reset hx711 ready status
+        weight = 0;
+        do{
+            weight_raw = 0;
+            hx711_is_ready(&wm, &ready);
+            if (ready){
+                hx711_read_data(&wm, &weight_raw);
+                weight = tare_factor + (-1) * (weight_raw);
 
-        while(!ready) {
-            ESP_LOGI(name, "Waiting for hx711...");
-            hx711_is_ready(&wm, &ready); // checks if dout is low
-        }
-        if (ready) // if dout is low, ready = !dout, read the weight
-        {
-            hx711_read_average(&wm, 10, &weight_raw); 
-            ESP_LOGI(name, "Raw weight: %ld", weight_raw);
+                // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
+                weight = abs(fabs(weight / calibration_factor) - CALIB_OFFSET);
+                ready = false;
+                // printf("reading new weight %.2f\n", weight);
+            };
+        } while (weight == 0);
 
-            weight = tare_factor + (-1) * (weight_raw);
-            // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
-            weight = weight / calibration_factor;
-            // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
-        }
-        else
-        {
-            weight_raw = -1;
-        }
-
-        weight = tare_factor + (-1) * (weight_raw);
-        // weight_raw is inverted; therefore, we need to invert the measurement (this is what the -1 is for). then we add this reading to the tare factor which zeroes out the scale when nothing in placed on the sensor.
-        weight = weight / calibration_factor;
         // calibration factor is an int that scales up or down the weight reading from an arbitraty number to one in any other unit. it is divided by the calibration factor so it can be an int, since most often the reading will be scaled downwards and nvs_flash only supports portable types like ints. (this should be done before deployment)
         Client::clientPublish("weight", static_cast<void*>(&weight));
 
@@ -226,6 +269,7 @@ void WeightTask::loop()
         ESP_LOGI(name, "Hello from Weight Task : %f", (weight));
         xTaskToNotify = xTaskGetHandle("usageTask");        
         vTaskResume(xTaskToNotify);
+        // vTaskSuspend(NULL);
     }
-    vTaskDelete(NULL);
+    //vTaskDelete(NULL);
 }

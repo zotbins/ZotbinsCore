@@ -17,8 +17,13 @@ endif()
 
 idf_component_register(SRCS "Client.cpp" "Serialize.cpp"
                     INCLUDE_DIRS "include"
-                    PRIV_REQUIRES log esp_system esp_partition nvs_flash esp_event esp_netif protocol_examples_common mqtt app_update json
+                    PRIV_REQUIRES log esp_system esp_partition nvs_flash esp_event esp_netif protocol_examples_common mqtt app_update json esp_wifi
                     EMBED_TXTFILES "${AWS_EMBED}")
 if(HAS_AWS_CREDENTIALS)
     target_compile_definitions("${COMPONENT_TARGET}" PRIVATE HAS_AWS_CREDENTIALS)
 endif()
+
+# you also need to change this compile definition in the main and taskcomponent cmakelists.txt
+
+# add_compile_definitions(SENSOR)
+add_compile_definitions(CAMERA)
