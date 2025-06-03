@@ -19,6 +19,8 @@ using namespace Zotbins;
 // MAKE SURE SERVO GROUND PIN SHARES ESP32 GROUND PIN
 const gpio_num_t PIN_SERVO = GPIO_NUM_15; // 16 IS NOT ANALOG SO DONT USE THAT FOR ESPCAM
 // const gpio_num_t inputPIN = GPIO_NUM_32;
+const int START_DEG = -60;
+const int END_DEG = -180;
 
 // TODO: get a direct access mapping to MCU's available GPIO pins or something instead
 // const gpio_num_t PIN_SEND_MCU = GPIO_NUM_13;
@@ -139,20 +141,36 @@ void ServoTask::loop()
     ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
     ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer, MCPWM_TIMER_START_NO_STOP));
 
+    // start from horizontal
+    mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(START_DEG));
+
     while (1)
     {
         ESP_LOGI(name, "waiting for task response");
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-10));
-        for(int i = -10; i>= -180; i--){
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(START_DEG));
+        vTaskDelay(1000  / portTICK_PERIOD_MS);
+        for(int i = START_DEG; i >= END_DEG; i--){
+            printf("PWM I (Go to -180): %d\n", i);
             mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(i));
             vTaskDelay(3  / portTICK_PERIOD_MS);
         }
+        vTaskDelay(1000  / portTICK_PERIOD_MS);
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(END_DEG));
+
         xTaskToNotify = xTaskGetHandle("cameraTask"); 
         xTaskNotifyGive(xTaskToNotify); 
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-10));
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(END_DEG));
+        vTaskDelay(1000  / portTICK_PERIOD_MS);
+        for(int i = END_DEG; i < START_DEG; i++){
+            printf("PWM I (Back to start): %d\n", i);
+            mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(i));
+            vTaskDelay(6  / portTICK_PERIOD_MS);
+        }
+        vTaskDelay(1000  / portTICK_PERIOD_MS);
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(START_DEG));
 
         // set ultrasonic of SENSOR esp32 to low, telling it to activate
         ESP_LOGI("Servo", "starting servo thingy");
