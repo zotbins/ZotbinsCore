@@ -52,7 +52,8 @@ Most of us at Zotbins are using VSCode with the ESP-IDF extension installed to f
 
 Before flashing, your code has to be compiled into a binary that the microcontroller can understand. This is done using `idf.py build` or by clicking the little build button located at the bottom toolbar (it looks like a wrench, and if you hover over it it'll say build).
 
-![../images/Pasted image 20250602230342.png]
+![Pasted image 20250602230342.png]
+
 After, you need to select the port. This basically tells the extension where on your computer it should try sending the firmware when flashing. Most of the time it's a USB port. (It should look something like the `/dev/tty.usbserial-120` in the screenshot for MacOS. For Linux and Windows, look for something that says USB or COM.)
 
 After this is done, make sure you have the correct serial protocol selected (our adapters use UART) and then click the lightning icon to flash. To see all the of the info messages that the ESP-32 is printing, click on the computer monitor. To do all of this in one step (build, flash, then monitor) click the fire icon.
@@ -103,10 +104,11 @@ This is the kind of thing you're going to learn by doing, but I'll have an examp
 
 First I'll go to the ESP32 WROVER-E datasheet. The table of contents is the first place you want to look, and since we're interested in the GPIO pins I'll look for anything that talks about *pins* or *pin functions*. 
 
-![./images/Pasted image 20250602224718.png]
+![Pasted image 20250602224718.png]
+
 *Pin Description* and *Peripheral Overview* are good places to start, since the first has the word *pin* in it and the second should be talking about how the GPIO pins can be configured to interface with various peripherals. It turns out you'll find this section in *Peripheral Overview*:
 
-![./images/Pasted image 20250602224848.png]
+![Pasted image 20250602224848.png]
 
 This tells us to go to the ESP32 Series datasheet, which makes sense since the pull-up resistors are a part of the actual ESP32 integrated circuit chip rather than the development board they come packaged on!
 
@@ -114,7 +116,7 @@ This tells us to go to the ESP32 Series datasheet, which makes sense since the p
 
 Following those directions, you'll find this table:
 
-![./images/Pasted image 20250602225453.png]
+![Pasted image 20250602225453.png]
 
 Which tells us GPIO 14 is one of the functions of pin 17, and that pin 17 has the *wpu* function (it has an internal weak pull-up resistor).
 
@@ -130,7 +132,7 @@ This section is a practical walk-through that shows you **how to use the ESP-ID
 
 If you go to the [ESP-IDF Example Index](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/index.html), you'll find many example projects under **Application Examples**, including a group for `protocols/mqtt`. After navigating there, at first glance, you might see a lot of options:
 
-![./images/Pasted image 20250602232041.png]
+![Pasted image 20250602232041.png]
 
 How do you know which one to pick? It depends on how you want to connect to your MQTT broker. Search or ask your favorite LLM what these are:
 
