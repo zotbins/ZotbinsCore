@@ -18,11 +18,11 @@ namespace Client
      *   "img_str": Image base64 string
      * }
      *
-     * @return cJSON* root of a JSON object containing camera data. 
+     * @return cJSON* root of a JSON object containing camera data.
      *         Make sure to free this after use.
      */
-    cJSON *serialize(char* message, char* img_str, size_t buffer_length);
-    //cJSON *serialize(char* message, char* img_str, size_t buffer_length, int compressedSize, int uncompressedSize);
+    cJSON *serialize(char *message, char *img_str, size_t buffer_length);
+    // cJSON *serialize(char* message, char* img_str, size_t buffer_length, int compressedSize, int uncompressedSize);
 }
 
 #elif defined(SENSOR)
@@ -41,10 +41,10 @@ namespace Client
      *   "weight": 50
      * }
      *
-     * @return cJSON* root of a JSON object containing sensor data. 
+     * @return cJSON* root of a JSON object containing sensor data.
      *         Make sure to free this after use.
      */
-    cJSON *serialize(char* message, float fullness, bool overflow, float weight, int usage);
+    cJSON *serialize(char *message, float fullness, bool overflow, float weight, int usage);
 }
 
 #endif // MCU_TYPE
