@@ -123,9 +123,6 @@ void FullnessTask::loop()
         // xTaskToNotify = xTaskGetHandle("usageTask");      
         // vTaskResume(xTaskToNotify);
         // ESP_LOGI(name, "Notified Usage Task");
-
-
-        
     }
     vTaskDelete(NULL);
 }
