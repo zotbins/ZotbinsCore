@@ -1,7 +1,7 @@
 
 #include "gpsTask.hpp"
 #include "driver/uart.h"
-#include "Task.hpp"  
+#include "task.hpp"  
 #include "Client.hpp"
 #include <driver/gpio.h>
 #include <freertos/FreeRTOS.h>
