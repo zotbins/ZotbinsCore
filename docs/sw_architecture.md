@@ -104,7 +104,7 @@ This is the kind of thing you're going to learn by doing, but I'll have an examp
 
 First I'll go to the ESP32 WROVER-E datasheet. The table of contents is the first place you want to look, and since we're interested in the GPIO pins I'll look for anything that talks about *pins* or *pin functions*. 
 
-![why does github require alt text](/images/Pasted image 20250602224718.png)
+![why does github require alt text](images/Pasted%20image%2020250602224718.png)
 
 *Pin Description* and *Peripheral Overview* are good places to start, since the first has the word *pin* in it and the second should be talking about how the GPIO pins can be configured to interface with various peripherals. It turns out you'll find this section in *Peripheral Overview*:
 
