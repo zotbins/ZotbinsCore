@@ -19,7 +19,6 @@
 #include "esp_log.h"
 #include <driver/gpio.h>
 
-
 namespace Zotbins
 {
     class FullnessTask : public Task
@@ -38,6 +37,7 @@ namespace Zotbins
         void start() override;
 
         float getFullness();
+
     private:
         /**
          * @brief Function to be called by FreeRTOS function xTaskCreate().
@@ -72,13 +72,12 @@ namespace Zotbins
          *
          */
         Fullness::Distance ultrasonic;
-        
+
         /**
          * @brief Variable to store distance measurements
          *
          */
         float distance;
-
     };
 }
 

@@ -36,7 +36,7 @@ namespace Zotbins
          *
          */
         void start() override;
-        
+
         float getWeight();
 
     private:
@@ -68,7 +68,6 @@ namespace Zotbins
          */
         QueueHandle_t &mMessageQueue;
 
-        
         /**
          * @brief Finalized weight (post calculation)
          *

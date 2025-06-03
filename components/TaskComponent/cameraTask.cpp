@@ -12,19 +12,19 @@
 #include <freertos/task.h>
 
 // For SD Card
-#include "esp_log.h"
-#include "esp_vfs_fat.h"
-#include "driver/sdspi_host.h"
-#include "driver/spi_common.h"
-#include "sdmmc_cmd.h"
 #include "driver/sdmmc_defs.h"
 #include "driver/sdmmc_host.h"
+#include "driver/sdspi_host.h"
+#include "driver/spi_common.h"
+#include "esp_log.h"
+#include "esp_vfs_fat.h"
+#include "sdmmc_cmd.h"
 #include <dirent.h>
 
 // For Clock
-#include <time.h>
-#include <sys/time.h>
 #include "esp_sntp.h"
+#include <sys/time.h>
+#include <time.h>
 
 using namespace Zotbins;
 
@@ -41,19 +41,17 @@ static const uint32_t stackSize = 4096;
 #include "esp_netif.h"
 #include "esp_timer.h"
 #include "esp_wifi.h"
+#include "zlib.h"
 #include <esp_log.h>
 #include <esp_sleep.h>
 #include <esp_system.h>
 #include <nvs_flash.h>
 #include <rom/ets_sys.h>
-#include <string.h>
-#include "zlib.h"
-#include <stdlib.h>
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <string.h>
 
 #include "esp_now.h"
-
 
 // FreeRTOS headers
 #include "freertos/FreeRTOS.h"
@@ -127,11 +125,11 @@ static camera_config_t camera_config = {
     .frame_size = FRAMESIZE_VGA, // UXGA, VGA, SVGA(800x600)
     /* TODO: eventually we want to be able to send UXGA quality (1600x1200)
         however, MQTT doesn't allow sizes above a certain threshold which UXGA exceeds
-        so we need to divert the package 
+        so we need to divert the package
     */
     .jpeg_quality = 12,
-    .fb_count = 8, //  change this for faster
-    .fb_location = CAMERA_FB_IN_PSRAM,// CAMERA_FB_IN_PSRAM,
+    .fb_count = 8,                     //  change this for faster
+    .fb_location = CAMERA_FB_IN_PSRAM, // CAMERA_FB_IN_PSRAM,
     .grab_mode = CAMERA_GRAB_WHEN_EMPTY,
 };
 
@@ -182,7 +180,8 @@ static esp_err_t init_camera(void)
 
 // Initialize the SD Card
 #define MOUNT_POINT "/sdcard"
-esp_err_t init_sd_card() {
+esp_err_t init_sd_card()
+{
     esp_err_t ret;
 
     // Initialize SD card host (use SDMMC interface)
@@ -201,19 +200,22 @@ esp_err_t init_sd_card() {
     esp_vfs_fat_sdmmc_mount_config_t mount_config = {
         .format_if_mount_failed = false,
         .max_files = 5,
-        .allocation_unit_size = 16 * 1024
-    };
+        .allocation_unit_size = 16 * 1024};
 
     // Pointer to SD card information
     sdmmc_card_t *card;
 
     // Mount the SD card
     ret = esp_vfs_fat_sdmmc_mount(MOUNT_POINT, &host, &slot_config, &mount_config, &card);
-    if (ret != ESP_OK) {
+    if (ret != ESP_OK)
+    {
         ESP_LOGE("SD", "Failed to mount SD card. Error code: 0x%x (%s)", ret, esp_err_to_name(ret));
-        if (ret == ESP_ERR_TIMEOUT) {
+        if (ret == ESP_ERR_TIMEOUT)
+        {
             ESP_LOGE("SD", "This may be due to signal integrity issues or incompatible SD card.");
-        } else if (ret == ESP_FAIL) {
+        }
+        else if (ret == ESP_FAIL)
+        {
             ESP_LOGE("SD", "SD card mount failed. Check card formatting and connections.");
         }
         return ret;
@@ -227,16 +229,19 @@ esp_err_t init_sd_card() {
 }
 
 // Reads from the text files in the sd card
-void read_text_file(const char *path) {
+void read_text_file(const char *path)
+{
     FILE *file = fopen(path, "r");
-    if (!file) {
+    if (!file)
+    {
         ESP_LOGE(name, "Failed to open file: %s", path);
         return;
     }
 
     ESP_LOGI(name, "Reading file: %s", path);
     char line[256]; // Buffer to store lines from the file
-    while (fgets(line, sizeof(line), file)) {
+    while (fgets(line, sizeof(line), file))
+    {
         printf("%s", line); // Print each line
     }
 
@@ -245,15 +250,18 @@ void read_text_file(const char *path) {
 }
 
 // Iterates through the SD card and publishes to mqtt server
-void publishSD(const char *dir_path) {
+void publishSD(const char *dir_path)
+{
     DIR *dir = opendir(dir_path);
-    if (!dir) {
+    if (!dir)
+    {
         ESP_LOGE(name, "Failed to open directory: %s", dir_path);
         return;
     }
 
     struct dirent *entry;
-    while ((entry = readdir(dir)) != NULL) {
+    while ((entry = readdir(dir)) != NULL)
+    {
         // Construct full file path
         char file_path[1024];
         snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, entry->d_name);
@@ -266,7 +274,8 @@ void publishSD(const char *dir_path) {
 int zlib_compress(const uint8_t *input, size_t input_size,
                   uint8_t **output, size_t *output_size)
 {
-    if (!input || input_size == 0 || !output || !output_size) {
+    if (!input || input_size == 0 || !output || !output_size)
+    {
         return -1; // Invalid arguments
     }
 
@@ -275,13 +284,15 @@ int zlib_compress(const uint8_t *input, size_t input_size,
 
     // Allocate memory for compressed data
     *output = (uint8_t *)malloc(bound);
-    if (*output == NULL) {
+    if (*output == NULL)
+    {
         return -2; // Memory allocation failed
     }
 
     uLongf dest_len = bound;
     int res = compress2(*output, &dest_len, input, input_size, Z_BEST_COMPRESSION);
-    if (res != Z_OK) {
+    if (res != Z_OK)
+    {
         free(*output);
         *output = NULL;
         *output_size = 0;
@@ -291,7 +302,6 @@ int zlib_compress(const uint8_t *input, size_t input_size,
     *output_size = dest_len;
     return 0; // Success
 }
-
 
 CameraTask::CameraTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
@@ -304,11 +314,10 @@ void CameraTask::start()
     // TODO: for some stupid reason core 0 works for this, we need an explanation!!!
     // xTaskCreatePinnedToCore(taskFunction, mName, mStackSize, this, mPriority, &xTaskToNotify, 0);
 
-    uint8_t mac[6];  // Array to store the MAC address
-    esp_wifi_get_mac(WIFI_IF_STA, mac);  // Get Wi-Fi station MAC address
+    uint8_t mac[6];                     // Array to store the MAC address
+    esp_wifi_get_mac(WIFI_IF_STA, mac); // Get Wi-Fi station MAC address
     printf("ESP32 MAC Address: %02X:%02X:%02X:%02X:%02X:%02X\n",
            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-
 
     ESP_LOGE(name, "Task Function");
     xTaskCreatePinnedToCore(taskFunction, mName, 4096, this, mPriority, &xTaskToNotify, 0);
@@ -316,7 +325,7 @@ void CameraTask::start()
 
 void CameraTask::taskFunction(void *task)
 {
-    
+
     CameraTask *cameraTask = static_cast<CameraTask *>(task);
     cameraTask->setup();
     cameraTask->loop();
@@ -326,19 +335,15 @@ void CameraTask::setup()
 {
 }
 
-
 void CameraTask::loop()
 {
 
+    uint8_t mac[6]; // Array to store the MAC address
 
-    uint8_t mac[6];  // Array to store the MAC address
-
-    esp_wifi_get_mac(WIFI_IF_STA, mac);  // Get Wi-Fi station MAC address
+    esp_wifi_get_mac(WIFI_IF_STA, mac); // Get Wi-Fi station MAC address
 
     printf("ESP32 MAC Address: %02X:%02X:%02X:%02X:%02X:%02X\n",
            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-
-
 
     // Intialize SD Card
     // esp_err_t ret = init_sd_card();
@@ -349,7 +354,7 @@ void CameraTask::loop()
     //     ESP_LOGE("SD", "SD card initialized");
     // }
 
-    // Intialize the Necessary GPIO 
+    // Intialize the Necessary GPIO
     gpio_reset_pin(flashPIN);
     gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
     gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
@@ -357,31 +362,35 @@ void CameraTask::loop()
 
     // Initialize NVS
     ESP_ERROR_CHECK(nvs_flash_init());
- 
+
     // Initialize the camera
-    if (ESP_OK != init_camera()){
+    if (ESP_OK != init_camera())
+    {
         ESP_LOGE(name, "Camera Failed");
-    }else{
+    }
+    else
+    {
         ESP_LOGI(name, "Camera started, getting sensor");
     }
 
-    // Setup Camera 
+    // Setup Camera
     sensor_t *s = esp_camera_sensor_get();
-    if (s != NULL) {
+    if (s != NULL)
+    {
         // Image tuning
-        s->set_sharpness(s, 1);         // Optional, 0–2
-        s->set_brightness(s, 2);        // -2 to 2 (2 = brighter)
-        s->set_contrast(s, 0);          // -2 to 2
-        s->set_saturation(s, 0);        // -2 to 2
+        s->set_sharpness(s, 1);  // Optional, 0–2
+        s->set_brightness(s, 2); // -2 to 2 (2 = brighter)
+        s->set_contrast(s, 0);   // -2 to 2
+        s->set_saturation(s, 0); // -2 to 2
 
         // Gain and exposure
-        s->set_gain_ctrl(s, 1);         // Enable auto gain
-        s->set_exposure_ctrl(s, 1);     // Enable auto exposure
+        s->set_gain_ctrl(s, 1);                  // Enable auto gain
+        s->set_exposure_ctrl(s, 1);              // Enable auto exposure
         s->set_gainceiling(s, (gainceiling_t)6); // Try 6 or 8 for more gain headroom
 
         // White balance
-        s->set_whitebal(s, 1);          // Enable auto white balance
-        s->set_awb_gain(s, 1);          // Enable auto white balance gain
+        s->set_whitebal(s, 1); // Enable auto white balance
+        s->set_awb_gain(s, 1); // Enable auto white balance gain
     }
 
     // Camera Functionality
@@ -394,19 +403,19 @@ void CameraTask::loop()
     {
         cnt++; // need to wait for something...? (green tint, it was initializing too quickly)
         fb = esp_camera_fb_get();
-        uint64_t start = esp_timer_get_time();  
+        uint64_t start = esp_timer_get_time();
 
         if (cnt == 30)
         {
-            size_t output_size = 128000; // 262144 for 800 x 600; 
+            size_t output_size = 128000; // 262144 for 800 x 600;
             char *output = (char *)malloc(output_size);
             buffer_to_string(fb->buf, fb->len, output, output_size);
             ESP_LOGE(name, "Taking Picture");
             Client::clientPublish("camera", output);
             free(output);
             xTaskToNotify = xTaskGetHandle("servoTask"); // servoTask");
-            vTaskResume(xTaskToNotify);  
-            ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);   
+            vTaskResume(xTaskToNotify);
+            ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
             cnt = 0;
         }
         esp_camera_fb_return(fb);
