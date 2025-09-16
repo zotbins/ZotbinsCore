@@ -48,6 +48,10 @@
 static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 #endif
 
+#ifndef BIT64
+#define BIT64 BIT
+#endif
+
 static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain)
 {
 #if HELPER_TARGET_IS_ESP32
@@ -58,12 +62,7 @@ static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain)
 
     // read data
     uint32_t data = 0;
-    /* 
-    Alex: applies clock pulses to pd_sck as mentioned in the datasheet 
-    ("When DOUT goes to low, it indicates data is ready for retrieval. By applying 25~27 positive clock pulses at the PD_SCK pin, data is shifted out from the DOUT output pin. Each PD_SCK pulse shifts out one bit, starting with the MSB bit first, until all 24 bits are shifted out.") 
-    to shift the data out of the hx711
-    */ 
-    for (size_t i = 0; i < 24; i++) 
+    for (size_t i = 0; i < 24; i++)
     {
         gpio_set_level(pd_sck, 1);
         ets_delay_us(1);
@@ -73,9 +72,6 @@ static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain)
     }
 
     // config gain + channel for next read
-    /* 
-    Alex: pulses the 25th, 26th, and/or 27th pulses needed to bring dout high, and configure gain, where gain is defined in an enum and the constants correspond to the number of additional pulses
-    */
     for (size_t i = 0; i <= gain; i++)
     {
         gpio_set_level(pd_sck, 1);
@@ -99,8 +95,18 @@ esp_err_t hx711_init(hx711_t *dev)
 {
     CHECK_ARG(dev);
 
-    CHECK(gpio_set_direction(dev->dout, GPIO_MODE_INPUT));
-    CHECK(gpio_set_direction(dev->pd_sck, GPIO_MODE_OUTPUT));
+    gpio_config_t conf = {
+        .pin_bit_mask = BIT64(dev->dout),
+        .mode = GPIO_MODE_INPUT,
+        .pull_up_en = 0,
+        .pull_down_en = 0,
+        .intr_type = GPIO_INTR_DISABLE,
+    };
+    CHECK(gpio_config(&conf));
+
+    conf.pin_bit_mask = BIT64(dev->pd_sck);
+    conf.mode = GPIO_MODE_OUTPUT;
+    CHECK(gpio_config(&conf));
 
     CHECK(hx711_power_down(dev, false));
 
@@ -129,7 +135,6 @@ esp_err_t hx711_set_gain(hx711_t *dev, hx711_gain_t gain)
     return ESP_OK;
 }
 
-/* Alex: user needs to call this and check ready before reading */
 esp_err_t hx711_is_ready(hx711_t *dev, bool *ready)
 {
     CHECK_ARG(dev && ready);
@@ -157,8 +162,8 @@ esp_err_t hx711_read_data(hx711_t *dev, int32_t *data)
     CHECK_ARG(dev && data);
 
     uint32_t raw = read_raw(dev->dout, dev->pd_sck, dev->gain);
-    if (raw & 0x800000) // bitmask for sign extension
-        raw |= 0xff000000; // sign extension
+    if (raw & 0x800000)
+        raw |= 0xff000000;
     *data = *((int32_t *)&raw);
 
     return ESP_OK;
@@ -176,7 +181,7 @@ esp_err_t hx711_read_average(hx711_t *dev, size_t times, int32_t *data)
         CHECK(hx711_read_data(dev, &v));
         *data += v;
     }
-    *data /= times;
+    *data /= (int32_t) times;
 
     return ESP_OK;
 }
