@@ -5,6 +5,7 @@ Doxygen is documentation generator tool from annotated C++ sources.
 It generates directly from the C++ source code, which makes it easier to keep the documentation consistant from the source code.
 
 ## Documentating Source Code
+
 In order to have the documentation generate correctly, you need to add a file header with an description about the file. This needs to be present in every file that needs documentation.
 
 ```
