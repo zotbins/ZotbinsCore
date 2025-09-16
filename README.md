@@ -1,31 +1,20 @@
-# ZotBins Core
+## BACKGROUND
 
-ZotBins Core is a IoT Smart Bin to keep track of waste data metrics like bin fullness, weight, usage rates, etc. This is intended to help quantify waste data and promote solutions to reduce the amount of waste people throw away.
+ZotbinsCore is an IoT (Internet of Things) "smart bin" which currently collects valuable waste metrics on the *University of California, Irvine* campus. A smart bin is a waste bin equipped with intelligent hardware—our smart bin is called the ZotBin.
 
-The previous iteration was a Raspberry Pi-based system. This system is intended to a replacement for the Raspberry Pi system, while being more reliable, maintainable, efficient, and testable.
+ZotbinsCore collects waste metrics such as image data and bin usage, interfacing with the **[Zotbins App](https://apps.apple.com/us/app/zotbins/id6743295314)** to help users locate bins and properly dispose their trash. From an organizational standpoint, ZotbinsCore can also be extremely useful for analyzing waste footprint and exposing insightful trends that can help to correct improper practices.
 
-## Prerequisites
+Once the data is collected, it is relayed to our AWS IoT MQTT (Message Queuing Telemetry Transport) Broker which allows us to seamlessly connect an entire network of ZotBins to collect data across an entire campus.
 
-- [Visual Studio Code](https://code.visualstudio.com/)
-- [PlatformIO](https://platformio.org/), a cross-platform VSCode-based IDE for embedded system development
-- [ESP-IDF](https://idf.espressif.com) (OPTIONAL alternative to PlatformIO) development framework for ESP devices, which also includes a VSCode extension - Version 5.3.1
-- [CP210x USB to UART Bridge VCP Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers), only needed if drivers are not already installed
+The current iteration uses a dual ESP-32 system to support the large number of sensors and prioritize speed. We eventually plan to reduce the cost and footprint of the ZotBin.
 
-## How to Build & Upload w/ PlatformIO
+## CHANGELOG
 
-1. First, clone the repository using the command
-```bash
-git clone git@github.com:zotbins/ZotbinsCore.git
-```
+### VERSION 1.0
 
-2. Create an `.env` file in the project directory following `.env.txt` as a template.
-
-3. Fill in the values in `.env` with the appropriate values.
-
-![PlatformIO VSCode Toolbar](docs/images/platformio_toolbar.png)
-
-4. Build the project by clicking on `Build` ✔️ in the PlatformIO Toolbar, located in the left corner.
-
-5. Upload the application by clicking on `Upload` ➡️ in the PlatformIO Toolbar.
-
-6. Verify that the application was successfully uploaded by clicking on the `Serial Monitor` 🔌 for logs.
+Currently ZotbinsCore collects the following metrics:
+- Pictures of trash disposed in the ZotBin 
+	- These images are categorized by Zotbins' Waste Recognition team
+- Number of items disposed in the ZotBin
+- Weight of items disposed in the ZotBin
+- Fullness of the ZotBin
