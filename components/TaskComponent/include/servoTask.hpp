@@ -35,9 +35,6 @@ namespace Zotbins
          */
         void rotate();
         void start() override;
-        
-
-        
 
     private:
         /**
@@ -67,7 +64,6 @@ namespace Zotbins
          *
          */
 
-        
         QueueHandle_t &mMessageQueue;
     };
 }

@@ -1,19 +1,19 @@
-#include <stdlib.h>
-#include <string.h>
+#include "driver/gpio.h"
+#include "esp_event.h"
+#include "esp_log.h"
+#include "esp_mac.h"
+#include "esp_netif.h"
+#include "esp_now.h"
+#include "esp_wifi.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
-#include "esp_wifi.h"
-#include "esp_now.h"
-#include "esp_log.h"
-#include "esp_netif.h"
-#include "esp_event.h"
-#include "esp_mac.h"
 #include "nvs_flash.h"
-#include "driver/gpio.h"
+#include <stdlib.h>
+#include <string.h>
 
-#include "communicationTask.hpp"
 #include "Client.hpp"
 #include "Serialize.hpp"
+#include "communicationTask.hpp"
 
 using namespace Zotbins;
 
@@ -22,7 +22,6 @@ static const int priority = 1;
 static const uint32_t stackSize = 4096;
 static TaskHandle_t usageHandle = NULL;
 static const int core = 1;
-
 
 #define ESPNOW_MAXDELAY 512
 #define CONFIG_ESPNOW_CHANNEL 1
@@ -37,10 +36,11 @@ static const int core = 1;
 static QueueHandle_t s_espnow_queue = NULL;
 static uint8_t s_broadcast_mac[ESP_NOW_ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-
 /* ESP-NOW send callback */
-static void espnow_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status) {
-    if (mac_addr == NULL) {
+static void espnow_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status)
+{
+    if (mac_addr == NULL)
+    {
         ESP_LOGE(name, "Send callback error");
         return;
     }
@@ -50,20 +50,23 @@ static void espnow_send_cb(const uint8_t *mac_addr, esp_now_send_status_t status
 }
 
 /* ESP-NOW receive callback */
-static void espnow_recv_cb(const esp_now_recv_info_t *recv_info, const uint8_t *data, int len) {
-    if (recv_info->src_addr == NULL || data == NULL || len <= 0) {
+static void espnow_recv_cb(const esp_now_recv_info_t *recv_info, const uint8_t *data, int len)
+{
+    if (recv_info->src_addr == NULL || data == NULL || len <= 0)
+    {
         ESP_LOGE(name, "Receive callback error");
         return;
     }
 
     char *received_msg = (char *)malloc(len + 1);
-    if (received_msg == NULL) {
+    if (received_msg == NULL)
+    {
         ESP_LOGE(name, "Malloc receive buffer fail");
         return;
     }
     memcpy(received_msg, data, len);
     received_msg[len] = '\0'; // Null-terminate string
-    char mac_str[18]; // Buffer for MAC address string (17 chars + null terminator)
+    char mac_str[18];         // Buffer for MAC address string (17 chars + null terminator)
     snprintf(mac_str, sizeof(mac_str), MACSTR, MAC2STR(recv_info->src_addr));
     ESP_LOGI(name, "Received from %s: %s", mac_str, received_msg);
     free(received_msg);
@@ -81,11 +84,12 @@ static void espnow_recv_cb(const esp_now_recv_info_t *recv_info, const uint8_t *
 //     }
 // }
 
-
 /* Initialize ESP-NOW */
-static esp_err_t espnow_init(void) {
+static esp_err_t espnow_init(void)
+{
     s_espnow_queue = xQueueCreate(10, sizeof(uint32_t)); // Simplified queue for events
-    if (s_espnow_queue == NULL) {
+    if (s_espnow_queue == NULL)
+    {
         ESP_LOGE(name, "Create queue fail");
         return ESP_FAIL;
     }
@@ -96,7 +100,8 @@ static esp_err_t espnow_init(void) {
 
     // Add broadcast peer
     esp_now_peer_info_t *peer = (esp_now_peer_info_t *)malloc(sizeof(esp_now_peer_info_t));
-    if (peer == NULL) {
+    if (peer == NULL)
+    {
         ESP_LOGE(name, "Malloc peer info fail");
         vQueueDelete(s_espnow_queue);
         esp_now_deinit();
@@ -131,16 +136,17 @@ void CommunicationTask::taskFunction(void *task)
     communicationTask->loop();
 }
 
-void CommunicationTask::sendMessage(const char *message){
+void CommunicationTask::sendMessage(const char *message)
+{
     uint32_t message_len = strlen(message) + 1; // Include null terminator
 
     ESP_LOGI(name, "Start sending: %s", message);
 
     // Send the message using ESP-NOW
-    if (esp_now_send(s_broadcast_mac, (uint8_t *)message, message_len) != ESP_OK) {
+    if (esp_now_send(s_broadcast_mac, (uint8_t *)message, message_len) != ESP_OK)
+    {
         ESP_LOGE(name, "Send error");
     }
-
 }
 
 void CommunicationTask::setup()
@@ -149,9 +155,10 @@ void CommunicationTask::setup()
 
     espnow_init();
 
-    while(1){
+    while (1)
+    {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
-        //espnow_send_message("Hello from ESPNow!");
+        // espnow_send_message("Hello from ESPNow!");
     }
 }
 

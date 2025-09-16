@@ -1,15 +1,15 @@
 
 #include "gpsTask.hpp"
-#include "driver/uart.h"
-#include "Task.hpp"  
 #include "Client.hpp"
+#include "driver/uart.h"
+#include "esp_log.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "string.h"
+#include "task.hpp"
 #include <driver/gpio.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include "esp_log.h"
-#include "string.h"
-#include "stdio.h"
-#include "stdlib.h"
 
 using namespace Zotbins;
 
@@ -19,38 +19,40 @@ static const uint32_t stackSize = 4096;
 
 const gpio_num_t flashPIN = GPIO_NUM_4;
 
-#define GPS_UART_NUM      UART_NUM_0
-#define GPS_UART_BAUD     9600
-#define GPS_UART_TX_PIN   1
-#define GPS_UART_RX_PIN   3
-#define GPS_BUFFER_SIZE   1024
+#define GPS_UART_NUM UART_NUM_0
+#define GPS_UART_BAUD 9600
+#define GPS_UART_TX_PIN 1
+#define GPS_UART_RX_PIN 3
+#define GPS_BUFFER_SIZE 1024
 
-void gps_uart_init() {
+void gps_uart_init()
+{
     uart_config_t uart_config = {
         .baud_rate = GPS_UART_BAUD,
         .data_bits = UART_DATA_8_BITS,
         .parity = UART_PARITY_DISABLE,
         .stop_bits = UART_STOP_BITS_1,
-        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
-    };
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE};
     // Configure UART parameters
     uart_param_config(GPS_UART_NUM, &uart_config);
     uart_set_pin(GPS_UART_NUM, GPS_UART_TX_PIN, GPS_UART_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
     uart_driver_install(GPS_UART_NUM, GPS_BUFFER_SIZE, 0, 0, NULL, 0);
 }
 
-void gps_read_data() {
+void gps_read_data()
+{
     Client::clientPublishStr("Read");
     return;
-    uint8_t data[GPS_BUFFER_SIZE + 1];  // +1 for null-termination
+    uint8_t data[GPS_BUFFER_SIZE + 1]; // +1 for null-termination
     int len = uart_read_bytes(GPS_UART_NUM, data, GPS_BUFFER_SIZE, 100 / portTICK_PERIOD_MS);
 
-    if (len > 0) {
-        data[len] = '\0';  // Null-terminate to form a valid string/
-        ESP_LOGI("GPS", "Received: %s", (char*)data);
-        uart_write_bytes(UART_NUM_0, (const char*)data, len);  
+    if (len > 0)
+    {
+        data[len] = '\0'; // Null-terminate to form a valid string/
+        ESP_LOGI("GPS", "Received: %s", (char *)data);
+        uart_write_bytes(UART_NUM_0, (const char *)data, len);
         char message[2048];
-        snprintf(message, sizeof(message), "GPS Data: %s", (char*)data);
+        snprintf(message, sizeof(message), "GPS Data: %s", (char *)data);
         Client::clientPublishStr(message);
     }
 }
@@ -76,8 +78,6 @@ void GpsTask::setup()
 {
 }
 
-
-
 void GpsTask::loop()
 {
 
@@ -92,8 +92,8 @@ void GpsTask::loop()
     gps_read_data();
     Client::clientPublishStr("Finished");
 
-
-    while(1){
+    while (1)
+    {
         gps_read_data();
         ESP_LOGE(name, "GPS Working");
         Client::clientPublishStr("Amongus");
