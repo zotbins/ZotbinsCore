@@ -35,21 +35,20 @@
 // #include "esp_log.h"
 // #include "esp_netif.h"
 
-
 static const char *name = "mqtts_example";
 
 static void publish(esp_mqtt_client_handle_t client, const void *data, size_t len)
 {
     int msg_id;
-    #if defined(SENSOR)
-        msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
-    #elif defined(CAMERA)
-        //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 1, 0);
-        printf("%zu\n", len); 
+#if defined(SENSOR)
+    msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
+#elif defined(CAMERA)
+    // int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 1, 0);
+    printf("%zu\n", len);
 
-        msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
-    #endif
-    //int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
+    msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
+#endif
+    // int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
     ESP_LOGI(name, "message published with msg_id=%d", msg_id);
 }
 
@@ -157,8 +156,7 @@ static void mqtt_app_start(void)
         .credentials = {.client_id = "SensorBin", .authentication = {
                                                       .certificate = (const char *)AWS_CLIENT_CRT,
                                                       .key = (const char *)AWS_CLIENT_KEY,
-                                                  }}
-    };
+                                                  }}};
 
     // mqtt
     // const esp_mqtt_client_config_t mqtt_cfg = {
@@ -178,14 +176,14 @@ static void mqtt_app_start(void)
     bool yield = esp_mqtt_client_start(client);
 
     // // we don't need to worry too much on QoS so set at lvl 0
-    // // if we really need packet info connectivity set as lvl 1 or 2 
+    // // if we really need packet info connectivity set as lvl 1 or 2
     // // https://www.hivemq.com/blog/mqtt-essentials-part-6-mqtt-quality-of-service-levels/
     // while (!client_connected){
     //     vTaskDelay(1000 / portTICK_PERIOD_MS);
     //     ESP_LOGI(name, "yield for client connection");
     // }
     // ESP_LOGI(name, "connecting to test subscribe");
-    // esp_mqtt_client_subscribe_single(client, "PING", 0); 
+    // esp_mqtt_client_subscribe_single(client, "PING", 0);
     // ESP_LOGI(name, "success subscribed");
 
     // // send example data (like payload stuff)
@@ -195,11 +193,11 @@ static void mqtt_app_start(void)
 
 // TODO: optimize this into a dictionary or something
 // okay I did this but I reverted it back, I would just suggest only putting
-// payload as a key and bool as a value and then making sure that gets checked to true 
+// payload as a key and bool as a value and then making sure that gets checked to true
 // for publishing. The values in each are too specific` and concatenation from void is a pain,
 // so you don't need to optimize that part
 bool payload_camera = false;
-char* imageData;
+char *imageData;
 int uncompressedSize = 0;
 int compressedSize = 0;
 bool payload_distance = false;
@@ -210,78 +208,87 @@ float weight = 0;
 int usage = 0;
 
 // TODO: change temp to include the actual value through variadics
-void Client::clientPublish(char* data_type, void* value)
+void Client::clientPublish(char *data_type, void *value)
 {
     ESP_LOGI(name, "Publishing to broker.");
-    cJSON* data = NULL;
-    #if defined(CAMERA)
-        if(strcmp(data_type, "camera") == 0){
-            payload_camera = true;
-            imageData = static_cast<char*>(value); 
-            ESP_LOGE(name, "Camera Image Data Received");
-        }
-        // Potentially move the compression to Client task or somethign
-        // else if (strcmp(data_type, "cameraCompressed") == 0){
-        //     compressedSize = *static_cast<int*>(value);
-        //     ESP_LOGE(name, "Camera Compressed Size Received");
-        // }
-        // else if (strcmp(data_type, "cameraUncompressed") == 0){ // Necessary for sending compressed length 
-        //     uncompressedSize = *static_cast<int*>(value);
-        //     ESP_LOGE(name, "Camera Uncompressed Size Received");
-        // }
-        if(payload_camera){
-            ESP_LOGI(name, "sending camera payload");
-            data = serialize("Camera result", imageData, strlen(imageData)); // Change compressed and uncosmpresed size from 1,1
-        }
-    #elif defined(SENSOR)
-        if (strcmp(data_type, "usage") == 0){
-            payload_usage = true;
-            usage = *(int*)value;
-        }else if (strcmp(data_type, "distance") == 0){
-            payload_distance = true;
-            distance = *(float*)value; 
-        }else if (strcmp(data_type, "weight") == 0){
-            payload_weight = true;
-            weight = *(float*)value;
-        }
+    cJSON *data = NULL;
+#if defined(CAMERA)
+    if (strcmp(data_type, "camera") == 0)
+    {
+        payload_camera = true;
+        imageData = static_cast<char *>(value);
+        ESP_LOGE(name, "Camera Image Data Received");
+    }
+    // Potentially move the compression to Client task or somethign
+    // else if (strcmp(data_type, "cameraCompressed") == 0){
+    //     compressedSize = *static_cast<int*>(value);
+    //     ESP_LOGE(name, "Camera Compressed Size Received");
+    // }
+    // else if (strcmp(data_type, "cameraUncompressed") == 0){ // Necessary for sending compressed length
+    //     uncompressedSize = *static_cast<int*>(value);
+    //     ESP_LOGE(name, "Camera Uncompressed Size Received");
+    // }
+    if (payload_camera)
+    {
+        ESP_LOGI(name, "sending camera payload");
+        data = serialize("Camera result", imageData, strlen(imageData)); // Change compressed and uncosmpresed size from 1,1
+    }
+#elif defined(SENSOR)
+    if (strcmp(data_type, "usage") == 0)
+    {
+        payload_usage = true;
+        usage = *(int *)value;
+    }
+    else if (strcmp(data_type, "distance") == 0)
+    {
+        payload_distance = true;
+        distance = *(float *)value;
+    }
+    else if (strcmp(data_type, "weight") == 0)
+    {
+        payload_weight = true;
+        weight = *(float *)value;
+    }
 
-        // only send when both distance and weight payloads are specified
-        ESP_LOGI(name, "payload check use = %d, dis = %d, wei = %d", payload_usage, payload_distance, payload_weight);
-        if (payload_distance) { // && payload_usage && payload_weight){
-            ESP_LOGI(name, "sending payload");
-            ESP_LOGI(name, "uses = %i, distance = %f, weight = %f", usage, distance, weight);
-            data = serialize("Sensor result", distance, false, weight, usage);            
-        }
-    #endif
+    // only send when both distance and weight payloads are specified
+    ESP_LOGI(name, "payload check use = %d, dis = %d, wei = %d", payload_usage, payload_distance, payload_weight);
+    if (payload_distance)
+    { // && payload_usage && payload_weight){
+        ESP_LOGI(name, "sending payload");
+        ESP_LOGI(name, "uses = %i, distance = %f, weight = %f", usage, distance, weight);
+        data = serialize("Sensor result", distance, false, weight, usage);
+    }
+#endif
 
     // cleanup
-    if (data != NULL) {
-        char* json_str = cJSON_PrintUnformatted(data);  // Convert cJSON object to string
-        if (json_str) {
+    if (data != NULL)
+    {
+        char *json_str = cJSON_PrintUnformatted(data); // Convert cJSON object to string
+        if (json_str)
+        {
             // TODO: ADD A DEBUG MODE THAT ENABLES THIS, BECAUSE THIS
             // ESP_LOGI(name, "json string: %s", json_str);
-            publish(test_client, json_str, strlen(json_str));  // Use strlen to get the size
-            free(json_str);  // Free the allocated string after publishing
+            publish(test_client, json_str, strlen(json_str)); // Use strlen to get the size
+            free(json_str);                                   // Free the allocated string after publishing
         }
-        cJSON_Delete(data);  // Free cJSON object
-        #if defined(CAMERA)
-            payload_camera = false;
-            imageData = NULL;
-        #elif defined(SENSOR)
-            payload_usage = false;
-            payload_distance = false;
-            payload_weight = false;
-            distance = 0;
-            weight = 0;
-        #endif
+        cJSON_Delete(data); // Free cJSON object
+#if defined(CAMERA)
+        payload_camera = false;
+        imageData = NULL;
+#elif defined(SENSOR)
+        payload_usage = false;
+        payload_distance = false;
+        payload_weight = false;
+        distance = 0;
+        weight = 0;
+#endif
     }
 }
-
 
 void Client::clientPublishStr(const char *message)
 {
     ESP_LOGI(name, "message: %s", message);
-    publish(test_client, message, strlen(message));  // Use strlen to get the size
+    publish(test_client, message, strlen(message)); // Use strlen to get the size
 }
 
 #define ESPNOW_MAXDELAY 512
@@ -307,13 +314,11 @@ void Client::clientStart()
     ESP_ERROR_CHECK(esp_netif_init());
 
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    
 
     /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
      * Read "Establishing Wi-Fi or Ethernet Connection" section in
      * examples/protocols/README.md for more information about this function.
      */
-
 
     ESP_ERROR_CHECK(example_connect());
 
@@ -323,9 +328,6 @@ void Client::clientStart()
     // ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     // ESP_ERROR_CHECK(esp_wifi_set_channel(, WIFI_SECOND_CHAN_NONE));  // both on channel 1
     // ESP_ERROR_CHECK(esp_wifi_start());
-    
-        
-    
 
     // TODO: when you disconnect make sure w reconnect socket if hostname fails
     /*
@@ -341,7 +343,7 @@ void Client::clientStart()
     //     vTaskDelay(1000  / portTICK_PERIOD_MS);
     //     wifi_ap_record_t ap_info;
     //     esp_err_t ret = esp_wifi_sta_get_ap_info(&ap_info);
-        
+
     //     if (ret == ESP_OK) {
     //         int rssi = ap_info.rssi;
     //         printf("RSSI: %d dBm\n", rssi);
@@ -349,5 +351,4 @@ void Client::clientStart()
     //         printf("Failed to get AP info\n");
     //     }
     // }
-    
 }

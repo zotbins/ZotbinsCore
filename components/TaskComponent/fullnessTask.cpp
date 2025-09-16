@@ -1,22 +1,22 @@
 #include "fullnessTask.hpp"
+#include "Client.hpp"
 #include "DistanceBuffer.hpp"
 #include "FullnessMetric.hpp"
 #include "esp_log.h"
 #include <driver/gpio.h>
-#include "Client.hpp"
 
 // #define BIN_HEIGHT 1000
 
 using namespace Zotbins;
 
-// TRIGGER: ESP32-CAM is 12, WROVER is 22 
-// ECHO:    ESP32-CAM is 13, WROVER is 23 
+// TRIGGER: ESP32-CAM is 12, WROVER is 22
+// ECHO:    ESP32-CAM is 13, WROVER is 23
 #if defined(SENSOR)
-    const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
-    const gpio_num_t PIN_ECHO = GPIO_NUM_23;
+const gpio_num_t PIN_TRIGGER = GPIO_NUM_22;
+const gpio_num_t PIN_ECHO = GPIO_NUM_23;
 #elif defined(CAMERA)
-    const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
-    const gpio_num_t PIN_ECHO = GPIO_NUM_13;
+const gpio_num_t PIN_TRIGGER = GPIO_NUM_12;
+const gpio_num_t PIN_ECHO = GPIO_NUM_13;
 #endif
 
 const float BIN_HEIGHT = 100; // don't remember what the units are. someone confirm this and rename the constant appropriately
@@ -26,16 +26,14 @@ const gpio_config_t PIN_TRIGGER_CONFIG = {
     .mode = GPIO_MODE_OUTPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_ENABLE,
-    .intr_type = GPIO_INTR_DISABLE
-};
+    .intr_type = GPIO_INTR_DISABLE};
 
 const gpio_config_t PIN_ECHO_CONFIG = {
     .pin_bit_mask = (1ULL << PIN_ECHO),
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE
-};
+    .intr_type = GPIO_INTR_DISABLE};
 
 static const char *name = "fullnessTask";
 static const int priority = 1;
@@ -68,9 +66,10 @@ void FullnessTask::setup()
     ESP_ERROR_CHECK(gpio_config(&PIN_ECHO_CONFIG));
 }
 
-float FullnessTask::getFullness(){
+float FullnessTask::getFullness()
+{
     distance = ultrasonic.getDistance();
-    return distance; 
+    return distance;
 }
 
 void FullnessTask::loop()
@@ -83,13 +82,13 @@ void FullnessTask::loop()
 
     float distance;
     Fullness::Distance ultrasonic(PIN_TRIGGER, PIN_ECHO);
-    
+
     // ensure trigger pin is low
     gpio_set_level(PIN_TRIGGER, 0);
 
     // float threshold = 0.35;
     // bool SENT = false;
-    
+
     while (1)
     {
 
@@ -98,7 +97,7 @@ void FullnessTask::loop()
         // TODO: for now, ultrasonic only sends on GPIO read to HIGH
         distance = ultrasonic.getDistance();
         ESP_LOGI(name, "Got distance in m: %f", distance);
-        Client::clientPublish("distance", static_cast<void*>(&distance));
+        Client::clientPublish("distance", static_cast<void *>(&distance));
 
         // if(distance > threshold && SENT == false){
         //     Client::clientPublish("distance", static_cast<void*>(&distance));
@@ -106,7 +105,7 @@ void FullnessTask::loop()
         //     SENT = true;
         // }
         // else if (distance < threshold && SENT == true){
-        //     SENT = false; 
+        //     SENT = false;
         // }
 
         gpio_set_level(PIN_TRIGGER, 0);
@@ -114,18 +113,15 @@ void FullnessTask::loop()
         /* task notifications */
 
         // // if weightTask is enabled
-        xTaskToNotify = xTaskGetHandle("weightTask"); 
+        xTaskToNotify = xTaskGetHandle("weightTask");
         xTaskNotifyGive(xTaskToNotify); // once fullness is collected notify weight
         ESP_LOGI(name, "Notified Weight Task");
         // vTaskSuspend(NULL);
 
         // if weightTask is disabled
-        // xTaskToNotify = xTaskGetHandle("usageTask");      
+        // xTaskToNotify = xTaskGetHandle("usageTask");
         // vTaskResume(xTaskToNotify);
         // ESP_LOGI(name, "Notified Usage Task");
-
-
-        
     }
     vTaskDelete(NULL);
 }
