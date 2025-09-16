@@ -7,6 +7,7 @@
 #include <mbedtls/base64.h>
 #include "esp_log.h"
 #include "driver/i2c.h"
+#include "esp_timer.h"
 
 #include "esp_camera.h"
 
@@ -17,6 +18,8 @@
 #elif defined CONFIG_IDF_TARGET_ESP32S3
 #define BOARD_CAMERA_MODEL_ESP32_S3_EYE 1
 #endif
+
+#define portTICK_RATE_MS              portTICK_PERIOD_MS
 
 // WROVER-KIT PIN Map
 #if BOARD_WROVER_KIT
@@ -141,7 +144,6 @@ static esp_err_t init_camera(uint32_t xclk_freq_hz, pixformat_t pixel_format, fr
         .pin_href = HREF_GPIO_NUM,
         .pin_pclk = PCLK_GPIO_NUM,
 
-        //EXPERIMENTAL: Set to 16MHz on ESP32-S2 or ESP32-S3 to enable EDMA mode
         .xclk_freq_hz = xclk_freq_hz,
         .ledc_timer = LEDC_TIMER_0,
         .ledc_channel = LEDC_CHANNEL_0,
@@ -382,7 +384,7 @@ static void print_rgb888_img(uint8_t *img, int width, int height)
 
 static void tjpgd_decode_rgb565(uint8_t *mjpegbuffer, uint32_t size, uint8_t *outbuffer)
 {
-    jpg2rgb565(mjpegbuffer, size, outbuffer, JPG_SCALE_NONE);
+    jpg2rgb565(mjpegbuffer, size, outbuffer, JPEG_IMAGE_SCALE_0);
 }
 
 static void tjpgd_decode_rgb888(uint8_t *mjpegbuffer, uint32_t size, uint8_t *outbuffer)

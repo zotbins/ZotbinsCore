@@ -116,6 +116,20 @@ menu "Camera configuration"
             SC031GS is a global shutter CMOS sensor with high frame rate and single-frame HDR.
             Enable this option if you want to use the SC031GS.
             Disable this option to save memory.
+    
+    config HM1055_SUPPORT
+        bool "Support HM1055 VGA"
+        default y
+        help
+            Enable this option if you want to use the HM1055.
+            Disable this option to save memory.
+    
+    config HM0360_SUPPORT
+        bool "Support HM0360 VGA"
+        default y
+        help
+            Enable this option if you want to use the HM0360.
+            Disable this option to save memory.
 
     config MEGA_CCM_SUPPORT
         bool "Support MEGA CCM 5MP"
@@ -124,6 +138,20 @@ menu "Camera configuration"
             Enable this option if you want to use the MEGA CCM.
             Disable this option to save memory.
             
+    choice SCCB_HARDWARE_I2C_DRIVER_SELECTION
+        prompt "I2C driver selection for SCCB"
+        default SCCB_HARDWARE_I2C_DRIVER_NEW
+        help
+            Select the I2C driver to use for SCCB communication.
+            NOTE: new driver is only supported for ESP-IDF >= 5.4.
+
+        config SCCB_HARDWARE_I2C_DRIVER_LEGACY
+            bool "Legacy I2C driver"
+        config SCCB_HARDWARE_I2C_DRIVER_NEW
+            bool "New I2C driver"
+
+    endchoice
+
     choice SCCB_HARDWARE_I2C_PORT
         bool "I2C peripheral to use for SCCB"
         default SCCB_HARDWARE_I2C_PORT1
@@ -159,7 +187,7 @@ menu "Camera configuration"
 
     config CAMERA_TASK_STACK_SIZE
         int "CAM task stack size"
-        default 2048
+        default 4096
         help
             Camera task stack size
 
@@ -185,6 +213,14 @@ menu "Camera configuration"
         help
             Maximum value of DMA buffer
             Larger values may fail to allocate due to insufficient contiguous memory blocks, and smaller value may cause DMA interrupt to be too frequent.
+
+    config CAMERA_PSRAM_DMA
+        bool "Enable PSRAM DMA mode by default"
+        depends on IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+        default n
+        help
+            Enable DMA transfers directly from PSRAM on supported targets
+            (ESP32-S2 and ESP32-S3) by default.
 
     choice CAMERA_JPEG_MODE_FRAME_SIZE_OPTION
         prompt "JPEG mode frame size option"
