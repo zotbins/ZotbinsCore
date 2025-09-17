@@ -24,7 +24,8 @@
 #include "credentials.hpp"
 #include "client_connect.hpp"
 
-static const char *TAG = "mqtt_example";
+static const char *TAG = "client_connect";
+static esp_mqtt_client_handle_t client = nullptr;
 
 static void log_error_if_nonzero(const char *message, int error_code)
 {
@@ -86,7 +87,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     }
 }
 
-void mqtt_app_start(void)
+void client_connect(void)
 {
     // mqtts (secure)
     const esp_mqtt_client_config_t mqtt_cfg = {
@@ -103,14 +104,21 @@ void mqtt_app_start(void)
                                                       .key = (const char *)AWS_CLIENT_KEY,
                                                   }}};
 
-ESP_LOGI(TAG, "URI=%s ca=%p crt=%p key=%p",
-         mqtt_cfg.broker.address.uri,
-         (void*)mqtt_cfg.broker.verification.certificate,
-         (void*)mqtt_cfg.credentials.authentication.certificate,
-         (void*)mqtt_cfg.credentials.authentication.key); // temp logging, esp_mqtt_client_config_t fields are not sensitive
+ESP_LOGI(TAG, "URI=%s", mqtt_cfg.broker.address.uri); // Debug print to check URI
 
-    esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
+    client = esp_mqtt_client_init(&mqtt_cfg);
+    ESP_LOGI(TAG, "Received mqtt client handle: %p", client);
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);
+}
+
+void client_disconnect(void) {
+    esp_mqtt_client_stop(client);
+    esp_mqtt_client_destroy(client);
+    client = nullptr;
+}
+
+esp_mqtt_client_handle_t get_client_handle(void) {
+    return client;
 }

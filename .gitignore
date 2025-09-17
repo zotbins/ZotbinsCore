@@ -2,4 +2,7 @@
 .devcontainer
 .DS_Store
 build
-components/mqtt_client/credentials
+components/mqtt_client/credentials/aws.url
+components/mqtt_client/credentials/ca.crt
+components/mqtt_client/credentials/client.crt
+components/mqtt_client/credentials/client.key

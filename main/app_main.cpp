@@ -15,6 +15,7 @@
 #include "esp_log.h"
 
 #include "client_connect.hpp"
+#include "client_publish.hpp"
 
 static const char *TAG = "main";
 
@@ -40,7 +41,9 @@ extern "C" void app_main(void)
      * Read "Establishing Wi-Fi or Ethernet Connection" section in
      * examples/protocols/README.md for more information about this function.
      */
+    // TODO: REPLACE WITH MANUAL CONNECTION TO AVOID DEPENDENCY
     ESP_ERROR_CHECK(example_connect());
 
-    mqtt_app_start();
+    client_connect();
+    client_publish("Hello from ESP32!");
 }
