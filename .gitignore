@@ -1,3 +1,4 @@
 .vscode
+.devcontainer
 build
 components/mqtt_client/credentials
