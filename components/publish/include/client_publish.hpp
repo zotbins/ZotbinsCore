@@ -1,0 +1,1 @@
+void client_publish(const char* data);
