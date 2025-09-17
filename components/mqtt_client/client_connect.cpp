@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include "esp_system.h"
+#include "esp_mac.h" // ESP-IDF Hint: esp_mac.h header file is not included by esp_system.h anymore. It shall then be manually included with #include "esp_mac.h"
 #include "nvs_flash.h"
 #include "esp_event.h"
 #include "esp_netif.h"

@@ -8,7 +8,7 @@ void client_publish(const char* data) {
     esp_mqtt_client_handle_t client = get_client_handle();
     // Check if client is connected
     if (client == NULL) {
-        ESP_LOGW("client_publish", "Not connected to MQTT broker!");
+        ESP_LOGW("client_publish", "Client is not connected to MQTT broker!");
         return;
     }
 
