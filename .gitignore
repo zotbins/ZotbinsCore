@@ -1,4 +1,5 @@
 .vscode
 .devcontainer
+.DS_Store
 build
 components/mqtt_client/credentials
