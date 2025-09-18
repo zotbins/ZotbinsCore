@@ -35,12 +35,12 @@ void init_manager(void) { // TODO: remove get_weight and get_distance calls, jus
 
 }
 
-static void run_manager(void *arg) {
+static void run_manager(void *arg) { // TODO: temp implementation to test sensors
     while (1) {
         float weight = get_weight();
         float distance = get_distance();
         uint32_t usage = get_usage_count();
 
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 5 seconds
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1 second
     }
 }
