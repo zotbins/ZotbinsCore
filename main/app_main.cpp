@@ -13,11 +13,16 @@
 #include "protocol_examples_common.h"
 
 #include "esp_log.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 #include "client_connect.hpp"
 #include "client_publish.hpp"
 
-static const char *TAG = "main";
+static const char *TAG = "app_main";
+
+// RTOS event group for system initialization, i.e. wait for WiFi connection, MQTT connection, etc.
+EventGroupHandle_t sys_init_eg;
 
 extern "C" void app_main(void)
 {
@@ -25,14 +30,7 @@ extern "C" void app_main(void)
     ESP_LOGI(TAG, "[APP] Free memory: %" PRIu32 " bytes", esp_get_free_heap_size());
     ESP_LOGI(TAG, "[APP] IDF version: %s", esp_get_idf_version());
 
-    esp_log_level_set("*", ESP_LOG_INFO);
-    esp_log_level_set("mqtt_client", ESP_LOG_VERBOSE);
-    esp_log_level_set("mqtt_example", ESP_LOG_VERBOSE);
-    esp_log_level_set("transport_base", ESP_LOG_VERBOSE);
-    esp_log_level_set("esp-tls", ESP_LOG_VERBOSE);
-    esp_log_level_set("transport", ESP_LOG_VERBOSE);
-    esp_log_level_set("outbox", ESP_LOG_VERBOSE);
-
+    /* Connecting to WiFi */
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -43,7 +41,12 @@ extern "C" void app_main(void)
      */
     // TODO: REPLACE WITH MANUAL CONNECTION TO AVOID DEPENDENCY
     ESP_ERROR_CHECK(example_connect());
+    ESP_LOGI(TAG, "Connected to AP");
 
-    client_connect();
-    client_publish("Hello from ESP32!");
+    // client_connect();
+    // client_publish("Hello from ESP32!");
+
+    /* Event group initialization */
+    sys_init_eg = xEventGroupCreate();
+
 }

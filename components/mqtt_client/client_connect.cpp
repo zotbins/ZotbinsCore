@@ -19,6 +19,8 @@
 #include "esp_netif.h"
 #include "protocol_examples_common.h"
 
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include "esp_log.h"
 #include "mqtt_client.h"
 
