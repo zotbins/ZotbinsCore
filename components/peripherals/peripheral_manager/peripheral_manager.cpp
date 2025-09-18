@@ -11,6 +11,7 @@
 #include "esp_log.h"
 
 static const char* TAG = "peripheral_manager";
+static TaskHandle_t manager_handle = NULL;
 
 void init_manager(void) { // TODO: remove get_weight and get_distance calls, just init sensors here
 
@@ -23,4 +24,23 @@ void init_manager(void) { // TODO: remove get_weight and get_distance calls, jus
     init_breakbeam(); // TODO: change return value to esp_err_t
     uint32_t usage = get_usage_count();
 
+    xTaskCreate(
+        run_manager,   /* Task function. */
+        "fullness_sensor_task", /* name of task. */
+        4096,                   /* Stack size of task */
+        NULL,                   /* parameter of the task */
+        1,                      /* priority of the task */
+        &manager_handle                   /* Task handle to keep track of created task */
+    );
+
+}
+
+static void run_manager(void *arg) {
+    while (1) {
+        float weight = get_weight();
+        float distance = get_distance();
+        uint32_t usage = get_usage_count();
+
+        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 5 seconds
+    }
 }
