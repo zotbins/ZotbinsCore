@@ -36,26 +36,33 @@ static const char* TAG = "fullness_sensor";
 static const int priority = 1;
 static const int core = 1; // All peripheral tasks should exist on core 1
 
-static hx711_t hx711 = {
-    .dout = PIN_DT,
-    .pd_sck = PIN_SCK,
-    .gain = HX711_GAIN_A_128
+static ultrasonic_sensor_t hcsr04 = {
+    .trigger_pin = PIN_TRIG,
+    .echo_pin = PIN_ECHO
 };
 
 // TODO: check sys_init_eg bits
 
-esp_err_t init_hx711(void) {
-    esp_err_t hx711_device_status = hx711_init(&hx711);
-    if (hx711_device_status != ESP_OK) {
-        ESP_LOGW(TAG, "Could not initialize weight sensor...");
-        return hx711_device_status;
+esp_err_t init_hcsr04(void) {
+
+    ESP_ERROR_CHECK_WITHOUT_ABORT(
+        gpio_config(&PIN_TRIG_CONFIG)
+    );
+    ESP_ERROR_CHECK_WITHOUT_ABORT(
+        gpio_config(&PIN_ECHO_CONFIG)
+    );
+
+    esp_err_t hcsr04_device_status = ultrasonic_init(&hcsr04);
+    if (hcsr04_device_status != ESP_OK) {
+        ESP_LOGW(TAG, "Could not initialize fullness sensor...");
+        return hcsr04_device_status;
     } else {
         return ESP_OK;
     }
 }
 
-float get_weight(void) {
-    int32_t weight;
-    hx711_read_average(&hx711, 10, &weight);
-    return weight;
+float get_distance(void) {
+    uint32_t distance;
+    ultrasonic_measure_cm(&hcsr04, 1000, &distance);
+    return distance;
 }

@@ -19,7 +19,7 @@
 #include "client_connect.hpp"
 #include "client_publish.hpp"
 
-#include "sensor_queue.hpp"
+#include "peripheral_queue.hpp"
 
 static const char *TAG = "app_main";
 

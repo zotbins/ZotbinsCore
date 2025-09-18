@@ -45,6 +45,14 @@ static hx711_t hx711 = {
 // TODO: check sys_init_eg bits
 
 esp_err_t init_hx711(void) {
+    
+    ESP_ERROR_CHECK_WITHOUT_ABORT(
+        gpio_config(&PIN_DT_CONFIG)
+    );
+    ESP_ERROR_CHECK_WITHOUT_ABORT(
+        gpio_config(&PIN_SCK_CONFIG)
+    );
+
     esp_err_t hx711_device_status = hx711_init(&hx711);
     if (hx711_device_status != ESP_OK) {
         ESP_LOGW(TAG, "Could not initialize weight sensor...");
