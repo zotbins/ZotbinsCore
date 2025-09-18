@@ -19,6 +19,8 @@
 #include "client_connect.hpp"
 #include "client_publish.hpp"
 
+#include "sensor_queue.hpp"
+
 static const char *TAG = "app_main";
 
 // RTOS event group for system initialization, i.e. wait for WiFi connection, MQTT connection, etc.
@@ -48,5 +50,7 @@ extern "C" void app_main(void)
 
     /* Event group initialization */
     sys_init_eg = xEventGroupCreate();
+
+    init_queue();
 
 }

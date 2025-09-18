@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.16)
 # Removes user-specific path from dependencies.lock
 set(EXTRA_COMPONENT_DIRS
     $ENV{IDF_PATH}/examples/common_components/protocol_examples_common
+    ${CMAKE_SOURCE_DIR}/components/sensor
 )
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
