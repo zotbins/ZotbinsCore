@@ -50,8 +50,7 @@ extern "C" void app_main(void)
     // client_publish("Hello from ESP32!");
 
     /* Event group initialization */
-    sys_init_eg = xEventGroupCreate();
-    ESP_LOGI(TAG, "System initialization event group created");
+    initialization();
 
     ESP_LOGI(TAG, "Waiting for client to intialize...");
     xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for MQTT connection to be established

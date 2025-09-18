@@ -18,7 +18,7 @@ else()
     set(AWS_EMBED "")
 endif()
 
-idf_component_register(SRCS "client_connect.cpp"
+idf_component_register(SRCS "client_connect.cpp" "initialization.cpp"
                     INCLUDE_DIRS "include"
                     PRIV_INCLUDE_DIRS "credentials"
                     EMBED_TXTFILES ${AWS_EMBED}

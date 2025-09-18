@@ -26,7 +26,7 @@
 
 #include "credentials.hpp"
 #include "client_connect.hpp"
-#include "intialization.hpp"
+#include "initialization.hpp"
 
 static const char *TAG = "client_connect";
 static esp_mqtt_client_handle_t client = nullptr;
