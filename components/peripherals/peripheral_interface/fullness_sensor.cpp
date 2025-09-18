@@ -65,6 +65,6 @@ esp_err_t init_hcsr04(void) {
 float get_distance(void) {
     uint32_t distance;
     ultrasonic_measure_cm(&hcsr04, 1000, &distance); // TODO: convert to percentage
-    ESP_LOGI(TAG, "Distance to trash: %"PRIu32" cm", distance);
+    ESP_LOGI(TAG, "Distance to trash: %" PRIu32" cm", distance);
     return distance;
 }

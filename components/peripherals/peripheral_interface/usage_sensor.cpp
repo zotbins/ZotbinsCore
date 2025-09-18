@@ -65,6 +65,6 @@ void init_breakbeam(void)
 }
 
 uint32_t get_usage_count(void) {
-    ESP_LOGI(TAG, "Items since startup: %"PRIu32"", usage_count);
+    ESP_LOGI(TAG, "Items since startup: %" PRIu32, usage_count);
     return usage_count;
 }

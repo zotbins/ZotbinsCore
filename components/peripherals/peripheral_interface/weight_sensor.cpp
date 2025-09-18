@@ -66,6 +66,6 @@ esp_err_t init_hx711(void) {
 float get_weight(void) {
     int32_t weight;
     hx711_read_average(&hx711, 10, &weight);
-    ESP_LOGI(TAG, "Weight of trash: %"PRId32"", weight);
+    ESP_LOGI(TAG, "Weight of trash: %" PRId32, weight);
     return weight;
 }
