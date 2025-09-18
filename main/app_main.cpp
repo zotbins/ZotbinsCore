@@ -19,7 +19,7 @@
 #include "client_connect.hpp"
 #include "client_publish.hpp"
 
-#include "peripheral_queue.hpp"
+#include "peripheral_manager.hpp"
 
 static const char *TAG = "app_main";
 
@@ -51,6 +51,6 @@ extern "C" void app_main(void)
     /* Event group initialization */
     sys_init_eg = xEventGroupCreate();
 
-    init_queue();
+    init_manager();
 
 }

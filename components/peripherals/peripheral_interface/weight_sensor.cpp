@@ -34,7 +34,6 @@ static const gpio_config_t PIN_SCK_CONFIG = {
 static const char* TAG = "weight_sensor";
 
 static const int priority = 1;
-static const int core = 1; // All peripheral tasks should exist on core 1
 
 static hx711_t hx711 = {
     .dout = PIN_DT,
@@ -46,6 +45,8 @@ static hx711_t hx711 = {
 
 esp_err_t init_hx711(void) {
     
+    ESP_LOGI(TAG, "Initializing weight sensor...");
+    // ABSOLUTELY NECESSARY FOR SOME PINS, COMPLETELY OVERRIDES PREVIOUS CONFIGURATION
     ESP_ERROR_CHECK_WITHOUT_ABORT(
         gpio_config(&PIN_DT_CONFIG)
     );
@@ -65,5 +66,6 @@ esp_err_t init_hx711(void) {
 float get_weight(void) {
     int32_t weight;
     hx711_read_average(&hx711, 10, &weight);
+    ESP_LOGI(TAG, "Weight of trash: %"PRId32"", weight);
     return weight;
 }

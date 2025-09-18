@@ -14,10 +14,5 @@
 static const char* TAG = "peripheral_queue";
 
 void init_queue(void) {
-    esp_err_t hx711_status = init_hx711();
-    float weight = get_weight();
-    ESP_LOGI(TAG, "Weight: %f", weight);
-    esp_err_t hcsr04_status = init_hcsr04();
-    float distance = get_distance();
-    ESP_LOGI(TAG, "Distance: %f", distance);
+
 }

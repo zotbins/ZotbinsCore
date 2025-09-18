@@ -34,7 +34,6 @@ static const gpio_config_t PIN_ECHO_CONFIG = {
 static const char* TAG = "fullness_sensor";
 
 static const int priority = 1;
-static const int core = 1; // All peripheral tasks should exist on core 1
 
 static ultrasonic_sensor_t hcsr04 = {
     .trigger_pin = PIN_TRIG,
@@ -45,6 +44,8 @@ static ultrasonic_sensor_t hcsr04 = {
 
 esp_err_t init_hcsr04(void) {
 
+    ESP_LOGI(TAG, "Initializing fullness sensor...");
+    // ABSOLUTELY NECESSARY FOR SOME PINS, COMPLETELY OVERRIDES PREVIOUS CONFIGURATION
     ESP_ERROR_CHECK_WITHOUT_ABORT(
         gpio_config(&PIN_TRIG_CONFIG)
     );
@@ -63,6 +64,7 @@ esp_err_t init_hcsr04(void) {
 
 float get_distance(void) {
     uint32_t distance;
-    ultrasonic_measure_cm(&hcsr04, 1000, &distance);
+    ultrasonic_measure_cm(&hcsr04, 1000, &distance); // TODO: convert to percentage
+    ESP_LOGI(TAG, "Distance to trash: %"PRIu32" cm", distance);
     return distance;
 }
