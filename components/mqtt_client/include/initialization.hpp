@@ -6,7 +6,6 @@
 
 // RTOS event group for system initialization, i.e. wait for WiFi connection, MQTT connection, etc.
 extern EventGroupHandle_t sys_init_eg;
-
-void initialization(void);
+void initialize();
 
 #endif

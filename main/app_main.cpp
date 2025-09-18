@@ -46,17 +46,16 @@ extern "C" void app_main(void)
     ESP_ERROR_CHECK(example_connect());
     ESP_LOGI(TAG, "Connected to AP");
 
-    // client_connect();
-    // client_publish("Hello from ESP32!");
+    client_connect();
+    client_publish("Hello from ESP32!");
 
     /* Event group initialization */
-    initialization();
 
     ESP_LOGI(TAG, "Waiting for client to intialize...");
     xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for MQTT connection to be established
     init_manager();
 
-    vEventGroupDelete(sys_init_eg);
-    ESP_LOGI(TAG, "System initialization event group deleted");
+    // vEventGroupDelete(sys_init_eg);
+    // ESP_LOGI(TAG, "System initialization event group deleted");
 
 }

@@ -50,7 +50,7 @@ static void run_manager(void *arg) { // TODO: temp implementation to test sensor
 }
 
 static void publish_payload_temp(float fullness, float weight, int usage) {
-    char *payload = serialize(weight, fullness, usage);
+    char *payload = serialize(fullness, weight, usage);
     client_publish(payload);
     free(payload);
 }
