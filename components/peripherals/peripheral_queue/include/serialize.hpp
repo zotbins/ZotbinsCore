@@ -4,6 +4,6 @@
 #include <cJSON.h>
 #include <stdint.h>
 
-cJSON *serialize(float fullness, float weight, int usage);
+char *serialize(float fullness, float weight, int usage);
 
 #endif // SERIALIZE_HPP

@@ -1,7 +1,7 @@
 #include "serialize.hpp"
 #include <esp_mac.h>
 
-cJSON *serialize(float fullness, float weight, int usage) // Copied from oldzotbinscore
+char *serialize(float fullness, float weight, int usage) // Copied from oldzotbinscore
 {
 
     cJSON *root = cJSON_CreateObject();
@@ -10,5 +10,7 @@ cJSON *serialize(float fullness, float weight, int usage) // Copied from oldzotb
     cJSON_AddNumberToObject(root, "weight", weight);
     cJSON_AddNumberToObject(root, "usage", usage);
 
-    return root;
+    char *payload = cJSON_PrintUnformatted(root);
+    cJSON_Delete(root);
+    return payload;
 }

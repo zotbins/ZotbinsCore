@@ -8,7 +8,9 @@
 #include "freertos/task.h"
 
 #include "peripheral_manager.hpp"
+#include "client_publish.hpp"
 #include "esp_log.h"
+#include "serialize.hpp"
 
 static const char* TAG = "peripheral_manager";
 static TaskHandle_t manager_handle = NULL;
@@ -40,7 +42,15 @@ static void run_manager(void *arg) { // TODO: temp implementation to test sensor
         float weight = get_weight();
         float distance = get_distance();
         uint32_t usage = get_usage_count();
+        
+        publish_payload_temp(distance, weight, usage);
 
         vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1 second
     }
+}
+
+static void publish_payload_temp(float fullness, float weight, int usage) {
+    char *payload = serialize(weight, fullness, usage);
+    client_publish(payload);
+    free(payload);
 }

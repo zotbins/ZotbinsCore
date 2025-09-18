@@ -21,10 +21,11 @@
 
 #include "peripheral_manager.hpp"
 
-static const char *TAG = "app_main";
+#include "freertos/event_groups.h"
+#include "esp_system.h"
+#include "initialization.hpp"
 
-// RTOS event group for system initialization, i.e. wait for WiFi connection, MQTT connection, etc.
-EventGroupHandle_t sys_init_eg;
+static const char *TAG = "app_main";
 
 extern "C" void app_main(void)
 {
@@ -50,7 +51,13 @@ extern "C" void app_main(void)
 
     /* Event group initialization */
     sys_init_eg = xEventGroupCreate();
+    ESP_LOGI(TAG, "System initialization event group created");
 
+    ESP_LOGI(TAG, "Waiting for client to intialize...");
+    xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for MQTT connection to be established
     init_manager();
+
+    vEventGroupDelete(sys_init_eg);
+    ESP_LOGI(TAG, "System initialization event group deleted");
 
 }

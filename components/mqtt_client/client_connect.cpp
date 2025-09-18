@@ -26,6 +26,7 @@
 
 #include "credentials.hpp"
 #include "client_connect.hpp"
+#include "intialization.hpp"
 
 static const char *TAG = "client_connect";
 static esp_mqtt_client_handle_t client = nullptr;
@@ -57,6 +58,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+        xEventGroupSetBits(sys_init_eg, BIT0); // Bit_0 indicates MQTT connection established
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
