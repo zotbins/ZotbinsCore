@@ -51,8 +51,10 @@ extern "C" void app_main(void)
 
     /* Event group initialization */
 
+    extern EventGroupHandle_t sys_init_eg;
+
     ESP_LOGI(TAG, "Waiting for client to intialize...");
-    xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for MQTT connection to be established
+    // xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for MQTT connection to be established
     init_manager();
 
     // vEventGroupDelete(sys_init_eg);
