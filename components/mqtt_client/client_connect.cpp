@@ -1,3 +1,14 @@
+/**
+ * @file client_connect.cpp
+ * @author Alex Ikeda (ikedaas@uci.edu)
+ * @brief Contains functions for connecting and disconnecting from, as well as publishing to the MQTT broker.
+ * @version 0.1
+ * @date 2025-09-20
+ *
+ * @copyright Copyright (c) 2025
+ *
+ */
+
 /* MQTT (over TCP) Example
 
    This example code is in the Public Domain (or CC0 licensed, at your option.)
@@ -33,7 +44,8 @@ static esp_mqtt_client_handle_t client = nullptr;
 
 static void log_error_if_nonzero(const char *message, int error_code)
 {
-    if (error_code != 0) {
+    if (error_code != 0)
+    {
         ESP_LOGE(TAG, "Last error %s: 0x%x", message, error_code);
     }
 }
@@ -53,14 +65,15 @@ extern EventGroupHandle_t sys_init_eg;
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%" PRIi32 "", base, event_id);
-    esp_mqtt_event_handle_t event = (esp_mqtt_event_handle_t)event_data; 
+    esp_mqtt_event_handle_t event = (esp_mqtt_event_handle_t)event_data;
     // change from void* to esp_mqtt_event_handle_t with event_data -> (esp_mqtt_event_handle_t)event_data
     esp_mqtt_client_handle_t client = event->client;
     int msg_id;
-    switch ((esp_mqtt_event_id_t)event_id) {
+    switch ((esp_mqtt_event_id_t)event_id)
+    {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-        // xEventGroupSetBits(sys_init_eg, BIT0); // Bit_0 indicates MQTT connection established
+        xEventGroupSetBits(sys_init_eg, BIT0); // Bit_0 indicates MQTT connection established, sys_init_eg defined in initialization.cpp
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -81,10 +94,11 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
-        if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT) {
+        if (event->error_handle->error_type == MQTT_ERROR_TYPE_TCP_TRANSPORT)
+        {
             log_error_if_nonzero("reported from esp-tls", event->error_handle->esp_tls_last_esp_err);
             log_error_if_nonzero("reported from tls stack", event->error_handle->esp_tls_stack_err);
-            log_error_if_nonzero("captured as transport's socket errno",  event->error_handle->esp_transport_sock_errno);
+            log_error_if_nonzero("captured as transport's socket errno", event->error_handle->esp_transport_sock_errno);
             ESP_LOGI(TAG, "Last errno string (%s)", strerror(event->error_handle->esp_transport_sock_errno));
         }
         break;
@@ -96,7 +110,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
 void client_connect(void)
 {
-    // mqtts (secure)
+    // mqtts (secure) MAKE SURE TO INCLUDE THE CREDENTIALS IN THE FOLDER: mqtt_client/credentials/
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
@@ -111,21 +125,24 @@ void client_connect(void)
                                                       .key = (const char *)AWS_CLIENT_KEY,
                                                   }}};
 
-ESP_LOGI(TAG, "URI=%s", mqtt_cfg.broker.address.uri); // Debug print to check URI
+    ESP_LOGI(TAG, "URI=%s", mqtt_cfg.broker.address.uri); // Debug print to check URI
 
     client = esp_mqtt_client_init(&mqtt_cfg);
     ESP_LOGI(TAG, "Received mqtt client handle: %p", client);
+
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);
 }
 
-void client_disconnect(void) {
+void client_disconnect(void)
+{
     esp_mqtt_client_stop(client);
     esp_mqtt_client_destroy(client);
     client = nullptr;
 }
 
-esp_mqtt_client_handle_t get_client_handle(void) {
+esp_mqtt_client_handle_t get_client_handle(void)
+{
     return client;
 }

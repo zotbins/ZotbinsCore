@@ -33,30 +33,21 @@
 #endif
 
 /* Minimal supported version for ESP32, ESP32S2 */
-#define HELPER_ESP32_MIN_VER    ESP_IDF_VERSION_VAL(3, 3, 5)
+#define HELPER_ESP32_MIN_VER ESP_IDF_VERSION_VAL(3, 3, 5)
 /* Minimal supported version for ESP8266 */
-#define HELPER_ESP8266_MIN_VER  ESP_IDF_VERSION_VAL(3, 3, 0)
+#define HELPER_ESP8266_MIN_VER ESP_IDF_VERSION_VAL(3, 3, 0)
 
 /* HELPER_TARGET_IS_ESP32
  * 1 when the target is esp32
  */
-#if defined(CONFIG_IDF_TARGET_ESP32) \
-        || defined(CONFIG_IDF_TARGET_ESP32S2) \
-        || defined(CONFIG_IDF_TARGET_ESP32S3) \
-        || defined(CONFIG_IDF_TARGET_ESP32C2) \
-        || defined(CONFIG_IDF_TARGET_ESP32C3) \
-        || defined(CONFIG_IDF_TARGET_ESP32C5) \
-        || defined(CONFIG_IDF_TARGET_ESP32C6) \
-        || defined(CONFIG_IDF_TARGET_ESP32P4) \
-        || defined(CONFIG_IDF_TARGET_ESP32C61) \
-        || defined(CONFIG_IDF_TARGET_ESP32H2)
-#define HELPER_TARGET_IS_ESP32     (1)
+#if defined(CONFIG_IDF_TARGET_ESP32) || defined(CONFIG_IDF_TARGET_ESP32S2) || defined(CONFIG_IDF_TARGET_ESP32S3) || defined(CONFIG_IDF_TARGET_ESP32C2) || defined(CONFIG_IDF_TARGET_ESP32C3) || defined(CONFIG_IDF_TARGET_ESP32C5) || defined(CONFIG_IDF_TARGET_ESP32C6) || defined(CONFIG_IDF_TARGET_ESP32P4) || defined(CONFIG_IDF_TARGET_ESP32C61) || defined(CONFIG_IDF_TARGET_ESP32H2)
+#define HELPER_TARGET_IS_ESP32 (1)
 
 /* HELPER_TARGET_IS_ESP8266
  * 1 when the target is esp8266
  */
 #elif defined(CONFIG_IDF_TARGET_ESP8266)
-#define HELPER_TARGET_IS_ESP8266   (1)
+#define HELPER_TARGET_IS_ESP8266 (1)
 #else
 #error BUG: cannot determine the target
 #endif
@@ -89,7 +80,7 @@
 #if DEBUG
 #define VALUE_TO_STRING(x) #x
 #define VALUE(x) VALUE_TO_STRING(x)
-#define VAR_NAME_VALUE(var) #var "="  VALUE(var)
+#define VAR_NAME_VALUE(var) #var "=" VALUE(var)
 #pragma message(VAR_NAME_VALUE(CONFIG_IDF_TARGET_ESP32C3))
 #pragma message(VAR_NAME_VALUE(CONFIG_IDF_TARGET_ESP32H2))
 #pragma message(VAR_NAME_VALUE(CONFIG_IDF_TARGET_ESP32S2))
