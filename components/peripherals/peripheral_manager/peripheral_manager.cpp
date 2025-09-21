@@ -1,7 +1,7 @@
 /**
  * @file peripheral_manager.cpp
  * @author Alex Ikeda (ikedaas@uci.edu)
- * @brief 
+ * @brief Manages peripheral synchronization and publishing.
  * @version 0.1
  * @date 2025-09-20
  * 

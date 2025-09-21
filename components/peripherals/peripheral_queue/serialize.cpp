@@ -1,7 +1,7 @@
 /**
  * @file serialize.cpp
  * @author Alex Ikeda (ikedaas@uci.edu)
- * @brief 
+ * @brief Serializes data using cJSON library.
  * @version 0.1
  * @date 2025-09-20
  * 

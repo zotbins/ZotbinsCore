@@ -1,3 +1,14 @@
+/**
+ * @file client_connect.cpp
+ * @author Alex Ikeda (ikedaas@uci.edu)
+ * @brief Contains functions for connecting and disconnecting from, as well as publishing to the MQTT broker.
+ * @version 0.1
+ * @date 2025-09-20
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 /* MQTT (over TCP) Example
 
    This example code is in the Public Domain (or CC0 licensed, at your option.)

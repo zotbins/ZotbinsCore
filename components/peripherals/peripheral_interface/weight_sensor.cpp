@@ -1,3 +1,14 @@
+/**
+ * @file weight_sensor.cpp
+ * @author Alex Ikeda (ikedaas@uci.edu)
+ * @brief Contains functions for initializing and querying the HX711 weight sensor.
+ * @version 0.1
+ * @date 2025-09-20
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include <stdint.h>
 
 #include "driver/gpio.h"
