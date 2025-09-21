@@ -8,4 +8,4 @@
 extern EventGroupHandle_t sys_init_eg;
 void initialize();
 
-#endif
+#endif // INITIALIZATION_HPP

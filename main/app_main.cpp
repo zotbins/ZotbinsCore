@@ -62,7 +62,8 @@ extern "C" void app_main(void)
 
     init_manager(); // Initialize peripheral manager after system initialization is complete, this manages the sensors (peripheral_manager.cpp)
 
-    vEventGroupDelete(sys_init_eg); // Free the event group
-    ESP_LOGI(TAG, "System initialization event group deleted");
+    // Not deleting the event group here because it is needed for the lifetime of the program, in case the MQTT connection drops and needs to be re-established. It is only about 16 bits of memory anyway.
+    // vEventGroupDelete(sys_init_eg); // Free the event group
+    // ESP_LOGI(TAG, "System initialization event group deleted");
 
 }

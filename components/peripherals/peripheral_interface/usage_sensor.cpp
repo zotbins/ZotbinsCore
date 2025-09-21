@@ -3,8 +3,6 @@
 #include <esp_idf_lib_helpers.h>
 #include <esp_timer.h>
 #include <ets_sys.h>
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
 
 #include "usage_sensor.hpp"
 #include "esp_log.h"
@@ -41,10 +39,24 @@ static uint32_t usage_count = 0;
 void IRAM_ATTR increment_usage(void *arg)
 {
     usage_count++; // Increment usage count
+
+    BaseType_t xHigherPriorityTaskWoken, xResult; // from https://www.freertos.org/Documentation/02-Kernel/04-API-references/12-Event-groups-or-flags/06-xEventGroupSetBitsFromISR
+
+    xHigherPriorityTaskWoken = pdFALSE; // Must be initialized to pdFALSE.
+
+    xResult = xEventGroupSetBitsFromISR(manager_eg, BIT0, &xHigherPriorityTaskWoken); // Signal the manager task that the breakbeam was tripped
+
+    if( xResult != pdFAIL ) {
+        // If unblocked task is higher priority than the daemon task, request an immediate context switch
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken); // Allows context switch wihtout waiting for the next tick.
+    }
 }
 
 void init_breakbeam(void)
 {
+
+
+
     ESP_LOGI(TAG, "Initializing usage sensor...");
     // ABSOLUTELY NECESSARY FOR SOME PINS, COMPLETELY OVERRIDES PREVIOUS CONFIGURATION
     ESP_ERROR_CHECK_WITHOUT_ABORT(
