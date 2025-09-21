@@ -1,10 +1,21 @@
+/**
+ * @file client_publish.cpp
+ * @author Alex Ikeda (ikedaas@uci.edu)
+ * @brief Functions for publishing data to the MQTT broker.
+ * @version 0.1
+ * @date 2025-09-20
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "esp_log.h"
 #include "mqtt_client.h"
 
 #include "client_connect.hpp"
 #include "client_publish.hpp"
 
-static const char *TAG = "client_publish";
+static const char *TAG = "client_publish"; // Tag for ESP logging
 
 void client_publish(const char* data) {
     esp_mqtt_client_handle_t client = get_client_handle();

@@ -96,7 +96,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
 void client_connect(void)
 {
-    // mqtts (secure)
+    // mqtts (secure) MAKE SURE TO INCLUDE THE CREDENTIALS IN THE FOLDER: mqtt_client/credentials/
     const esp_mqtt_client_config_t mqtt_cfg = {
         .broker = {
             .address = {
@@ -115,6 +115,7 @@ ESP_LOGI(TAG, "URI=%s", mqtt_cfg.broker.address.uri); // Debug print to check UR
 
     client = esp_mqtt_client_init(&mqtt_cfg);
     ESP_LOGI(TAG, "Received mqtt client handle: %p", client);
+
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, MQTT_EVENT_ANY, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);

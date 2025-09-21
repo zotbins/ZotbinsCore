@@ -1,16 +1,27 @@
+/**
+ * @file serialize.cpp
+ * @author Alex Ikeda (ikedaas@uci.edu)
+ * @brief 
+ * @version 0.1
+ * @date 2025-09-20
+ * 
+ * @copyright Copyright (c) 2025
+ * 
+ */
+
 #include "serialize.hpp"
-#include <esp_mac.h>
 
 char *serialize(float fullness, float weight, int usage) // Copied from oldzotbinscore
 {
 
     cJSON *root = cJSON_CreateObject();
-    cJSON_AddStringToObject(root, "bin_id", "newzotbin"); // TODO: change to MAC address after senior design, also consider security implications of attaching messages with a MAC address
-    cJSON_AddNumberToObject(root, "fullness", fullness);
-    cJSON_AddNumberToObject(root, "weight", weight);
-    cJSON_AddNumberToObject(root, "usage", usage);
+    cJSON_AddStringToObject(root, "bin_id", "newzotbin"); // Attach bin ID
+    cJSON_AddNumberToObject(root, "fullness", fullness); // Attach fullness (in centimeters) TODO: change to percentage
+    cJSON_AddNumberToObject(root, "weight", weight); // Attach weight (in grams) TODO: calibrate
+    cJSON_AddNumberToObject(root, "usage", usage); // Attach usage (number of trash items)
 
-    char *payload = cJSON_PrintUnformatted(root);
-    cJSON_Delete(root);
+    char *payload = cJSON_PrintUnformatted(root); // Convert JSON object to string
+    cJSON_Delete(root); // Free JSON object
+
     return payload;
 }

@@ -54,9 +54,6 @@ void IRAM_ATTR increment_usage(void *arg)
 
 void init_breakbeam(void)
 {
-
-
-
     ESP_LOGI(TAG, "Initializing usage sensor...");
     // ABSOLUTELY NECESSARY FOR SOME PINS, COMPLETELY OVERRIDES PREVIOUS CONFIGURATION
     ESP_ERROR_CHECK_WITHOUT_ABORT(
@@ -73,7 +70,7 @@ void init_breakbeam(void)
         gpio_isr_handler_add(PIN_BREAKBEAM, increment_usage, NULL)
     );
 
-    ESP_LOGI(TAG, "Usage sensor initialized.");
+    ESP_LOGI(TAG, "Usage sensor initialized!");
 }
 
 uint32_t get_usage_count(void) {

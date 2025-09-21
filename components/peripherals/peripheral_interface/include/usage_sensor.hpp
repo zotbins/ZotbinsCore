@@ -8,7 +8,17 @@
 
 extern EventGroupHandle_t manager_eg;
 
+/**
+ * @brief Configures breakbeam sensor pins and installs ISR handler.
+ * 
+ */
 void init_breakbeam(void);
+
+/**
+ * @brief Gets the total number of times the breakbeam has been triggered.
+ * 
+ * @return uint32_t 
+ */
 uint32_t get_usage_count(void);
 
 #endif // USAGE_SENSOR_HPP

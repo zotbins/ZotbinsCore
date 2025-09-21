@@ -31,21 +31,21 @@ static const gpio_config_t PIN_SCK_CONFIG = {
     .intr_type = GPIO_INTR_DISABLE
 };
 
-static const char* TAG = "weight_sensor";
+static const char* TAG = "weight_sensor"; // Tag for ESP logging
 
-static const int priority = 1;
+static const float SCALE_FACTOR = 1.0; // Calibration factor---weight is divided by this value to scale the reading to a chosen unit. TODO: calibrate
+static const float OFFSET = 0.0; // Calibration offset---weight is adjusted by this value (weight - OFFSET) to calibrate the reading to zero when no weight is applied. TODO: calibrate
 
-static hx711_t hx711 = {
+static hx711_t hx711 = { // HX711 sensor object
     .dout = PIN_DT,
     .pd_sck = PIN_SCK,
     .gain = HX711_GAIN_A_128
 };
 
-// TODO: check sys_init_eg bits
-
 esp_err_t init_hx711(void) {
     
     ESP_LOGI(TAG, "Initializing weight sensor...");
+
     // ABSOLUTELY NECESSARY FOR SOME PINS, COMPLETELY OVERRIDES PREVIOUS CONFIGURATION
     ESP_ERROR_CHECK_WITHOUT_ABORT(
         gpio_config(&PIN_DT_CONFIG)
@@ -59,13 +59,16 @@ esp_err_t init_hx711(void) {
         ESP_LOGW(TAG, "Could not initialize weight sensor...");
         return hx711_device_status;
     } else {
+        ESP_LOGI(TAG, "Weight sensor initialized!");
         return ESP_OK;
     }
 }
 
 float get_weight(void) {
     int32_t weight;
+    float calibrated_weight;
     hx711_read_average(&hx711, 10, &weight);
-    ESP_LOGI(TAG, "Weight of trash: %" PRId32, weight);
-    return weight;
+    calibrated_weight = (-1) * (weight / SCALE_FACTOR) - OFFSET; // Apply calibration. Multipled by -1 because the amplifier in the HX711 inverts the signal.
+    ESP_LOGI(TAG, "Weight of trash: %" PRId32, calibrated_weight);
+    return calibrated_weight;
 }
