@@ -46,16 +46,18 @@ extern "C" void app_main(void)
     ESP_ERROR_CHECK(example_connect());
     ESP_LOGI(TAG, "Connected to AP");
 
-    client_connect();
-    client_publish("Hello from ESP32!");
-
     /* Event group initialization */
 
     extern EventGroupHandle_t sys_init_eg; // sys_init_eg defined in initialization.cpp
     initialize(); // create the event group, from initialization.cpp -- TODO: add other initialization conditions. This one waits for the MQTT connection to be established before initializing the sensors.
 
+    // MQTT client initialization and connection
+    client_connect();
+    client_publish("Hello from ESP32!");
+
+    // Wait for MQTT connection to be established
     ESP_LOGI(TAG, "Waiting for client to intialize...");
-    xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for MQTT connection to be established
+    xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY);
     ESP_LOGI(TAG, "Client initialized");
 
     init_manager(); // Initialize peripheral manager after system initialization is complete, this manages the sensors (peripheral_manager.cpp)
