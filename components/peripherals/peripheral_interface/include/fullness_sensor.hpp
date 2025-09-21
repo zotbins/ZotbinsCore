@@ -5,15 +5,15 @@
 
 /**
  * @brief Initializes the HC-SR04 ultrasonic sensor object and configure its pins.
- * 
- * @return esp_err_t 
+ *
+ * @return esp_err_t
  */
 esp_err_t init_hcsr04(void);
 
 /**
  * @brief Queries the HC-SR04 ultrasonic sensor for distance in centimeters.
- * 
- * @return float 
+ *
+ * @return float
  */
 float get_fullness(void);
 

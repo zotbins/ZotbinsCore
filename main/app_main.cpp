@@ -2,12 +2,12 @@
  * @file app_main.cpp
  * @author Zotbins (zotbinsuci@gmail.com)
  * @author Alex Ikeda (ikedaas@uci.edu)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2025-09-20
- * 
+ *
  * @copyright Copyright (c) 2025
- * 
+ *
  */
 
 #include "nvs_flash.h"
@@ -51,7 +51,7 @@ extern "C" void app_main(void)
 
     // System initialization event group initialization
     extern EventGroupHandle_t sys_init_eg; // sys_init_eg is defined in initialization.cpp and must exist for the lifetime of the MQTT program
-    initialize(); // create the event group, from initialization.cpp. Other initialization conditions can be added if needed.
+    initialize();                          // create the event group, from initialization.cpp. Other initialization conditions can be added if needed.
 
     // Connect client to MQTT broker
     client_connect();
@@ -65,5 +65,4 @@ extern "C" void app_main(void)
     ESP_LOGI(TAG, "System initialization complete, initializing peripheral manager...");
     init_manager();
     ESP_LOGI(TAG, "Peripheral manager initialized!");
-
 }

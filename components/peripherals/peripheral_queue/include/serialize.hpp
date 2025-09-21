@@ -6,11 +6,11 @@
 
 /**
  * @brief Serializes input data as a JSON string.
- * 
- * @param fullness 
- * @param weight 
- * @param usage 
- * @return char* 
+ *
+ * @param fullness
+ * @param weight
+ * @param usage
+ * @return char*
  */
 char *serialize(float fullness, float weight, int usage);
 

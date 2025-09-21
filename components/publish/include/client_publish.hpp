@@ -3,9 +3,9 @@
 
 /**
  * @brief Publishes data to the MQTT broker on topic "binData"
- * 
- * @param data 
+ *
+ * @param data
  */
-void client_publish(const char* data);
+void client_publish(const char *data);
 
 #endif // CLIENT_PUBLISH_HPP

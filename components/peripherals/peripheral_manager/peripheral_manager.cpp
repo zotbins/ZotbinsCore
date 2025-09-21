@@ -4,9 +4,9 @@
  * @brief Manages peripheral synchronization and publishing.
  * @version 0.1
  * @date 2025-09-20
- * 
+ *
  * @copyright Copyright (c) 2025
- * 
+ *
  */
 
 #include <stdint.h>
@@ -21,12 +21,13 @@
 #include "serialize.hpp"
 #include "events.hpp"
 
-static const char* TAG = "peripheral_manager"; // Tag for ESP logging
-static TaskHandle_t manager_handle = nullptr; // Task handle for the peripheral manager task
+static const char *TAG = "peripheral_manager"; // Tag for ESP logging
+static TaskHandle_t manager_handle = nullptr;  // Task handle for the peripheral manager task
 
 EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors have finished collecting data.
 
-void init_manager(void) {
+void init_manager(void)
+{
 
     // Initialize sensors
     esp_err_t hx711_status = init_hx711();
@@ -36,34 +37,36 @@ void init_manager(void) {
     manager_eg = xEventGroupCreate(); // Create the event group to store sensor event bits---for example, when the breakbeam is tripped, or when the servo has finished moving.
 
     xTaskCreate(
-        run_manager,                    /* Task function. */
-        "peripheral_manager",           /* name of task. */
-        2048,                           /* Stack size of task */
-        NULL,                           /* parameter of the task */
-        1,                              /* priority of the task */
-        &manager_handle                 /* Task handle to keep track of created task */
+        run_manager,          /* Task function. */
+        "peripheral_manager", /* name of task. */
+        2048,                 /* Stack size of task */
+        NULL,                 /* parameter of the task */
+        1,                    /* priority of the task */
+        &manager_handle       /* Task handle to keep track of created task */
     );
-
 }
 
-static void run_manager(void *arg) {
+static void run_manager(void *arg)
+{
 
     ESP_LOGI(TAG, "Peripheral manager started!");
 
-    while (1) {
+    while (1)
+    {
         xEventGroupWaitBits(manager_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
 
         // Collect sensor data---add additional sensors here as needed
         float weight = get_weight();
         float fullness = get_fullness();
         uint32_t usage = get_usage_count();
-        
+
         // Publish data
         publish_payload(fullness, weight, usage);
     }
 }
 
-static void publish_payload(float fullness, float weight, int usage) { // TODO: allow variable number of sensor data parameters
+static void publish_payload(float fullness, float weight, int usage)
+{                                                       // TODO: allow variable number of sensor data parameters
     char *payload = serialize(fullness, weight, usage); // Serialize data as JSON string
-    client_publish(payload); // Publish data to MQTT broker
+    client_publish(payload);                            // Publish data to MQTT broker
 }
