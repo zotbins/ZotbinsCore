@@ -10,23 +10,15 @@ ZotbinsCore is an IoT (Internet of Things) "smart bin" which currently collects 
 
 ZotbinsCore collects waste metrics such as image data and bin usage, interfacing with the **[Zotbins App](https://apps.apple.com/us/app/zotbins/id6743295314)** to help users locate bins and properly dispose their trash. From an organizational standpoint, ZotbinsCore can also be extremely useful for analyzing waste footprint and exposing insightful trends that can help to correct improper practices.
 
-Currently ZotbinsCore collects the following metrics:
-- Pictures of trash disposed in the ZotBin 
-	- These images are categorized by Zotbins' Waste Recognition team
-- Number of items disposed in the ZotBin
-- Weight of items disposed in the ZotBin
-- Fullness of the ZotBin
-
 Once the data is collected, it is relayed to our AWS IoT MQTT (Message Queuing Telemetry Transport) Broker which allows us to seamlessly connect an entire network of ZotBins to collect data across an entire campus.
 
-The current iteration uses a dual ESP-32 system to support the large number of sensors and prioritize speed. We eventually plan to reduce the cost and footprint of the ZotBin.
+This new iteration uses a single ESP32 microcontroller development board.
 
 # Functional Requirements
 
 Collecting the above metrics requires at least one and sometimes multiple external peripherals. These peripherals are detailed below.
 
 - Usage: a breakbeam sensor counts the instances of a trash item being disposed in the bin, and trigger the sequence of other processes which collect the remaining metrics
-- Image: a servo-controlled hopper door temporarily traps the trash item for the ESP-32 CAM microcontroller can to take a picture
 - Weight: an array of load cell sensors and a HX711 load cell amplifier collect the weight of the trash item
 - Fullness: an ultrasonic sensor measures the amount of empty space in the bin to calculate the ZotBin's percentage fullness
 
@@ -38,4 +30,4 @@ ZotbinsCore is an [RTOS](https://www.freertos.org) application emphasizing maint
 
 We use [ESP-IDF](https://idf.espressif.com) (Integrated Development Framework) to build ZotBins core into a format that we can flash onto the ESP-32 controllers. ESP-IDF uses [CMake](https://cmake.org), a build system which allows us to manage a large number of files and interacting parts with ease.
 
-ESP-IDF uses [components](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/build-system.html) to organize the individual parts of a total system. ESP-IDF provides a large number of native components, and when we write code to interface with peripherals, we make our own components to keep the codebase organized. As of now, having just freshly implemented most of our peripherals, most of the code lies in the TaskComponent, which is intended to keep only RTOS task-related code. In the future, for example, the code related to collecting images would be in a "camera" or "CameraTask" component; the code related to collecting usage data would be in a "usage" or "UsageTask" component, etc. Components such as "hx711" or "ultrasonic" contain external code that others have written that we use to interface with the ZotBin's peripherals.
+ESP-IDF uses [components](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/build-system.html) to organize the individual parts of a total system. ESP-IDF provides a large number of native components, and when we write code to interface with peripherals, we make our own components to keep the codebase organized.
