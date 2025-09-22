@@ -18,5 +18,5 @@
         "initializer_list": "cpp",
         "regex": "cpp"
     },
-    "idf.portWin": "COM4"
+    "idf.portWin": "COM7"
 }

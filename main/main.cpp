@@ -49,11 +49,11 @@ extern "C" void app_main(void)
     // order matters, weight > fullness > usage
 
     // not using weight for sustainable food fair
-    Zotbins::WeightTask weightTask(messageQueue);
-    weightTask.start();
+    // Zotbins::WeightTask weightTask(messageQueue);
+    // weightTask.start();
 
-    Zotbins::FullnessTask fullnessTask(messageQueue);
-    fullnessTask.start();
+    // Zotbins::FullnessTask fullnessTask(messageQueue);
+    // fullnessTask.start();
 
 #endif
     /* end of esp device specific tasks */

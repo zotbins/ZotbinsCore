@@ -122,7 +122,7 @@ static camera_config_t camera_config = {
     .ledc_channel = LEDC_CHANNEL_0,
 
     .pixel_format = PIXFORMAT_JPEG,
-    .frame_size = FRAMESIZE_VGA, // UXGA, VGA, SVGA(800x600)
+    .frame_size = FRAMESIZE_QVGA, // UXGA, VGA, SVGA(800x600)
     /* TODO: eventually we want to be able to send UXGA quality (1600x1200)
         however, MQTT doesn't allow sizes above a certain threshold which UXGA exceeds
         so we need to divert the package
@@ -345,16 +345,6 @@ void CameraTask::loop()
     printf("ESP32 MAC Address: %02X:%02X:%02X:%02X:%02X:%02X\n",
            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
-    // Intialize SD Card
-    // esp_err_t ret = init_sd_card();
-    // if (ret != ESP_OK) {
-    //     ESP_LOGE("SD", "SD card initialization failed");
-    // }
-    // else{
-    //     ESP_LOGE("SD", "SD card initialized");
-    // }
-
-    // Intialize the Necessary GPIO
     gpio_reset_pin(flashPIN);
     gpio_set_direction(flashPIN, GPIO_MODE_OUTPUT);
     gpio_set_pull_mode(flashPIN, GPIO_PULLDOWN_ONLY);
@@ -373,25 +363,6 @@ void CameraTask::loop()
         ESP_LOGI(name, "Camera started, getting sensor");
     }
 
-    // Setup Camera
-    sensor_t *s = esp_camera_sensor_get();
-    if (s != NULL)
-    {
-        // Image tuning
-        s->set_sharpness(s, 1);  // Optional, 0–2
-        s->set_brightness(s, 2); // -2 to 2 (2 = brighter)
-        s->set_contrast(s, 0);   // -2 to 2
-        s->set_saturation(s, 0); // -2 to 2
-
-        // Gain and exposure
-        s->set_gain_ctrl(s, 1);                  // Enable auto gain
-        s->set_exposure_ctrl(s, 1);              // Enable auto exposure
-        s->set_gainceiling(s, (gainceiling_t)6); // Try 6 or 8 for more gain headroom
-
-        // White balance
-        s->set_whitebal(s, 1); // Enable auto white balance
-        s->set_awb_gain(s, 1); // Enable auto white balance gain
-    }
 
     // Camera Functionality
     camera_fb_t *fb = NULL;
@@ -401,22 +372,30 @@ void CameraTask::loop()
     ESP_LOGE(name, "Camera Loop Starting");
     while (1)
     {
-        cnt++; // need to wait for something...? (green tint, it was initializing too quickly)
+        cnt++; 
         fb = esp_camera_fb_get();
         uint64_t start = esp_timer_get_time();
 
+        if (cnt >= 20){
+            gpio_set_level(flashPIN, 1);
+        }
+
         if (cnt == 30)
         {
+            ESP_LOGE(name, "Taking Picture");
+            
+
             size_t output_size = 128000; // 262144 for 800 x 600;
             char *output = (char *)malloc(output_size);
             buffer_to_string(fb->buf, fb->len, output, output_size);
-            ESP_LOGE(name, "Taking Picture");
             Client::clientPublish("camera", output);
             free(output);
-            xTaskToNotify = xTaskGetHandle("servoTask"); // servoTask");
-            vTaskResume(xTaskToNotify);
+            gpio_set_level(flashPIN, 0);
+            xTaskToNotify = xTaskGetHandle("servoTask");
+            xTaskNotifyGive(xTaskToNotify);
             ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
             cnt = 0;
+           
         }
         esp_camera_fb_return(fb);
         vTaskDelay(35 / portTICK_PERIOD_MS);

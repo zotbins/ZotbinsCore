@@ -38,6 +38,8 @@ static const int core = 1;
 
 static bool DETECTED = false;
 
+int usage = 0;
+
 UsageTask::UsageTask(QueueHandle_t &messageQueue)
     : Task(name, priority, stackSize), mMessageQueue(messageQueue)
 {
@@ -45,8 +47,8 @@ UsageTask::UsageTask(QueueHandle_t &messageQueue)
 
 void IRAM_ATTR breakbeamISR(void *arg)
 {
-    DETECTED = true;
-    vTaskResume(usageHandle);
+    usage++;
+    ESP_LOGE(name, "Working!");   
 }
 
 void UsageTask::start()
@@ -84,44 +86,15 @@ void UsageTask::loop()
     usage = 0;
     while (1)
     {
-        if (debounce)
-        {
-            return;
-        }
-        // Double check breakbeam is broken and bool has tracked that.
         DETECTED = gpio_get_level(PIN_BREAKBEAM);
-        // printf("I AM RUNNING\n");
-        if (DETECTED)
-        {
-            debounce = true;
-#if defined(CAMERA)
-            // take picture
-            ESP_LOGI(name, "Notifying servo Task.");
+        if(DETECTED){
+            ESP_LOGE(name, "Usage Task Detected");
             xTaskToNotify = xTaskGetHandle("servoTask");
-            xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect image data
+            xTaskNotifyGive(xTaskToNotify);
             ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
-            ESP_LOGI(name, "Notified servo Task");
-#elif defined(SENSOR)
-            // increment and publish usage data
-            ESP_LOGI(name, "Incrementing usage: %i", usage);
-            usage += 1;
-            vTaskDelay(10000 / portTICK_PERIOD_MS);
-            Client::clientPublish("usage", static_cast<void *>(&usage));
-            xTaskToNotify = xTaskGetHandle("fullnessTask");
-            xTaskNotifyGive(xTaskToNotify); // once item is no longer detected collect fullness data
-            vTaskSuspend(NULL);             // Suspend task until next interrupt.
-            ESP_LOGI(name, "Notified Fullness Task");
-#endif
-            // vTaskSuspend(NULL); // Suspend task until next interrupt.
-            // ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
-            debounce = false;
-            DETECTED = false; // Reset variable.
+            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            
         }
-        else
-        {
-            // ESP_LOGI(name, "Ready to detect.");
-            // vTaskSuspend(NULL); // Suspend task until next interrupt.
-        }
-        vTaskDelay(100 / portTICK_PERIOD_MS);
+        vTaskDelay(20 / portTICK_PERIOD_MS);
     }
 }

@@ -7,7 +7,6 @@ set(srcs
   conversions/to_jpg.cpp
   conversions/to_bmp.c
   conversions/jpge.cpp
-  conversions/esp_jpg_decode.c
   )
 
 set(priv_include_dirs
@@ -42,6 +41,8 @@ if(IDF_TARGET STREQUAL "esp32" OR IDF_TARGET STREQUAL "esp32s2" OR IDF_TARGET ST
     sensors/sc030iot.c
     sensors/sc031gs.c
     sensors/mega_ccm.c
+    sensors/hm1055.c
+    sensors/hm0360.c
     )
 
   list(APPEND priv_include_dirs
@@ -61,7 +62,6 @@ if(IDF_TARGET STREQUAL "esp32" OR IDF_TARGET STREQUAL "esp32s2" OR IDF_TARGET ST
     list(APPEND srcs
       target/xclk.c
       target/esp32s2/ll_cam.c
-      target/tjpgd.c
       )
 
     list(APPEND priv_include_dirs
@@ -75,7 +75,7 @@ if(IDF_TARGET STREQUAL "esp32" OR IDF_TARGET STREQUAL "esp32s2" OR IDF_TARGET ST
       )
   endif()
 
-  set(priv_requires freertos nvs_flash)
+  set(priv_requires freertos nvs_flash esp_mm)
 
   set(min_version_for_esp_timer "4.2")
   if (idf_version VERSION_GREATER_EQUAL min_version_for_esp_timer)
@@ -83,25 +83,18 @@ if(IDF_TARGET STREQUAL "esp32" OR IDF_TARGET STREQUAL "esp32s2" OR IDF_TARGET ST
   endif()
 
   # include the SCCB I2C driver
-  # this uses either the legacy I2C API or the newwer version from IDF v5.4
+  # this uses either the legacy I2C API or the newer version from IDF v5.4
   # as this features a method to obtain the I2C driver from a port number
-  if (idf_version VERSION_GREATER_EQUAL "5.4")
+  if (idf_version VERSION_GREATER_EQUAL "5.4" AND NOT CONFIG_SCCB_HARDWARE_I2C_DRIVER_LEGACY)
     list(APPEND srcs driver/sccb-ng.c)
   else()
     list(APPEND srcs driver/sccb.c)
   endif()
 
-endif()
+  if (idf_version VERSION_GREATER_EQUAL "6.0")
+    list(APPEND priv_requires esp_driver_gpio)
+  endif()
 
-# CONFIG_ESP_ROM_HAS_JPEG_DECODE is available from IDF v4.4 but
-# previous IDF supported chips already support JPEG decoder, hence okay to use this
-if(idf_version VERSION_GREATER_EQUAL "4.4" AND NOT CONFIG_ESP_ROM_HAS_JPEG_DECODE)
-  list(APPEND srcs
-    target/tjpgd.c
-  )
-  list(APPEND priv_include_dirs
-    target/jpeg_include/
-  )
 endif()
 
 idf_component_register(

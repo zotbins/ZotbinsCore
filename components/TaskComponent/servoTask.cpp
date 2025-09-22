@@ -138,34 +138,72 @@ void ServoTask::loop()
     ESP_ERROR_CHECK(mcpwm_timer_enable(timer));
     ESP_ERROR_CHECK(mcpwm_timer_start_stop(timer, MCPWM_TIMER_START_NO_STOP));
 
-    while (1)
-    {
-        ESP_LOGI(name, "waiting for task response");
+
+    ESP_LOGE(name, "Servo Task Initialized");
+    
+    
+    ESP_LOGE(name, "Servo Task Starting");
+
+    while(1){
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
 
+        // Move  UP
+        ESP_LOGE(name, "Moving Servo Up");
         mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-10));
         for (int i = -10; i >= -180; i--)
         {
             mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(i));
             vTaskDelay(3 / portTICK_PERIOD_MS);
         }
+        ESP_LOGE(name,"Finished Moving Up");
+
         xTaskToNotify = xTaskGetHandle("cameraTask");
         xTaskNotifyGive(xTaskToNotify);
         ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
-        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-10));
+        
 
-        // set ultrasonic of SENSOR esp32 to low, telling it to activate
-        ESP_LOGI("Servo", "starting servo thingy");
-        gpio_set_level(GPIO_NUM_13, 1);
-        gpio_set_level(GPIO_NUM_14, 0);
+        ESP_LOGE(name, "Moving Servo Down");
 
-        // go back to usage
+        mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-180));
+        for (int i = -180; i <= -10; i++)
+        {
+            mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(i));
+            vTaskDelay(3 / portTICK_PERIOD_MS);
+        }
+
+        ESP_LOGE(name, "Finished Moving Down");
         xTaskToNotify = xTaskGetHandle("usageTask");
-        // vTaskResume(xTaskToNotify);
         xTaskNotifyGive(xTaskToNotify);
-        vTaskDelay(100 / portTICK_PERIOD_MS);
     }
-    vTaskDelete(NULL);
+
+    // while (1)
+    // {
+    //     ESP_LOGI(name, "waiting for task response");
+    //     ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+
+    //     mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-10));
+    //     for (int i = -10; i >= -180; i--)
+    //     {
+    //         mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(i));
+    //         vTaskDelay(3 / portTICK_PERIOD_MS);
+    //     }
+    //     xTaskToNotify = xTaskGetHandle("cameraTask");
+    //     xTaskNotifyGive(xTaskToNotify);
+    //     ulTaskNotifyTake(pdTRUE, (TickType_t)portMAX_DELAY);
+    //     mcpwm_comparator_set_compare_value(comparator, example_angle_to_compare(-10));
+
+    //     // set ultrasonic of SENSOR esp32 to low, telling it to activate
+    //     ESP_LOGI("Servo", "starting servo thingy");
+    //     gpio_set_level(GPIO_NUM_13, 1);
+    //     gpio_set_level(GPIO_NUM_14, 0);
+
+    //     // go back to usage
+    //     xTaskToNotify = xTaskGetHandle("usageTask");
+    //     // vTaskResume(xTaskToNotify);
+    //     xTaskNotifyGive(xTaskToNotify);
+    //     vTaskDelay(100 / portTICK_PERIOD_MS);
+    // }
+    // vTaskDelete(NULL);
 }
 
 void ServoTask::rotate()

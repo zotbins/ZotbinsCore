@@ -46,7 +46,7 @@ static void publish(esp_mqtt_client_handle_t client, const void *data, size_t le
     // int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 1, 0);
     printf("%zu\n", len);
 
-    msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
+    msg_id = esp_mqtt_client_publish(client, "binData", (char *)data, len, 0, 0);
 #endif
     // int msg_id = esp_mqtt_client_publish(client, "photoData", (char *)data, len, 0, 0);
     ESP_LOGI(name, "message published with msg_id=%d", msg_id);
@@ -205,7 +205,7 @@ bool payload_weight = false;
 bool payload_usage = false;
 float distance = 0;
 float weight = 0;
-int usage = 0;
+static int usage = 0;
 
 // TODO: change temp to include the actual value through variadics
 void Client::clientPublish(char *data_type, void *value)

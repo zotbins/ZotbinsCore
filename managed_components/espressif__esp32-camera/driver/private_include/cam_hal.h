@@ -57,6 +57,11 @@ void cam_give(camera_fb_t *dma_buffer);
 
 void cam_give_all(void);
 
+bool cam_get_available_frames(void);
+
+void cam_set_psram_mode(bool enable);
+bool cam_get_psram_mode(void);
+
 #ifdef __cplusplus
 }
 #endif
