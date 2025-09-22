@@ -7,6 +7,7 @@ The current version of newzotbinscore can:
 - Efficiently manage processing resources by suspending sensor tasks until a piece of trash is detected by the breakbeam
 - Connect to the Zotbins AWS IoT MQTT broker
 - Serialize and publish data to the MQTT broker as a JSON string
+- .clang-format provides settings for maintaining code consistency without making any breaking changes
 
 Action items:
 
@@ -16,7 +17,7 @@ Action items:
 - Replace ultrasonic sensor with time of flight sensor
 - OTA updates
 - Servo motor and timing
-- clang-format, automatic build (GitHub Actions)
+- automatic build (GitHub Actions)
 - Get ESP32 debug board working again
 - Change pin layout (ex. Weight sensor uses GPIO 2, however this is a strapping pin which changes the boot mode of the device)
 - Bluetooth to interface with bin users
