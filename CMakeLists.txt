@@ -10,3 +10,8 @@ set(EXTRA_COMPONENT_DIRS
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(newZotbinsCore)
+
+### DEFINE SPECIFIC HARDWARE -- THIS IS BEFORE PROJECT OVERHAUL (9/21/2025) ###
+
+# add_compile_definitions(ESP32_CAM)
+add_compile_definitions(ESP_WROVER)

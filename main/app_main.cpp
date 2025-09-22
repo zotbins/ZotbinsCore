@@ -25,7 +25,12 @@
 #include "esp_system.h"
 #include "initialization.hpp"
 
-static const char *TAG = "app_main";
+/* ESP32_CAM SPECIFIC SENSOR -- WILL BE OBSOLETE IN FUTURE VERSIONS */
+#ifdef ESP32_CAM
+    #include "esp32_cam.hpp"
+#endif // ESP32_CAM
+
+static const char *TAG = "app_main";    
 
 extern "C" void app_main(void)
 {
@@ -38,26 +43,40 @@ extern "C" void app_main(void)
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
-    /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
-     * Read "Establishing Wi-Fi or Ethernet Connection" section in
-     * examples/protocols/README.md for more information about this function.
-     */
-    // TODO: REPLACE WITH MANUAL CONNECTION TO AVOID DEPENDENCY
-    ESP_ERROR_CHECK(example_connect());
-    ESP_LOGI(TAG, "Connected to AP");
+    /*************************** ESPCAM CODE *************************************/
+    #ifdef ESP32_CAM
+        ESP_LOGI(TAG, "ESP32_CAM DEFINED...");
 
-    client_connect();
-    client_publish("Hello from ESP32!");
+    #endif // ESP32_CAM
+    /************************* EO ESPCAM CODE ************************************/
 
-    /* Event group initialization */
+    /*************************** WROVER CODE *************************************/
+    #ifdef ESP_WROVER
 
-    extern EventGroupHandle_t sys_init_eg;
+        ESP_LOGI(TAG, "ESP_WROVER DEFINED...");
 
-    ESP_LOGI(TAG, "Waiting for client to intialize...");
-    // xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for MQTT connection to be established
-    init_manager();
+        /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
+        * Read "Establishing Wi-Fi or Ethernet Connection" section in
+        * examples/protocols/README.md for more information about this function.
+        */
+        // TODO: REPLACE WITH MANUAL CONNECTION TO AVOID DEPENDENCY
+        ESP_ERROR_CHECK(example_connect());
+        ESP_LOGI(TAG, "Connected to AP");
 
-    // vEventGroupDelete(sys_init_eg);
-    // ESP_LOGI(TAG, "System initialization event group deleted");
+        client_connect();
+        client_publish("Hello from ESP32!");
 
+        /* Event group initialization */
+
+        extern EventGroupHandle_t sys_init_eg;
+
+        ESP_LOGI(TAG, "Waiting for client to intialize...");
+        // xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for MQTT connection to be established
+        init_manager();
+
+        // vEventGroupDelete(sys_init_eg);
+        // ESP_LOGI(TAG, "System initialization event group deleted");
+
+    #endif // ESP_WROVER
+    /************************** EO WROVER CODE ***********************************/
 }
