@@ -3,7 +3,7 @@ The purpose of this document is to provide a detailed overview of the software a
 
 The intention of this document is to help the embedded system development team understand how the system is structured.
 
-**Add ZotBins Logo**
+![ZotBins Logo](https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/ZotBins.jpg)
 
 # Background
 
