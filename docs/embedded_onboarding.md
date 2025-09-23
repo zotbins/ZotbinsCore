@@ -3,7 +3,7 @@ The purpose of this document is to provide a detailed overview of the software a
 
 The intention of this document is to help the embedded system development team understand how the system is structured.
 
-![ZotBins Logo](https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/ZotBins.jpg)
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/ZotBins.png" alt="ZotBins Logo" width="200"/>
 
 # Background
 
@@ -42,7 +42,8 @@ The following stuff is **VERY fundamental** to be able to quickly complete tasks
 ### Micro-Controller Pinouts
 The "pinouts" on a microcontroller refer to the various pins on a microcontroller that expose various functions of the actual microcontroller IC (integrated circuit) or any other peripherals which are commonly included on an ESP-32 microcontroller board like the ones you can purchase directly from Espressif. Common examples of such peripherals are Analog-to-Digital and Digital-to-Analog convertors, SPI or I2C modules (serial protocols), or GPIO (general-purpose in/out) pins.
 
-**Pinout Diagram**
+Below is a pinout diagram for the ESP32-Cam (a microcontroller we use at ZotBins).
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/esp32-pinout.jpg" alt="ESP32-Cam Pinout">
 
 ### Configuring GPIO Pins in ESP-IDF
 ESP-IDF has a custom data type called `gpio_num_t` which is the data type of all the pins you can work with on an ESP-32. Generally, most functions which work with `gpio_num_t` will also work with standard integer types but it is safest to use the `gpio_num_t` type. An example of assigning a pin number to a variable:
@@ -71,18 +72,11 @@ const gpio_config_t PIN_BREAKBEAM_CONFIG = {
 ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG));
 ```
 
-
 `PIN_BREAKBEAM_CONFIG` is the struct we use to tell the microcontroller how we want to configure the pin. It contains the pin's bitmask or the pin number, the mode (input or output) whether we want to add an internal [pull-up or pull-down resistor](https://eepower.com/resistor-guide/resistor-applications/pull-up-resistor-pull-down-resistor/), and whether we want to configure the pin as an interrupt pin (more on that later).
 
 Again, **make sure to double check the datasheet for what features can and can't be used** on a pin. For example, some pins have internal pull-up/down resistors; some pins don't. Some pins can be used for SDA/SDL (I2C serial lines) while others can't. And so on. One of the microcontrollers we're working with right now is the ESP32 WROVER-E, for which I have linked the datasheet [here](https://www.espressif.com/sites/default/files/documentation/esp32-wrover-e_esp32-wrover-ie_datasheet_en.pdf).
 
 Use the Espressif docs _frequently_. It’s like a map of all the building blocks you can use and modify. Every function you'll ever use should have detailed documentation on Espressif's website for data types, parameters, output types, proper error handling, etc.
-
-
-
-
-
-
 
 # Section II: The ZotBins Core
 ## Part I: Environment Setup
@@ -91,7 +85,7 @@ ZotBins Core uses the ESP-IDF framework. Most of us work inside of VS-Code and i
 
 If the configuration screen does not pop up after installing the extension, you can type this into the VScode search bar.
 
-__Add Image__
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/esp-idf_config" alt="ESP-IDF Config">
 
 ### Cloning the ZotBins Core
 All the ZotBins embedded work takes place on the ZotBins Core GitHub, which can be found [here](https://github.com/zotbins/ZotbinsCore/tree/main). Here is a short one minute video on how to clone a repository directly in VScode: [Video](https://www.youtube.com/watch?v=bz1KauFlbQI)
@@ -99,9 +93,9 @@ All the ZotBins embedded work takes place on the ZotBins Core GitHub, which can 
 ### Building, Flashing, and Monitoring the Code
 ​The current version of ZotBins uses two different microcontrollers: the ESP32-Cam and the ESP32 Wrover. Flashing is the process of transferring writing a binary program onto non-voltage memory of an embedded system. Effectively its flashing means transferring the program from your computer to the microcontroller.
 
-**Add Image**
-
 The USB-To-TTL plugs into your computer and connects to the microcontroller through the various wires. There are five pins on the module:
+
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/usbtottl.png" alt="USB to TTL Module">
 
 **USB-To-TTL Module:**
 - 5V - Outputs 5V
@@ -114,12 +108,11 @@ The USB-To-TTL plugs into your computer and connects to the microcontroller thro
 
 **ESP32-Cam Pinouts**
 
-**Add Image**
-
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/esp32-pinout-labeled.png" alt="Labeled ESP32-Cam Pinout">
 
 **ESP32 Wrover Pinouts**
 
-**Add Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/esp-wrover-pinout-labeled.png" alt="Labeled ESP32 Wrover Pinout">
 
 We will match the 5V and GND on the USB-To-TTL with the 5V power and GND on microcontrollers. Most systems will have multiple ground pins, and it is okay to use any of them. Then we will connect the UART communication pins. In a UART connection, the TX of device 1 matches with the RX of device 2 and the RX of device 1 matches with the TX of device 2. 
 
@@ -141,7 +134,7 @@ The star icon represents the communication protocol that is used to flash and mo
 
 C/C++ is a compiler-based program, so before the code is run it needs to be built. Building is the process of turning our computer program into machine code that can be executed by a processor. Every time you make changes to the code, you must build it before executing it. The build may fail for multiple reasons, such as a syntax error. You can build your program by pressing on the wrench button (next to the trashcan and lightning bolt icon). Example of what a successful build might look like in the terminal:
 
-**Add Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/esp-idf-build.png" alt="ESP-IDF Successful Build">
 
 Once your program has been built and the USB-To-TLL has been set up, we can finally flash the code. Flash the code by pressing on the lightning bolt button. If the flashing process gets stuck in a loop of trying to connect, you may need to press the reset button on the microcontroller.
 
@@ -174,15 +167,13 @@ Below is the current description of the differnet components that are used:
 ### Breakbeam / Usage Sensor (ADA2168)
 We keep track of how often trash is being thrown into the ZotBin. We use a breakbeam sensor (or a usage sensor that we like to call it) to measure the amount. We use the ADA2168 module.
 
-**Add Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/breakbeam-sensor.png" alt="Breakbeam Sensor">
 
 The breakbeam sensor is made up of two different components: the emitter (clear bulb) and the received (dark bulb). The emitter shoots out an infrared ray (IR) that is directed at the receiver.
 
 If the receiver successfully detects the IR beam, then it will return a logical high (1). If the receiver does not detect the IR beam (because the IR beam's line of sight is broken by an object), then it will return a logical low (0). Refer to the following expertly drawn image.
 
-**Add Image**
-
-**Add Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/breakbeam-diagram.png" alt="Breakbeam Diagram">
 
 Initially, we used an actual piece of trash to break the beam, but we ran into a lot of issues with people missing the beam entirely. Instead, we attached the breakbeam sensor to the lid. When the lid is closed, it breaks the beam, then when it is opened, it re-establishes the beam. We count this as usage.
 
@@ -198,11 +189,11 @@ Initially, we used an actual piece of trash to break the beam, but we ran into a
 ### Fullness / Ultrasonic Sensor (HC-SR04)
 ZotBins keeps track of how full each bin is. We accomplish this through a fullness / ultrasonic sensor. The ultrasonic sensor shoots out a series of ultrasonic pulses. These waves travel and reflect off of the nearest surface. The reflected waves eventually return to the sensor which will measure the time it took.
 
-**Add Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/ultrasonic.png" alt="Ultrasonic Sensor">
 
 Used some mathematics we convert to the time it takes to travel into a distance allowing us to determine how full the bin is.
 
-**Ultrasonic Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/ultrasonic-diagram.png" alt="Ultrasonic Sensor Diagram">
 
 **HC-SR04 Ultrasonic Pins:**
 - VCC - Power (5V)
@@ -213,17 +204,17 @@ Used some mathematics we convert to the time it takes to travel into a distance 
 ### Weight Sensor (Load Cells & HX711 Amplifier):
 The weight sensor is used to measure the weight of the trash inside the bin. We pair load cells and a HX711 Amplifier to create a digital scale. Load cells are electromechanical components that will change their resistance depending on how much force is placed on top of them. Below is a picture of the load cell we use:
 
-**Load Cell Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/loadcell.png" alt="Load Cell">
 
 The resistance scales linearly with respect to the load that the sensor experiences. Therefore, via a mathematical expression, we relate the weight of objects to the voltage output of the load cells. We use four different load cell units in a wheatstone bridge formation to create an even surface to measure the trash weight.
 
-**Load Cell Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/loadcell-wiring.png" alt="Load Cell Wiring">
 
 SG1-4 are the resistance that are determined by the strain experienced by each load cell. The signal from the load cell configuration may be faint so we attach their outputs to a HX711 Amplifier which boosts the signal so it can easily be deciphered.
 
 **HX711 Amplifier Pins:**
 
-**HX711 Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/hx711.png" alt="hx711">
 
 The complete weight sensor looks like the following:
 
@@ -239,7 +230,7 @@ The ZotBins system includes a servo-controlled lid.
 ### GPS Sensor (Air530) 
 The ZotBin also includes a GPS sensor that is used to keep track of where it is. The blue component is the controller and the green component is the antenna. For optimal performance, the antenna should have line-of-sight with the sky and be free of any obstructions.
 
-**GPS Sensor Image**
+<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/air530.png" alt="air530">
 
 **Air530 GPS Pins:**
 - 5V - 5V Power
