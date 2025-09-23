@@ -57,6 +57,21 @@ While the pins can have multiple functions, you can only use the pin for one of 
 
 The most common pin function is the digital GPIO pin. This pin either outputs a high/low signal (5V or 0V) or reads a signal and interprets it as either high/low (again, 5V or 0V). Here is an example from ZotBins core where we configure a GPIO pin as digital GPIO.
 
+```c++
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_14;
+
+const gpio_config_t PIN_BREAKBEAM_CONFIG = {
+    .pin_bit_mask = (1ULL << PIN_BREAKBEAM),
+    .mode = GPIO_MODE_INPUT,
+    .pull_up_en = GPIO_PULLUP_ENABLE,
+    .pull_down_en = GPIO_PULLDOWN_DISABLE,
+    .intr_type = GPIO_INTR_NEGEDGE
+};
+
+ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG));
+```
+
+
 `PIN_BREAKBEAM_CONFIG` is the struct we use to tell the microcontroller how we want to configure the pin. It contains the pin's bitmask or the pin number, the mode (input or output) whether we want to add an internal [pull-up or pull-down resistor](https://eepower.com/resistor-guide/resistor-applications/pull-up-resistor-pull-down-resistor/), and whether we want to configure the pin as an interrupt pin (more on that later).
 
 Again, **make sure to double check the datasheet for what features can and can't be used** on a pin. For example, some pins have internal pull-up/down resistors; some pins don't. Some pins can be used for SDA/SDL (I2C serial lines) while others can't. And so on. One of the microcontrollers we're working with right now is the ESP32 WROVER-E, for which I have linked the datasheet [here](https://www.espressif.com/sites/default/files/documentation/esp32-wrover-e_esp32-wrover-ie_datasheet_en.pdf).

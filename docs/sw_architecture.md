@@ -91,7 +91,6 @@ const gpio_config_t PIN_BREAKBEAM_CONFIG = {
 };
 
 ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG));
-
 ```
 
 `PIN_BREAKBEAM_CONFIG` is the struct we use to tell the microcontroller how we want to configure the pin. It contains the pin's bitmask or the pin number, the mode (input or output) whether we want to add an internal [pull-up or pull-down resistor](https://eepower.com/resistor-guide/resistor-applications/pull-up-resistor-pull-down-resistor/), and whether we want to configure the pin as an interrupt pin (more on that later).
