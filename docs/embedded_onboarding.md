@@ -39,6 +39,7 @@ environment!**
 
 The following stuff is **VERY fundamental** to be able to quickly complete tasks that you'll be assigned as a Zotbinner (I coined that term literally no one on the team calls us that). In the next section, we will go more into depth about the exact implementation of ZotinsCore. Section I is more about getting a grasp of the basics.
 
+
 ### Micro-Controller Pinouts
 The "pinouts" on a microcontroller refer to the various pins on a microcontroller that expose various functions of the actual microcontroller IC (integrated circuit) or any other peripherals which are commonly included on an ESP-32 microcontroller board like the ones you can purchase directly from Espressif. Common examples of such peripherals are Analog-to-Digital and Digital-to-Analog convertors, SPI or I2C modules (serial protocols), or GPIO (general-purpose in/out) pins.
 
@@ -77,6 +78,15 @@ ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG));
 Again, **make sure to double check the datasheet for what features can and can't be used** on a pin. For example, some pins have internal pull-up/down resistors; some pins don't. Some pins can be used for SDA/SDL (I2C serial lines) while others can't. And so on. One of the microcontrollers we're working with right now is the ESP32 WROVER-E, for which I have linked the datasheet [here](https://www.espressif.com/sites/default/files/documentation/esp32-wrover-e_esp32-wrover-ie_datasheet_en.pdf).
 
 Use the Espressif docs _frequently_. It’s like a map of all the building blocks you can use and modify. Every function you'll ever use should have detailed documentation on Espressif's website for data types, parameters, output types, proper error handling, etc.
+
+## GitHub
+Git is a verison-control program used by million of developers. It allows grousp to work together seamless and keep track of the flow of work. ZotBins uses GitHub to manage all of the different tasks, so it is important that you learn.
+
+Here is a great resoruce for learning Git (only need to complete Introduction Sequence): [Learn GitHub Branching](https://learngitbranching.js.org/)
+
+You can also reference a website like W3Schools for a text tutorial: [GitHub Text Tutorial](https://www.w3schools.com/git/default.asp?remote=github)
+
+If you prefer video tutorial there are a ton of then on the internet! We encourage you to explore:
 
 # Section II: The ZotBins Core
 ## Part I: Environment Setup
