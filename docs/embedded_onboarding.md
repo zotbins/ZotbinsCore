@@ -39,6 +39,7 @@ environment!**
 
 The following stuff is **VERY fundamental** to be able to quickly complete tasks that you'll be assigned as a Zotbinner (I coined that term literally no one on the team calls us that). In the next section, we will go more into depth about the exact implementation of ZotinsCore. Section I is more about getting a grasp of the basics.
 
+If you want extra information please refer to the following GitHub repo that has everythign: [Embedded New Testament](https://github.com/theEmbeddedGeorge/theEmbeddedNewTestament.github.io)
 
 ### Micro-Controller Pinouts
 The "pinouts" on a microcontroller refer to the various pins on a microcontroller that expose various functions of the actual microcontroller IC (integrated circuit) or any other peripherals which are commonly included on an ESP-32 microcontroller board like the ones you can purchase directly from Espressif. Common examples of such peripherals are Analog-to-Digital and Digital-to-Analog convertors, SPI or I2C modules (serial protocols), or GPIO (general-purpose in/out) pins.
@@ -78,6 +79,213 @@ ESP_ERROR_CHECK(gpio_config(&PIN_BREAKBEAM_CONFIG));
 Again, **make sure to double check the datasheet for what features can and can't be used** on a pin. For example, some pins have internal pull-up/down resistors; some pins don't. Some pins can be used for SDA/SDL (I2C serial lines) while others can't. And so on. One of the microcontrollers we're working with right now is the ESP32 WROVER-E, for which I have linked the datasheet [here](https://www.espressif.com/sites/default/files/documentation/esp32-wrover-e_esp32-wrover-ie_datasheet_en.pdf).
 
 Use the Espressif docs _frequently_. It’s like a map of all the building blocks you can use and modify. Every function you'll ever use should have detailed documentation on Espressif's website for data types, parameters, output types, proper error handling, etc.
+
+## Embedded Architecture
+
+
+
+
+## FreeRTOS and Task Scheduling
+FreeRTOS is a popular real-time operating system (RTOS) kernel for embedded systems. It provides multitasking capabilities, allowing multiple tasks to run seemingly simultaneously on a single processor through rapid task switching. FreeRTOS is how ZotBins is able to balance computation and all of its peripherals.
+
+FreeRTOS is light-weight and enables:
+- **Preemptive multitasking**: Higher priority tasks can interrupt lower priority ones
+- **Task management**: Create, delete, suspend, and resume tasks
+- **Inter-task communication**: Queues, semaphores, and mutexes
+- **Memory management**: Dynamic and static memory allocation schemes
+- **Small Footprint**: Minimal RAM and ROM usage
+
+### What is a Task?
+A task in FreeRTOS is essentially a thread of execution with its own stack and priority. Each task runs independently and contains an infinite loop that performs a specific function.
+
+**Task Function**
+```c++
+void vTaskFunction(void *pvParameters)
+{
+    // Initialization code (runs once)
+    int counter = 0;
+    
+    // Task loop (runs forever)
+    for(;;)
+    {
+        // Task code here
+        counter++;
+        printf("Task running: %d\n", counter);
+        
+        // Delay to yield to other tasks
+        vTaskDelay(pdMS_TO_TICKS(1000)); // Delay 1 second
+    }
+    
+    // Should never reach here, but if task needs to delete itself:
+    // vTaskDelete(NULL);
+}
+```
+
+**Creating a Task**
+```c++
+BaseType_t xTaskCreate(
+    TaskFunction_t pvTaskCode,    // Pointer to task function
+    const char * const pcName,     // Descriptive name for debugging
+    uint16_t usStackDepth,         // Stack size in words (not bytes!)
+    void *pvParameters,            // Parameters passed to task
+    UBaseType_t uxPriority,        // Task priority (0 = lowest)
+    TaskHandle_t *pxCreatedTask    // Handle to created task (optional)
+);
+```
+
+**Example: Creating and Running Multiple Tasks**
+```c++
+#include "FreeRTOS.h"
+#include "task.h"
+
+// Task handles (optional, for task management)
+TaskHandle_t xTask1Handle = NULL;
+TaskHandle_t xTask2Handle = NULL;
+
+// Task 1: Blinks an LED
+void vTask1(void *pvParameters)
+{
+    for(;;)
+    {
+        // Toggle LED
+        GPIO_TogglePin(LED1_PORT, LED1_PIN);
+        vTaskDelay(pdMS_TO_TICKS(500));
+    }
+}
+
+// Task 2: Reads sensor data
+void vTask2(void *pvParameters)
+{
+    int sensorValue = 0;
+    
+    for(;;)
+    {
+        sensorValue = ReadSensor();
+        printf("Sensor: %d\n", sensorValue);
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}
+
+// Main function
+int main(void)
+{
+    // Initialize hardware
+    SystemInit();
+    
+    // Create Task 1
+    xTaskCreate(
+        vTask1,           // Task function
+        "LED Task",       // Name
+        128,              // Stack size (128 words)
+        NULL,             // Parameters
+        1,                // Priority
+        &xTask1Handle     // Task handle
+    );
+    
+    // Create Task 2
+    xTaskCreate(
+        vTask2,
+        "Sensor Task",
+        256,
+        NULL,
+        2,                // Higher priority than Task 1
+        &xTask2Handle
+    );
+    
+    // Start the scheduler
+    vTaskStartScheduler();
+    
+    // Should never reach here
+    for(;;);
+}
+```
+### Task Scheduling
+**Priority-Based Preemptive Scheduling**
+FreeRTOS uses a priority-based preemptive scheduler. Key concepts include:
+- **Higher priority tasks preempt lower priority tasks**: When a higher priority task becomes ready, it immediately runs
+- **Same priority tasks share CPU time**: Tasks with equal priority run in round-robin fashion
+
+**Task-States**
+Tasks can be in one of four states:
+- **Runnings**: Currently executing on the CPU
+- **Ready**: Ready to run but waiting for CPU time
+- **Blocked**: Waiting for an event (delay, queue, semaphore, etc.)
+- **Suspended**: Not available for scheduling until explicitly resumed
+
+```
+┌─────────────┐
+│   Running   │ ◄─── Only one task runs at a time
+└──────┬──────┘
+	   │
+	   ├──────► Blocked (waiting for event)
+	   │
+	   ├──────► Ready (waiting for CPU)
+	   │
+	   └──────► Suspended (explicitly suspended)
+```
+
+**Example: Different Task States** 
+```c++
+void vTaskA(void *pvParameters)
+{
+    for(;;)
+    {
+        printf("Task A running\n");
+        
+        // Enter Blocked state for 1 second
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        // Returns to Ready state, then Running when scheduled
+    }
+}
+
+void vTaskB(void *pvParameters)
+{
+    for(;;)
+    {
+        printf("Task B running\n");
+        
+        // Suspend Task A
+        vTaskSuspend(xTaskAHandle);  // Task A enters Suspended state
+        
+        vTaskDelay(pdMS_TO_TICKS(2000));
+        
+        // Resume Task A
+        vTaskResume(xTaskAHandle);   // Task A returns to Ready state
+        
+        vTaskDelay(pdMS_TO_TICKS(2000));
+    }
+}
+```
+
+**Common Task Control Functions**
+```c++
+// Delete a task
+void vTaskDelete(TaskHandle_t xTask);  // NULL deletes calling task
+
+// Suspend a task
+void vTaskSuspend(TaskHandle_t xTaskToSuspend);
+
+// Resume a suspended task
+void vTaskResume(TaskHandle_t xTaskToResume);
+
+// Get task priority
+UBaseType_t uxTaskPriorityGet(TaskHandle_t xTask);
+
+// Set task priority
+void vTaskPrioritySet(TaskHandle_t xTask, UBaseType_t uxNewPriority);
+
+// Get number of tasks
+UBaseType_t uxTaskGetNumberOfTasks(void);
+
+// Get current task handle
+TaskHandle_t xTaskGetCurrentTaskHandle(void);
+```
+
+## Communication Protocalls
+
+
+## Hardware Basics
+
 
 ## GitHub
 Git is a verison-control program used by million of developers. It allows grousp to work together seamless and keep track of the flow of work. ZotBins uses GitHub to manage all of the different tasks, so it is important that you learn.
