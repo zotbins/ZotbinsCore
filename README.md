@@ -22,3 +22,4 @@ Action items:
 - Change pin layout (ex. Weight sensor uses GPIO 2, however this is a strapping pin which changes the boot mode of the device)
 - Bluetooth to interface with bin users
 - LCD screen, speaker, and buttons to provide real-time waste info on the bin
+- Implement peripheral_queue, which will manage a queue of messages to publish in case the ESP drops the connection
