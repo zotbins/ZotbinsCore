@@ -11,8 +11,8 @@
 // bin_data_queue = xQueueCreate();
 // QueueHandle_t g_mqtt_pub_q = xQueueCreate(/*len*/ 16, sizeof(mqtt_pub_t));
 
-static const char* TAG = "peripheral_queue";
+static const char *TAG = "peripheral_queue";
 
-void init_queue(void) {
-
+void init_queue(void)
+{
 }

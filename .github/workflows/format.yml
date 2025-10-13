@@ -1,0 +1,16 @@
+name: Format check
+on: [push]
+
+jobs:
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Run clang-format
+      uses: DoozyX/clang-format-lint-action@v0.18.1
+      with:
+        source: 'components main'
+        exclude: 'managed_components components/hx711 components/ultrasonic components/esp_idf_lib_helpers'
+        clangFormatVersion: 18
+        style: file
+
