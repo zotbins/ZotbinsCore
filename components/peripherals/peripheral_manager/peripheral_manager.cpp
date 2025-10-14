@@ -83,9 +83,6 @@ static void run_manager(void *arg)
             gate_open = false;
         }
         
-        publish_payload_temp(distance, weight, usage);
-        
-        vTaskDelay(1000 / portTICK_PERIOD_MS); // Delay for 1 second
         // Publish data
         publish_payload(fullness, weight, usage);
     }
