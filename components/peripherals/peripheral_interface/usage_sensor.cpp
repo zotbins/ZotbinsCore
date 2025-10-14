@@ -33,7 +33,13 @@ static const char *TAG = "usage_sensor";
     ESP32: Please do not use the interrupt of GPIO36 and GPIO39 when using ADC or Wi-Fi and Bluetooth with sleep mode enabled. Please refer to the comments of adc1_get_raw. Please refer to Section 3.11 of ESP32 ECO and Workarounds for Bugs for the description of this issue.
 */
 
-const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18; // TODO: reason for pin choice
+const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
+static_assert(GPIO_IS_VALID_GPIO(PIN_BREAKBEAM), "Breakbeam pin must be a valid GPIO line");
+static_assert(PIN_BREAKBEAM < GPIO_NUM_34, "Breakbeam requires an input with pull-up capability");
+static_assert(PIN_BREAKBEAM != GPIO_NUM_36 && PIN_BREAKBEAM != GPIO_NUM_39,
+              "Pin 18 avoids the errata affecting GPIO36/GPIO39 interrupts during Wi-Fi/BLE use");
+static_assert(PIN_BREAKBEAM == GPIO_NUM_18,
+              "ZotbinsCore PCB routes the breakbeam sensor through VSPI CLK (GPIO18); update mapping if hardware changes");
 
 // Intention with GPIO_INTR_NEGEDGE and the reduced ISR is to reduce the time the ISR is running, the only thing the ISR needs to do is mark rising and falling edge and increment or set values accordingly.
 const gpio_config_t PIN_BREAKBEAM_CONFIG = {

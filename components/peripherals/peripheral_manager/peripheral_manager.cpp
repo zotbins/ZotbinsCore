@@ -12,6 +12,7 @@
 #include <stdint.h>
 
 #include "fullness_sensor.hpp"
+#include "servo.hpp"
 #include "usage_sensor.hpp"
 #include "weight_sensor.hpp"
 
@@ -36,6 +37,11 @@ void init_manager(void)
 
     manager_eg = xEventGroupCreate(); // Create the event group to store sensor event bits---for example, when the breakbeam is tripped, or when the servo has finished moving.
 
+    if (init_servo() == ESP_OK)
+    {
+        servo_set_angle(0);
+    }
+
     xTaskCreate(
         run_manager,          /* Task function. */
         "peripheral_manager", /* name of task. */
@@ -51,6 +57,12 @@ static void run_manager(void *arg)
 
     ESP_LOGI(TAG, "Peripheral manager started!");
 
+    // Servo parameters
+    uint32_t last_usage = get_usage_count();
+    bool gate_open = false;
+    TickType_t open_since = 0;
+    constexpr TickType_t kHoldMs = 600;
+
     while (1)
     {
         xEventGroupWaitBits(manager_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
@@ -59,6 +71,20 @@ static void run_manager(void *arg)
         float weight = get_weight();
         float fullness = get_fullness();
         uint32_t usage = get_usage_count();
+
+        if (usage != last_usage)
+        { // Instructs servo to open bin
+            servo_set_angle(90);
+            gate_open = true;
+            open_since = xTaskGetTickCount();
+            last_usage = usage;
+        }
+
+        if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs))
+        { // Instructs servo to close bin
+            servo_set_angle(0);
+            gate_open = false;
+        }
 
         // Publish data
         publish_payload(fullness, weight, usage);
