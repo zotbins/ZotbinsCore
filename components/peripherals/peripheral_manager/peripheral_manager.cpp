@@ -37,7 +37,8 @@ void init_manager(void)
 
     manager_eg = xEventGroupCreate(); // Create the event group to store sensor event bits---for example, when the breakbeam is tripped, or when the servo has finished moving.
 
-    if (init_servo() == ESP_OK) {
+    if (init_servo() == ESP_OK)
+    {
         servo_set_angle(0);
     }
 
@@ -55,7 +56,7 @@ static void run_manager(void *arg)
 {
 
     ESP_LOGI(TAG, "Peripheral manager started!");
-    
+
     // Servo parameters
     uint32_t last_usage = get_usage_count();
     bool gate_open = false;
@@ -71,18 +72,20 @@ static void run_manager(void *arg)
         float fullness = get_fullness();
         uint32_t usage = get_usage_count();
 
-        if (usage != last_usage) { // Instructs servo to open bin
+        if (usage != last_usage)
+        { // Instructs servo to open bin
             servo_set_angle(90);
             gate_open = true;
             open_since = xTaskGetTickCount();
             last_usage = usage;
         }
 
-        if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs)) { // Instructs servo to close bin
+        if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs))
+        { // Instructs servo to close bin
             servo_set_angle(0);
             gate_open = false;
         }
-        
+
         // Publish data
         publish_payload(fullness, weight, usage);
     }
