@@ -21,9 +21,7 @@ static const gpio_config_t PIN_SERVO_CONFIG = {
     .mode = GPIO_MODE_OUTPUT,
     .pull_up_en = GPIO_PULLUP_DISABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE
-
-};
+    .intr_type = GPIO_INTR_DISABLE};
 
 static const char* TAG = "servo";
 
@@ -41,7 +39,8 @@ static constexpr ledc_timer_t   kTimer   = LEDC_TIMER_0;
 static constexpr ledc_mode_t    kMode    = LEDC_LOW_SPEED_MODE;
 static constexpr ledc_channel_t kChannel = LEDC_CHANNEL_0;
 
-static inline uint32_t us_to_duty(uint32_t us) {
+static inline uint32_t us_to_duty(uint32_t us)
+{
     const uint32_t max_duty = (1u << kResolution) - 1u;
     return (uint32_t)((uint64_t)us * max_duty / kPeriodUs);
 }
