@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="union_zotbins_1_1_message_payload" kind="union" language="C++" prot="public">
+    <compoundname>Zotbins::MessagePayload</compoundname>
+    <includes refid="message_8hpp" local="no">message.hpp</includes>
+    <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="union_zotbins_1_1_message_payload_1a306de3b4e089d0e7844293a86429aed8" prot="public" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t Zotbins::MessagePayload::intPayload</definition>
+        <argsstring></argsstring>
+        <name>intPayload</name>
+        <qualifiedname>Zotbins::MessagePayload::intPayload</qualifiedname>
+        <briefdescription>
+<para>int data payload </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/message.hpp" line="39" column="17" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/message.hpp" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="union_zotbins_1_1_message_payload_1a14d4224403455d602f2208af0b668af8" prot="public" static="no" mutable="no">
+        <type>float</type>
+        <definition>float Zotbins::MessagePayload::floatPayload</definition>
+        <argsstring></argsstring>
+        <name>floatPayload</name>
+        <qualifiedname>Zotbins::MessagePayload::floatPayload</qualifiedname>
+        <briefdescription>
+<para>float data payload </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/message.hpp" line="45" column="15" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/message.hpp" bodystart="45" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Data payload of message. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>Zotbins::MessagePayload</label>
+        <link refid="union_zotbins_1_1_message_payload"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/message.hpp" line="33" column="5" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/message.hpp" bodystart="34" bodyend="46"/>
+    <listofallmembers>
+      <member refid="union_zotbins_1_1_message_payload_1a14d4224403455d602f2208af0b668af8" prot="public" virt="non-virtual"><scope>Zotbins::MessagePayload</scope><name>floatPayload</name></member>
+      <member refid="union_zotbins_1_1_message_payload_1a306de3b4e089d0e7844293a86429aed8" prot="public" virt="non-virtual"><scope>Zotbins::MessagePayload</scope><name>intPayload</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

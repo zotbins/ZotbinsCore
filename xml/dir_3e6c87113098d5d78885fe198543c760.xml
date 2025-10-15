@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="dir_3e6c87113098d5d78885fe198543c760" kind="dir">
+    <compoundname>ZotbinsCore</compoundname>
+    <innerdir refid="dir_70a27b20ec655c1c4865378ba261d048">components</innerdir>
+    <innerdir refid="dir_e9ff9ce8679ccb2823d643e2b5c8ffe9">docs</innerdir>
+    <innerdir refid="dir_ae49c09a71d4f09f5422f61eadc2a05d">main</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<sect1 id="C:/priya/ZotBins/ZotbinsCore/README.md_1autotoc_md0">
+<title>ZotBins Core</title><para>ZotBins Core is a IoT Smart Bin to keep track of waste data metrics like bin fullness, weight, usage rates, etc. This is intended to help quantify waste data and promote solutions to reduce the amount of waste people throw away.</para>
+<para>The previous iteration was a Raspberry Pi-based system. This system is intended to a replacement for the Raspberry Pi system, while being more reliable, maintainable, efficient, and testable.</para>
+</sect1>
+<sect1 id="C:/priya/ZotBins/ZotbinsCore/README.md_1autotoc_md1">
+<title>Prerequisites</title><para><itemizedlist>
+<listitem><para><ulink url="https://code.visualstudio.com/">Visual Studio Code</ulink></para>
+</listitem><listitem><para><ulink url="https://platformio.org/">PlatformIO</ulink>, a cross-platform VSCode-based IDE for embedded system development</para>
+</listitem><listitem><para><ulink url="https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers">CP210x USB to UART Bridge VCP Driver</ulink>, only needed if drivers are not already installed</para>
+</listitem></itemizedlist>
+</para>
+</sect1>
+<sect1 id="C:/priya/ZotBins/ZotbinsCore/README.md_1autotoc_md2">
+<title>How to Build &amp; Upload</title><para><orderedlist>
+<listitem><para>First, clone the repository using the command <programlisting filename=".bash"><codeline><highlight class="normal">git<sp/>clone<sp/>git@github.com:zotbins/ZotbinsCore.git</highlight></codeline>
+</programlisting></para>
+</listitem><listitem><para>Create an <computeroutput>.env</computeroutput> file in the project directory following <computeroutput>.env.txt</computeroutput> as a template.</para>
+</listitem><listitem><para>Fill in the values in <computeroutput>.env</computeroutput> with the appropriate values.</para>
+</listitem></orderedlist>
+</para>
+<para><image type="html" name="platformio_toolbar.png">PlatformIO VSCode Toolbar</image>
+ <image type="latex" name="platformio_toolbar.png">PlatformIO VSCode Toolbar</image>
+ <image type="rtf" name="platformio_toolbar.png">PlatformIO VSCode Toolbar</image>
+ <image type="docbook" name="platformio_toolbar.png">PlatformIO VSCode Toolbar</image>
+ <image type="xml" name="platformio_toolbar.png">PlatformIO VSCode Toolbar</image>
+</para>
+<para><orderedlist>
+<listitem><para>Build the project by clicking on <computeroutput>Build</computeroutput> ✔️ in the PlatformIO Toolbar, located in the left corner.</para>
+</listitem><listitem><para>Upload the application by clicking on <computeroutput>Upload</computeroutput> ➡️ in the PlatformIO Toolbar.</para>
+</listitem><listitem><para>Verify that the application was successfully uploaded by clicking on the <computeroutput>Serial Monitor</computeroutput> 🔌 for logs. </para>
+</listitem></orderedlist>
+</para>
+</sect1>
+    </detaileddescription>
+    <location file="C:/priya/ZotBins/ZotbinsCore/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="namespace_client" kind="namespace" language="C++">
+    <compoundname>Client</compoundname>
+    <sectiondef kind="func">
+      <memberdef kind="function" id="namespace_client_1a3fa819632ed6b6990a32839adb50d6d9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Client::clientStart</definition>
+        <argsstring>(void)</argsstring>
+        <name>clientStart</name>
+        <qualifiedname>Client::clientStart</qualifiedname>
+        <param>
+          <type>void</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/include/Client.hpp" line="8" column="10" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/Client.cpp" bodystart="154" bodyend="179" declfile="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/include/Client.hpp" declline="8" declcolumn="10"/>
+        <references refid="_client_8cpp_1ac97a521a4e5ce8d9dfae72ade13b2133" compoundref="_client_8cpp" startline="118" endline="142">mqtt_app_start</references>
+        <references refid="_client_8cpp_1a5a85b9c772bbeb480b209a3e6ea92b4c" compoundref="_client_8cpp" startline="30">TAG</references>
+      </memberdef>
+      <memberdef kind="function" id="namespace_client_1a75bb0320fd6288305016f903c27dc7eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Client::clientPublish</definition>
+        <argsstring>(const void *message, size_t len)</argsstring>
+        <name>clientPublish</name>
+        <qualifiedname>Client::clientPublish</qualifiedname>
+        <param>
+          <type>const void *</type>
+          <declname>message</declname>
+        </param>
+        <param>
+          <type>size_t</type>
+          <declname>len</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/include/Client.hpp" line="9" column="10" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/Client.cpp" bodystart="144" bodyend="147" declfile="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/include/Client.hpp" declline="9" declcolumn="10"/>
+        <references refid="_client_8cpp_1a05e463ec754ac44bc87112243cccb77f" compoundref="_client_8cpp" startline="32" endline="36">publish</references>
+        <references refid="_client_8cpp_1ab93aacac71c1c92bd4a501d1cd48da51" compoundref="_client_8cpp" startline="48">test_client</references>
+      </memberdef>
+      <memberdef kind="function" id="namespace_client_1a23c8f471615af75d9260051c1f5e8ca2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void Client::clientPublishStr</definition>
+        <argsstring>(const char *message)</argsstring>
+        <name>clientPublishStr</name>
+        <qualifiedname>Client::clientPublishStr</qualifiedname>
+        <param>
+          <type>const char *</type>
+          <declname>message</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/include/Client.hpp" line="11" column="10" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/Client.cpp" bodystart="149" bodyend="152" declfile="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/include/Client.hpp" declline="11" declcolumn="10"/>
+        <references refid="namespace_client_1a75bb0320fd6288305016f903c27dc7eb" compoundref="_client_8cpp" startline="144" endline="147">clientPublish</references>
+      </memberdef>
+      <memberdef kind="function" id="namespace_client_1a908f2725af70c00999406a4832d32fa7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>cJSON *</type>
+        <definition>cJSON * Client::serialize</definition>
+        <argsstring>(float fullness, uint32_t usage, bool overflow, int32_t weight)</argsstring>
+        <name>serialize</name>
+        <qualifiedname>Client::serialize</qualifiedname>
+        <param>
+          <type>float</type>
+          <declname>fullness</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>usage</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>overflow</declname>
+        </param>
+        <param>
+          <type>int32_t</type>
+          <declname>weight</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/include/Serialize.hpp" line="23" column="11" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/Serialize.cpp" bodystart="4" bodyend="31" declfile="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/include/Serialize.hpp" declline="23" declcolumn="11"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/include/Client.hpp" line="6" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="dir_1d6cdda65033bd38bf3fd0d9756808e9" kind="dir">
+    <compoundname>WeightComponent</compoundname>
+    <innerdir refid="dir_bbc8940aff63462cd65d82bed5e7b8aa">include</innerdir>
+    <innerfile refid="_mock_weight_8cpp">MockWeight.cpp</innerfile>
+    <innerfile refid="_real_weight_8cpp">RealWeight.cpp</innerfile>
+    <innerfile refid="_weight_metric_8cpp">WeightMetric.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/WeightComponent/"/>
+  </compounddef>
+</doxygen>

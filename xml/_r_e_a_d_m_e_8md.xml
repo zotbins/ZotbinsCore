@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="_r_e_a_d_m_e_8md" kind="file" language="Markdown">
+    <compoundname>README.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">#<sp/>ZotBins<sp/>Core</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">ZotBins<sp/>Core<sp/>is<sp/>a<sp/>IoT<sp/>Smart<sp/>Bin<sp/>to<sp/>keep<sp/>track<sp/>of<sp/>waste<sp/>data<sp/>metrics<sp/>like<sp/>bin<sp/>fullness,<sp/>weight,<sp/>usage<sp/>rates,<sp/>etc.<sp/>This<sp/>is<sp/>intended<sp/>to<sp/>help<sp/>quantify<sp/>waste<sp/>data<sp/>and<sp/>promote<sp/>solutions<sp/>to<sp/>reduce<sp/>the<sp/>amount<sp/>of<sp/>waste<sp/>people<sp/>throw<sp/>away.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">The<sp/>previous<sp/>iteration<sp/>was<sp/>a<sp/>Raspberry<sp/>Pi-based<sp/>system.<sp/>This<sp/>system<sp/>is<sp/>intended<sp/>to<sp/>a<sp/>replacement<sp/>for<sp/>the<sp/>Raspberry<sp/>Pi<sp/>system,<sp/>while<sp/>being<sp/>more<sp/>reliable,<sp/>maintainable,<sp/>efficient,<sp/>and<sp/>testable.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Prerequisites</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>[Visual<sp/>Studio<sp/>Code](https://code.visualstudio.com/)</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>[PlatformIO](https://platformio.org/),<sp/>a<sp/>cross-platform<sp/>VSCode-based<sp/>IDE<sp/>for<sp/>embedded<sp/>system<sp/>development</highlight></codeline>
+<codeline><highlight class="normal">-<sp/>[CP210x<sp/>USB<sp/>to<sp/>UART<sp/>Bridge<sp/>VCP<sp/>Driver](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers),<sp/>only<sp/>needed<sp/>if<sp/>drivers<sp/>are<sp/>not<sp/>already<sp/>installed</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>How<sp/>to<sp/>Build<sp/>&amp;<sp/>Upload</highlight></codeline>
+<codeline><highlight class="normal">1.<sp/>First,<sp/>clone<sp/>the<sp/>repository<sp/>using<sp/>the<sp/>command</highlight></codeline>
+<codeline><highlight class="normal">```bash</highlight></codeline>
+<codeline><highlight class="normal">git<sp/>clone<sp/>git@github.com:zotbins/ZotbinsCore.git</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">2.<sp/>Create<sp/>an<sp/>`.env`<sp/>file<sp/>in<sp/>the<sp/>project<sp/>directory<sp/>following<sp/>`.env.txt`<sp/>as<sp/>a<sp/>template.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">3.<sp/>Fill<sp/>in<sp/>the<sp/>values<sp/>in<sp/>`.env`<sp/>with<sp/>the<sp/>appropriate<sp/>values.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">![PlatformIO<sp/>VSCode<sp/>Toolbar](docs/images/platformio_toolbar.png)</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">4.<sp/>Build<sp/>the<sp/>project<sp/>by<sp/>clicking<sp/>on<sp/>`Build`<sp/>✔️<sp/>in<sp/>the<sp/>PlatformIO<sp/>Toolbar,<sp/>located<sp/>in<sp/>the<sp/>left<sp/>corner.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">5.<sp/>Upload<sp/>the<sp/>application<sp/>by<sp/>clicking<sp/>on<sp/>`Upload`<sp/>➡️<sp/>in<sp/>the<sp/>PlatformIO<sp/>Toolbar.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">6.<sp/>Verify<sp/>that<sp/>the<sp/>application<sp/>was<sp/>successfully<sp/>uploaded<sp/>by<sp/>clicking<sp/>on<sp/>the<sp/>`Serial<sp/>Monitor`<sp/>🔌<sp/>for<sp/>logs.</highlight></codeline>
+    </programlisting>
+    <location file="C:/priya/ZotBins/ZotbinsCore/README.md"/>
+  </compounddef>
+</doxygen>

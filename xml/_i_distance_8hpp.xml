@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="_i_distance_8hpp" kind="file" language="C++">
+    <compoundname>IDistance.hpp</compoundname>
+    <includes local="no">cstdint</includes>
+    <includedby refid="_fullness_metric_8cpp" local="yes">FullnessMetric.cpp</includedby>
+    <includedby refid="_fullness_metric_8hpp" local="yes">FullnessMetric.hpp</includedby>
+    <includedby refid="_mock_distance_8hpp" local="yes">MockDistance.hpp</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>IDistance.hpp</label>
+        <link refid="_i_distance_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>cstdint</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>FullnessMetric.cpp</label>
+        <link refid="_fullness_metric_8cpp"/>
+      </node>
+      <node id="6">
+        <label>MockDistance.cpp</label>
+        <link refid="_mock_distance_8cpp"/>
+      </node>
+      <node id="3">
+        <label>FullnessMetric.hpp</label>
+        <link refid="_fullness_metric_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>IDistance.hpp</label>
+        <link refid="_i_distance_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>MockDistance.hpp</label>
+        <link refid="_mock_distance_8hpp"/>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>fullnessTask.cpp</label>
+        <link refid="fullness_task_8cpp"/>
+      </node>
+      <node id="7">
+        <label>main.cpp</label>
+        <link refid="main_8cpp"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="class_fullness_1_1_i_distance" prot="public">Fullness::IDistance</innerclass>
+    <innernamespace refid="namespace_fullness">Fullness</innernamespace>
+    <briefdescription>
+<para>Header file for IDistance class. </para>
+    </briefdescription>
+    <detaileddescription>
+<para><simplesect kind="version"><para>0.1 </para>
+</simplesect>
+<simplesect kind="date"><para>2022-04-27 </para>
+</simplesect>
+</para>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>IDISTANCE_HPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>IDISTANCE_HPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;cstdint&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespace_fullness" kindref="compound">Fullness</ref></highlight></codeline>
+<codeline lineno="15"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="21" refid="class_fullness_1_1_i_distance" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="class_fullness_1_1_i_distance" kindref="compound">IDistance</ref></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="29" refid="class_fullness_1_1_i_distance_1aefb2616ccaba12fd47575c7488d8d1f3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>int32_t<sp/><ref refid="class_fullness_1_1_i_distance_1aefb2616ccaba12fd47575c7488d8d1f3" kindref="member">getDistance</ref>()<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="31"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/IDistance.hpp"/>
+  </compounddef>
+</doxygen>

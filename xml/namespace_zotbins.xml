@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="namespace_zotbins" kind="namespace" language="C++">
+    <compoundname>Zotbins</compoundname>
+    <innerclass refid="class_zotbins_1_1_camera_task" prot="public">Zotbins::CameraTask</innerclass>
+    <innerclass refid="class_zotbins_1_1_client_task" prot="public">Zotbins::ClientTask</innerclass>
+    <innerclass refid="class_zotbins_1_1_fullness_task" prot="public">Zotbins::FullnessTask</innerclass>
+    <innerclass refid="struct_zotbins_1_1_message" prot="public">Zotbins::Message</innerclass>
+    <innerclass refid="union_zotbins_1_1_message_payload" prot="public">Zotbins::MessagePayload</innerclass>
+    <innerclass refid="class_zotbins_1_1_servo_task" prot="public">Zotbins::ServoTask</innerclass>
+    <innerclass refid="class_zotbins_1_1_task" prot="public">Zotbins::Task</innerclass>
+    <innerclass refid="class_zotbins_1_1_usage_task" prot="public">Zotbins::UsageTask</innerclass>
+    <innerclass refid="class_zotbins_1_1_weight_task" prot="public">Zotbins::WeightTask</innerclass>
+    <sectiondef kind="enum">
+      <memberdef kind="enum" id="namespace_zotbins_1ab79e6dc7a2afd435b6d6be8d0d349863" prot="public" static="no" strong="yes">
+        <type></type>
+        <name>MessageType</name>
+        <qualifiedname>Zotbins::MessageType</qualifiedname>
+        <enumvalue id="namespace_zotbins_1ab79e6dc7a2afd435b6d6be8d0d349863aa73f7f5710431f90373d592f095cd5dc" prot="public">
+          <name>FullnessMessage</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespace_zotbins_1ab79e6dc7a2afd435b6d6be8d0d349863a192007d080303fb525c8474224e0639a" prot="public">
+          <name>UsageMessage</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <enumvalue id="namespace_zotbins_1ab79e6dc7a2afd435b6d6be8d0d349863a6688a9e52ba07fd82195854e5092b49b" prot="public">
+          <name>WeightMessage</name>
+          <briefdescription>
+          </briefdescription>
+          <detaileddescription>
+          </detaileddescription>
+        </enumvalue>
+        <briefdescription>
+<para><ref refid="struct_zotbins_1_1_message" kindref="compound">Message</ref> type. Indicates origin of message. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/message.hpp" line="22" column="5" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/message.hpp" bodystart="23" bodyend="27"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" line="19" column="1"/>
+  </compounddef>
+</doxygen>

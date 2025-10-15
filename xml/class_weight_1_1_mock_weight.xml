@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="class_weight_1_1_mock_weight" kind="class" language="C++" prot="public" final="yes">
+    <compoundname>Weight::MockWeight</compoundname>
+    <basecompoundref refid="class_weight_1_1_i_weight" prot="public" virt="non-virtual">Weight::IWeight</basecompoundref>
+    <includes refid="_mock_weight_8hpp" local="no">MockWeight.hpp</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_weight_1_1_mock_weight_1ae84bf8365acf192120adb8f54d9f3fd2" prot="private" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t Weight::MockWeight::mWeight</definition>
+        <argsstring></argsstring>
+        <name>mWeight</name>
+        <qualifiedname>Weight::MockWeight::mWeight</qualifiedname>
+        <briefdescription>
+<para>Represents the current weight of the mock sensor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/WeightComponent/include/MockWeight.hpp" line="43" column="17" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/WeightComponent/include/MockWeight.hpp" bodystart="43" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_weight_1_1_mock_weight_1afc6ae2508b89dc75b0187593d6910d13" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>MockWeight::MockWeight</definition>
+        <argsstring>(int32_t weight)</argsstring>
+        <name>MockWeight</name>
+        <qualifiedname>Weight::MockWeight::MockWeight</qualifiedname>
+        <param>
+          <type>int32_t</type>
+          <declname>weight</declname>
+        </param>
+        <briefdescription>
+<para>Constructs an instance of the <ref refid="class_weight_1_1_mock_weight" kindref="compound">MockWeight</ref> class. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>weight</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Represents the current weight of the mock sensor. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/WeightComponent/include/MockWeight.hpp" line="29" column="9" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/WeightComponent/MockWeight.cpp" bodystart="5" bodyend="8"/>
+        <references refid="class_weight_1_1_mock_weight_1ae84bf8365acf192120adb8f54d9f3fd2" compoundref="_mock_weight_8hpp" startline="43">mWeight</references>
+      </memberdef>
+      <memberdef kind="function" id="class_weight_1_1_mock_weight_1ae27fa0eac6f7526f5a932ad4a6af3c8b" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>int32_t</type>
+        <definition>int32_t MockWeight::getWeight</definition>
+        <argsstring>() override</argsstring>
+        <name>getWeight</name>
+        <qualifiedname>Weight::MockWeight::getWeight</qualifiedname>
+        <reimplements refid="class_weight_1_1_i_weight_1ac38d088448a076980f6b2e6ee84e57d9">getWeight</reimplements>
+        <briefdescription>
+<para>Returns the mock weight. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>int32_t <ref refid="namespace_weight" kindref="compound">Weight</ref> in kilograms. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/WeightComponent/include/MockWeight.hpp" line="36" column="17" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/WeightComponent/MockWeight.cpp" bodystart="10" bodyend="13"/>
+        <references refid="class_weight_1_1_mock_weight_1ae84bf8365acf192120adb8f54d9f3fd2" compoundref="_mock_weight_8hpp" startline="43">mWeight</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Mock weight class that inherits from the <ref refid="class_weight_1_1_i_weight" kindref="compound">IWeight</ref> interface class. Used for unit tests so that actual hardware isn&apos;t require to test the ZotBins system. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>Weight::IWeight</label>
+        <link refid="class_weight_1_1_i_weight"/>
+      </node>
+      <node id="1">
+        <label>Weight::MockWeight</label>
+        <link refid="class_weight_1_1_mock_weight"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>Weight::IWeight</label>
+        <link refid="class_weight_1_1_i_weight"/>
+      </node>
+      <node id="1">
+        <label>Weight::MockWeight</label>
+        <link refid="class_weight_1_1_mock_weight"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/WeightComponent/include/MockWeight.hpp" line="21" column="5" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/WeightComponent/include/MockWeight.hpp" bodystart="22" bodyend="44"/>
+    <listofallmembers>
+      <member refid="class_weight_1_1_mock_weight_1ae27fa0eac6f7526f5a932ad4a6af3c8b" prot="public" virt="virtual"><scope>Weight::MockWeight</scope><name>getWeight</name></member>
+      <member refid="class_weight_1_1_mock_weight_1afc6ae2508b89dc75b0187593d6910d13" prot="public" virt="non-virtual"><scope>Weight::MockWeight</scope><name>MockWeight</name></member>
+      <member refid="class_weight_1_1_mock_weight_1ae84bf8365acf192120adb8f54d9f3fd2" prot="private" virt="non-virtual"><scope>Weight::MockWeight</scope><name>mWeight</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,204 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="class_zotbins_1_1_task" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>Zotbins::Task</compoundname>
+    <derivedcompoundref refid="class_zotbins_1_1_camera_task" prot="public" virt="non-virtual">Zotbins::CameraTask</derivedcompoundref>
+    <derivedcompoundref refid="class_zotbins_1_1_client_task" prot="public" virt="non-virtual">Zotbins::ClientTask</derivedcompoundref>
+    <derivedcompoundref refid="class_zotbins_1_1_fullness_task" prot="public" virt="non-virtual">Zotbins::FullnessTask</derivedcompoundref>
+    <derivedcompoundref refid="class_zotbins_1_1_servo_task" prot="public" virt="non-virtual">Zotbins::ServoTask</derivedcompoundref>
+    <derivedcompoundref refid="class_zotbins_1_1_usage_task" prot="public" virt="non-virtual">Zotbins::UsageTask</derivedcompoundref>
+    <derivedcompoundref refid="class_zotbins_1_1_weight_task" prot="public" virt="non-virtual">Zotbins::WeightTask</derivedcompoundref>
+    <includes refid="task_8hpp" local="no">task.hpp</includes>
+    <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="class_zotbins_1_1_task_1a66bd8c1720804bce64146ccfc0446a78" prot="protected" static="no" mutable="no">
+        <type>const char *</type>
+        <definition>const char* Zotbins::Task::mName</definition>
+        <argsstring></argsstring>
+        <name>mName</name>
+        <qualifiedname>Zotbins::Task::mName</qualifiedname>
+        <briefdescription>
+<para>Name of task. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>z  </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" line="47" column="20" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_zotbins_1_1_task_1a84584bfe090c4c3fb388c6cbb100dce8" prot="protected" static="no" mutable="no">
+        <type>const int</type>
+        <definition>const int Zotbins::Task::mPriority</definition>
+        <argsstring></argsstring>
+        <name>mPriority</name>
+        <qualifiedname>Zotbins::Task::mPriority</qualifiedname>
+        <briefdescription>
+<para>Priority number of task. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" line="53" column="19" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_zotbins_1_1_task_1ae389a070ae6bde070b9770e173fdbed3" prot="protected" static="no" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t Zotbins::Task::mStackSize</definition>
+        <argsstring></argsstring>
+        <name>mStackSize</name>
+        <qualifiedname>Zotbins::Task::mStackSize</qualifiedname>
+        <briefdescription>
+<para><ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> size of task. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" line="59" column="24" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" bodystart="59" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_zotbins_1_1_task_1aac7494327c74bcd8bf14fb00a755b00e" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>Zotbins::Task::Task</definition>
+        <argsstring>(const char *name, const int priority, const uint32_t stackSize)</argsstring>
+        <name>Task</name>
+        <qualifiedname>Zotbins::Task::Task</qualifiedname>
+        <param>
+          <type>const char *</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>const int</type>
+          <declname>priority</declname>
+        </param>
+        <param>
+          <type>const uint32_t</type>
+          <declname>stackSize</declname>
+        </param>
+        <briefdescription>
+<para>Construct a new <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> object. Parameters are needed for FreeRTOS. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name of task </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>priority</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Priority number of task </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stackSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Stack size of task </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" line="31" column="9" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" bodystart="31" bodyend="34"/>
+        <references refid="class_zotbins_1_1_task_1a66bd8c1720804bce64146ccfc0446a78" compoundref="task_8hpp" startline="47">mName</references>
+        <references refid="class_zotbins_1_1_task_1a84584bfe090c4c3fb388c6cbb100dce8" compoundref="task_8hpp" startline="53">mPriority</references>
+        <references refid="class_zotbins_1_1_task_1ae389a070ae6bde070b9770e173fdbed3" compoundref="task_8hpp" startline="59">mStackSize</references>
+        <references refid="camera_task_8cpp_1a8f8f80d37794cde9472343e4487ba3eb" compoundref="camera_task_8cpp" startline="14">name</references>
+        <references refid="camera_task_8cpp_1a47b03cec33388ca17717791b81c634bc" compoundref="camera_task_8cpp" startline="15">priority</references>
+        <references refid="camera_task_8cpp_1a0dfea47b4bb6f03a7066171bc0c83054" compoundref="camera_task_8cpp" startline="16">stackSize</references>
+      </memberdef>
+      <memberdef kind="function" id="class_zotbins_1_1_task_1aee93140852ee591c22613eff1b6959c4" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void Zotbins::Task::start</definition>
+        <argsstring>()=0</argsstring>
+        <name>start</name>
+        <qualifiedname>Zotbins::Task::start</qualifiedname>
+        <reimplementedby refid="class_zotbins_1_1_camera_task_1acf7c27b24e013dfe6796f471b9c9cefa">start</reimplementedby>
+        <reimplementedby refid="class_zotbins_1_1_client_task_1aa64cb12742e64b3094c5d5a18497bd32">start</reimplementedby>
+        <reimplementedby refid="class_zotbins_1_1_fullness_task_1aff5e585c18462393aa5c8464edf40c36">start</reimplementedby>
+        <reimplementedby refid="class_zotbins_1_1_servo_task_1a57c10bea25a9bde5e4bd09915b6e5858">start</reimplementedby>
+        <reimplementedby refid="class_zotbins_1_1_usage_task_1a3bb884dc2548f464386855914030bba6">start</reimplementedby>
+        <reimplementedby refid="class_zotbins_1_1_weight_task_1a778cdf289a705dba5daec29e325583d8">start</reimplementedby>
+        <briefdescription>
+<para>Start execution of task. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" line="40" column="22"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Abstract class for tasks to inherit from. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>Zotbins::CameraTask</label>
+        <link refid="class_zotbins_1_1_camera_task"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>Zotbins::ClientTask</label>
+        <link refid="class_zotbins_1_1_client_task"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>Zotbins::FullnessTask</label>
+        <link refid="class_zotbins_1_1_fullness_task"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>Zotbins::ServoTask</label>
+        <link refid="class_zotbins_1_1_servo_task"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>Zotbins::Task</label>
+        <link refid="class_zotbins_1_1_task"/>
+      </node>
+      <node id="6">
+        <label>Zotbins::UsageTask</label>
+        <link refid="class_zotbins_1_1_usage_task"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>Zotbins::WeightTask</label>
+        <link refid="class_zotbins_1_1_weight_task"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>Zotbins::Task</label>
+        <link refid="class_zotbins_1_1_task"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" line="21" column="5" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/task.hpp" bodystart="22" bodyend="60"/>
+    <listofallmembers>
+      <member refid="class_zotbins_1_1_task_1a66bd8c1720804bce64146ccfc0446a78" prot="protected" virt="non-virtual"><scope>Zotbins::Task</scope><name>mName</name></member>
+      <member refid="class_zotbins_1_1_task_1a84584bfe090c4c3fb388c6cbb100dce8" prot="protected" virt="non-virtual"><scope>Zotbins::Task</scope><name>mPriority</name></member>
+      <member refid="class_zotbins_1_1_task_1ae389a070ae6bde070b9770e173fdbed3" prot="protected" virt="non-virtual"><scope>Zotbins::Task</scope><name>mStackSize</name></member>
+      <member refid="class_zotbins_1_1_task_1aee93140852ee591c22613eff1b6959c4" prot="public" virt="pure-virtual"><scope>Zotbins::Task</scope><name>start</name></member>
+      <member refid="class_zotbins_1_1_task_1aac7494327c74bcd8bf14fb00a755b00e" prot="public" virt="non-virtual"><scope>Zotbins::Task</scope><name>Task</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

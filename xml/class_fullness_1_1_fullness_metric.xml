@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="class_fullness_1_1_fullness_metric" kind="class" language="C++" prot="public">
+    <compoundname>Fullness::FullnessMetric</compoundname>
+    <includes refid="_fullness_metric_8hpp" local="no">FullnessMetric.hpp</includes>
+    <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="class_fullness_1_1_fullness_metric_1aec94c7c7442167747dd80f65a215beda" prot="private" static="yes" constexpr="yes" mutable="no">
+        <type>size_t</type>
+        <definition>size_t Fullness::FullnessMetric::mDistanceBufferSize</definition>
+        <argsstring></argsstring>
+        <name>mDistanceBufferSize</name>
+        <qualifiedname>Fullness::FullnessMetric::mDistanceBufferSize</qualifiedname>
+        <initializer>= 8</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" line="50" column="33" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" bodystart="50" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_fullness_1_1_fullness_metric_1a187ae39d3923ff2242f262c34bcda00a" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t Fullness::FullnessMetric::mBinHeight</definition>
+        <argsstring></argsstring>
+        <name>mBinHeight</name>
+        <qualifiedname>Fullness::FullnessMetric::mBinHeight</qualifiedname>
+        <briefdescription>
+<para>Height of bin in mm. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" line="60" column="18" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="class_fullness_1_1_fullness_metric_1abab60ae96515e24b673a03c447c587a5" prot="private" static="no" mutable="no">
+        <type><ref refid="class_fullness_1_1_i_distance" kindref="compound">IDistance</ref> &amp;</type>
+        <definition>IDistance&amp; Fullness::FullnessMetric::mDistanceSensor</definition>
+        <argsstring></argsstring>
+        <name>mDistanceSensor</name>
+        <qualifiedname>Fullness::FullnessMetric::mDistanceSensor</qualifiedname>
+        <briefdescription>
+<para>Distance sensor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" line="66" column="19" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" bodystart="66" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_fullness_1_1_fullness_metric_1a2aeb3dea13ac53ae7d9adc0b4b24f36e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>FullnessMetric::FullnessMetric</definition>
+        <argsstring>(uint32_t binHeight, IDistance &amp;distanceSensor)</argsstring>
+        <name>FullnessMetric</name>
+        <qualifiedname>Fullness::FullnessMetric::FullnessMetric</qualifiedname>
+        <param>
+          <type>uint32_t</type>
+          <declname>binHeight</declname>
+        </param>
+        <param>
+          <type><ref refid="class_fullness_1_1_i_distance" kindref="compound">IDistance</ref> &amp;</type>
+          <declname>distanceSensor</declname>
+        </param>
+        <briefdescription>
+<para>Construct a new <ref refid="class_fullness_1_1_fullness_metric" kindref="compound">FullnessMetric</ref> object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>binHeight</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Height of bin in mm </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>distanceSensor</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Interface to distance sensor </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" line="32" column="9" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/FullnessMetric.cpp" bodystart="6" bodyend="8"/>
+        <references refid="class_fullness_1_1_fullness_metric_1a187ae39d3923ff2242f262c34bcda00a" compoundref="_fullness_metric_8hpp" startline="60">mBinHeight</references>
+        <references refid="class_fullness_1_1_fullness_metric_1abab60ae96515e24b673a03c447c587a5" compoundref="_fullness_metric_8hpp" startline="66">mDistanceSensor</references>
+      </memberdef>
+      <memberdef kind="function" id="class_fullness_1_1_fullness_metric_1a7f1d6bc53b18228abdc853d9c96baaf8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float FullnessMetric::getFullness</definition>
+        <argsstring>()</argsstring>
+        <name>getFullness</name>
+        <qualifiedname>Fullness::FullnessMetric::getFullness</qualifiedname>
+        <briefdescription>
+<para>Returns the fullness percentage of the bin. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>float <ref refid="namespace_fullness" kindref="compound">Fullness</ref> % of the bin (0 &lt;= fullness &lt;= 1) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" line="39" column="15" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/FullnessMetric.cpp" bodystart="10" bodyend="25"/>
+        <references refid="class_fullness_1_1_fullness_metric_1a0f5ff300baeb8dc1c9ade4234684ea73" compoundref="_fullness_metric_8cpp" startline="32" endline="46">IQM</references>
+        <references refid="class_fullness_1_1_fullness_metric_1a187ae39d3923ff2242f262c34bcda00a" compoundref="_fullness_metric_8hpp" startline="60">mBinHeight</references>
+        <references refid="class_fullness_1_1_fullness_metric_1abab60ae96515e24b673a03c447c587a5" compoundref="_fullness_metric_8hpp" startline="66">mDistanceSensor</references>
+      </memberdef>
+      <memberdef kind="function" id="class_fullness_1_1_fullness_metric_1aa73bbbba1a8b7a56a57df8565d58e01b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool FullnessMetric::isValidDistance</definition>
+        <argsstring>(uint32_t distance)</argsstring>
+        <name>isValidDistance</name>
+        <qualifiedname>Fullness::FullnessMetric::isValidDistance</qualifiedname>
+        <param>
+          <type>uint32_t</type>
+          <declname>distance</declname>
+        </param>
+        <briefdescription>
+<para>Checks if distance is valid. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>distance</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Distance given from distance sensor </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>true/false if distance is valid </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" line="47" column="14" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/FullnessMetric.cpp" bodystart="27" bodyend="30"/>
+        <references refid="class_fullness_1_1_fullness_metric_1a187ae39d3923ff2242f262c34bcda00a" compoundref="_fullness_metric_8hpp" startline="60">mBinHeight</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_fullness_1_1_fullness_metric_1a0f5ff300baeb8dc1c9ade4234684ea73" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>float</type>
+        <definition>float FullnessMetric::IQM</definition>
+        <argsstring>(std::array&lt; int32_t, mDistanceBufferSize &gt; &amp;distanceBuffer)</argsstring>
+        <name>IQM</name>
+        <qualifiedname>Fullness::FullnessMetric::IQM</qualifiedname>
+        <param>
+          <type>std::array&lt; int32_t, <ref refid="class_fullness_1_1_fullness_metric_1aec94c7c7442167747dd80f65a215beda" kindref="member">mDistanceBufferSize</ref> &gt; &amp;</type>
+          <declname>distanceBuffer</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" line="52" column="15" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/FullnessMetric.cpp" bodystart="32" bodyend="46"/>
+        <references refid="class_fullness_1_1_fullness_metric_1aec94c7c7442167747dd80f65a215beda" compoundref="_fullness_metric_8hpp" startline="50">mDistanceBufferSize</references>
+        <references refid="class_fullness_1_1_fullness_metric_1a9d071f64098f1d35167b22914d5101a2" compoundref="_fullness_metric_8cpp" startline="48" endline="65">shellSort</references>
+      </memberdef>
+      <memberdef kind="function" id="class_fullness_1_1_fullness_metric_1a9d071f64098f1d35167b22914d5101a2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void FullnessMetric::shellSort</definition>
+        <argsstring>(std::array&lt; int32_t, mDistanceBufferSize &gt; &amp;arr)</argsstring>
+        <name>shellSort</name>
+        <qualifiedname>Fullness::FullnessMetric::shellSort</qualifiedname>
+        <param>
+          <type>std::array&lt; int32_t, <ref refid="class_fullness_1_1_fullness_metric_1aec94c7c7442167747dd80f65a215beda" kindref="member">mDistanceBufferSize</ref> &gt; &amp;</type>
+          <declname>arr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" line="54" column="14" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/FullnessMetric.cpp" bodystart="48" bodyend="65"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Measures the fullness of the waste bin. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="1">
+        <label>Fullness::FullnessMetric</label>
+        <link refid="class_fullness_1_1_fullness_metric"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>-mDistanceSensor</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Fullness::IDistance</label>
+        <link refid="class_fullness_1_1_i_distance"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" line="23" column="5" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/FullnessMetric.hpp" bodystart="24" bodyend="67"/>
+    <listofallmembers>
+      <member refid="class_fullness_1_1_fullness_metric_1a2aeb3dea13ac53ae7d9adc0b4b24f36e" prot="public" virt="non-virtual"><scope>Fullness::FullnessMetric</scope><name>FullnessMetric</name></member>
+      <member refid="class_fullness_1_1_fullness_metric_1a7f1d6bc53b18228abdc853d9c96baaf8" prot="public" virt="non-virtual"><scope>Fullness::FullnessMetric</scope><name>getFullness</name></member>
+      <member refid="class_fullness_1_1_fullness_metric_1a0f5ff300baeb8dc1c9ade4234684ea73" prot="private" virt="non-virtual"><scope>Fullness::FullnessMetric</scope><name>IQM</name></member>
+      <member refid="class_fullness_1_1_fullness_metric_1aa73bbbba1a8b7a56a57df8565d58e01b" prot="public" virt="non-virtual"><scope>Fullness::FullnessMetric</scope><name>isValidDistance</name></member>
+      <member refid="class_fullness_1_1_fullness_metric_1a187ae39d3923ff2242f262c34bcda00a" prot="private" virt="non-virtual"><scope>Fullness::FullnessMetric</scope><name>mBinHeight</name></member>
+      <member refid="class_fullness_1_1_fullness_metric_1aec94c7c7442167747dd80f65a215beda" prot="private" virt="non-virtual"><scope>Fullness::FullnessMetric</scope><name>mDistanceBufferSize</name></member>
+      <member refid="class_fullness_1_1_fullness_metric_1abab60ae96515e24b673a03c447c587a5" prot="private" virt="non-virtual"><scope>Fullness::FullnessMetric</scope><name>mDistanceSensor</name></member>
+      <member refid="class_fullness_1_1_fullness_metric_1a9d071f64098f1d35167b22914d5101a2" prot="private" virt="non-virtual"><scope>Fullness::FullnessMetric</scope><name>shellSort</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

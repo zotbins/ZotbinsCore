@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="class_zotbins_1_1_client_task" kind="class" language="C++" prot="public">
+    <compoundname>Zotbins::ClientTask</compoundname>
+    <basecompoundref refid="class_zotbins_1_1_task" prot="public" virt="non-virtual">Zotbins::Task</basecompoundref>
+    <includes refid="client_task_8hpp" local="no">clientTask.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_zotbins_1_1_client_task_1aa9267f66e00449f7e960ad5f791b4d41" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>ClientTask::ClientTask</definition>
+        <argsstring>(QueueHandle_t &amp;messageQueue)</argsstring>
+        <name>ClientTask</name>
+        <qualifiedname>Zotbins::ClientTask::ClientTask</qualifiedname>
+        <param>
+          <type>QueueHandle_t &amp;</type>
+          <declname>messageQueue</declname>
+        </param>
+        <briefdescription>
+<para>Construct a new MQTT <ref refid="namespace_client" kindref="compound">Client</ref> <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> object. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/clientTask.hpp" line="30" column="18" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/clientTask.cpp" bodystart="13" bodyend="15"/>
+        <references refid="camera_task_8cpp_1a8f8f80d37794cde9472343e4487ba3eb" compoundref="camera_task_8cpp" startline="14">name</references>
+        <references refid="camera_task_8cpp_1a47b03cec33388ca17717791b81c634bc" compoundref="camera_task_8cpp" startline="15">priority</references>
+        <references refid="camera_task_8cpp_1a0dfea47b4bb6f03a7066171bc0c83054" compoundref="camera_task_8cpp" startline="16">stackSize</references>
+        <references refid="class_zotbins_1_1_task_1aac7494327c74bcd8bf14fb00a755b00e" compoundref="task_8hpp" startline="31" endline="34">Zotbins::Task::Task</references>
+      </memberdef>
+      <memberdef kind="function" id="class_zotbins_1_1_client_task_1aa64cb12742e64b3094c5d5a18497bd32" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void ClientTask::start</definition>
+        <argsstring>() override</argsstring>
+        <name>start</name>
+        <qualifiedname>Zotbins::ClientTask::start</qualifiedname>
+        <reimplements refid="class_zotbins_1_1_task_1aee93140852ee591c22613eff1b6959c4">start</reimplements>
+        <briefdescription>
+<para>Start execution of <ref refid="namespace_client" kindref="compound">Client</ref> <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/clientTask.hpp" line="36" column="14" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/clientTask.cpp" bodystart="17" bodyend="20"/>
+        <references refid="class_zotbins_1_1_task_1a66bd8c1720804bce64146ccfc0446a78" compoundref="task_8hpp" startline="47">Zotbins::Task::mName</references>
+        <references refid="class_zotbins_1_1_task_1a84584bfe090c4c3fb388c6cbb100dce8" compoundref="task_8hpp" startline="53">Zotbins::Task::mPriority</references>
+        <references refid="class_zotbins_1_1_task_1ae389a070ae6bde070b9770e173fdbed3" compoundref="task_8hpp" startline="59">Zotbins::Task::mStackSize</references>
+        <references refid="class_zotbins_1_1_client_task_1a752592bb684276270a5d95dd88edee4f" compoundref="client_task_8cpp" startline="22" endline="27">taskFunction</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="class_zotbins_1_1_client_task_1a752592bb684276270a5d95dd88edee4f" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ClientTask::taskFunction</definition>
+        <argsstring>(void *task)</argsstring>
+        <name>taskFunction</name>
+        <qualifiedname>Zotbins::ClientTask::taskFunction</qualifiedname>
+        <param>
+          <type>void *</type>
+          <declname>task</declname>
+        </param>
+        <briefdescription>
+<para>Function to be called by FreeRTOS function xTaskCreate(). Calls <ref refid="class_zotbins_1_1_client_task_1ad3187c77e3804676cf6f0606ddbf5ec5" kindref="member">setup()</ref> and <ref refid="class_zotbins_1_1_client_task_1ade0357a27e0578f743375cbf8c7f2d9a" kindref="member">loop()</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>task</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="namespace_client" kindref="compound">Client</ref> <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> object casted as void pointer </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/clientTask.hpp" line="45" column="21" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/clientTask.cpp" bodystart="22" bodyend="27"/>
+        <references refid="class_zotbins_1_1_client_task_1aa9267f66e00449f7e960ad5f791b4d41" compoundref="client_task_8cpp" startline="13" endline="15">ClientTask</references>
+        <references refid="class_zotbins_1_1_client_task_1ade0357a27e0578f743375cbf8c7f2d9a" compoundref="client_task_8cpp" startline="33" endline="40">loop</references>
+        <references refid="class_zotbins_1_1_client_task_1ad3187c77e3804676cf6f0606ddbf5ec5" compoundref="client_task_8cpp" startline="29" endline="31">setup</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_zotbins_1_1_client_task_1ad3187c77e3804676cf6f0606ddbf5ec5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ClientTask::setup</definition>
+        <argsstring>()</argsstring>
+        <name>setup</name>
+        <qualifiedname>Zotbins::ClientTask::setup</qualifiedname>
+        <briefdescription>
+<para>Setup <ref refid="namespace_client" kindref="compound">Client</ref> <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> before looping forever. This function should not be called outside of <ref refid="class_zotbins_1_1_client_task_1a752592bb684276270a5d95dd88edee4f" kindref="member">taskFunction()</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/clientTask.hpp" line="52" column="14" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/clientTask.cpp" bodystart="29" bodyend="31"/>
+      </memberdef>
+      <memberdef kind="function" id="class_zotbins_1_1_client_task_1ade0357a27e0578f743375cbf8c7f2d9a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void ClientTask::loop</definition>
+        <argsstring>()</argsstring>
+        <name>loop</name>
+        <qualifiedname>Zotbins::ClientTask::loop</qualifiedname>
+        <briefdescription>
+<para>Loop inside of <ref refid="namespace_client" kindref="compound">Client</ref> <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref>. This function should not be called outside of <ref refid="class_zotbins_1_1_client_task_1a752592bb684276270a5d95dd88edee4f" kindref="member">taskFunction()</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/clientTask.hpp" line="59" column="14" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/clientTask.cpp" bodystart="33" bodyend="40"/>
+        <references refid="camera_task_8cpp_1a8f8f80d37794cde9472343e4487ba3eb" compoundref="camera_task_8cpp" startline="14">name</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para><ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> to measure fullness of the bin by using the distance sensor. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>Zotbins::ClientTask</label>
+        <link refid="class_zotbins_1_1_client_task"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Zotbins::Task</label>
+        <link refid="class_zotbins_1_1_task"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>Zotbins::ClientTask</label>
+        <link refid="class_zotbins_1_1_client_task"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Zotbins::Task</label>
+        <link refid="class_zotbins_1_1_task"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/clientTask.hpp" line="23" column="5" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/clientTask.hpp" bodystart="24" bodyend="60"/>
+    <listofallmembers>
+      <member refid="class_zotbins_1_1_client_task_1aa9267f66e00449f7e960ad5f791b4d41" prot="public" virt="non-virtual"><scope>Zotbins::ClientTask</scope><name>ClientTask</name></member>
+      <member refid="class_zotbins_1_1_client_task_1ade0357a27e0578f743375cbf8c7f2d9a" prot="private" virt="non-virtual"><scope>Zotbins::ClientTask</scope><name>loop</name></member>
+      <member refid="class_zotbins_1_1_task_1a66bd8c1720804bce64146ccfc0446a78" prot="protected" virt="non-virtual"><scope>Zotbins::ClientTask</scope><name>mName</name></member>
+      <member refid="class_zotbins_1_1_task_1a84584bfe090c4c3fb388c6cbb100dce8" prot="protected" virt="non-virtual"><scope>Zotbins::ClientTask</scope><name>mPriority</name></member>
+      <member refid="class_zotbins_1_1_task_1ae389a070ae6bde070b9770e173fdbed3" prot="protected" virt="non-virtual"><scope>Zotbins::ClientTask</scope><name>mStackSize</name></member>
+      <member refid="class_zotbins_1_1_client_task_1ad3187c77e3804676cf6f0606ddbf5ec5" prot="private" virt="non-virtual"><scope>Zotbins::ClientTask</scope><name>setup</name></member>
+      <member refid="class_zotbins_1_1_client_task_1aa64cb12742e64b3094c5d5a18497bd32" prot="public" virt="virtual"><scope>Zotbins::ClientTask</scope><name>start</name></member>
+      <member refid="class_zotbins_1_1_task_1aac7494327c74bcd8bf14fb00a755b00e" prot="public" virt="non-virtual"><scope>Zotbins::ClientTask</scope><name>Task</name></member>
+      <member refid="class_zotbins_1_1_client_task_1a752592bb684276270a5d95dd88edee4f" prot="private" virt="non-virtual"><scope>Zotbins::ClientTask</scope><name>taskFunction</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

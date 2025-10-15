@@ -1,0 +1,103 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="doxygen_8md" kind="file" language="Markdown">
+    <compoundname>doxygen.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">#<sp/>Intro<sp/>to<sp/>Doxygen</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Doxygen<sp/>is<sp/>documentation<sp/>generator<sp/>tool<sp/>from<sp/>annotated<sp/>C++<sp/>sources.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">It<sp/>generates<sp/>directly<sp/>from<sp/>the<sp/>C++<sp/>source<sp/>code,<sp/>which<sp/>makes<sp/>it<sp/>easier<sp/>to<sp/>keep<sp/>the<sp/>documentation<sp/>consistant<sp/>from<sp/>the<sp/>source<sp/>code.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Documentating<sp/>Source<sp/>Code</highlight></codeline>
+<codeline><highlight class="normal">In<sp/>order<sp/>to<sp/>have<sp/>the<sp/>documentation<sp/>generate<sp/>correctly,<sp/>you<sp/>need<sp/>to<sp/>add<sp/>a<sp/>file<sp/>header<sp/>with<sp/>an<sp/>description<sp/>about<sp/>the<sp/>file.<sp/>This<sp/>needs<sp/>to<sp/>be<sp/>present<sp/>in<sp/>every<sp/>file<sp/>that<sp/>needs<sp/>documentation.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@file<sp/>foo.hpp</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Header<sp/>file<sp/>for<sp/>Foo<sp/>class</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@version<sp/>0.1</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@date<sp/>2022-04-27</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">To<sp/>document<sp/>functions,<sp/>you<sp/>need<sp/>to<sp/>add<sp/>Doxygen-style<sp/>comments</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Calculates<sp/>the<sp/>area<sp/>of<sp/>circle</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@param[in]<sp/>radius<sp/>of<sp/>circle</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@return<sp/>float<sp/>Area</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal">float<sp/>calc_area(float<sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Calculates<sp/>quotient</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@param[in]<sp/>top<sp/>numerator</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@param[in]<sp/>bot<sp/>denominator</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@param[out]<sp/>remainder</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@return<sp/>int<sp/>quotient</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal">int<sp/>divide(int<sp/>top,<sp/>int<sp/>bot,<sp/>int<sp/>&amp;remainder)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Example<sp/>Source<sp/>File</highlight></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@file<sp/>foo.hpp</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Header<sp/>file<sp/>for<sp/>Foo<sp/>class</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@version<sp/>0.1</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@date<sp/>2022-04-27</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Example<sp/>class</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal">class<sp/>Foo</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal">public:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Construct<sp/>a<sp/>new<sp/>Foo<sp/>object.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>x<sp/>Parameter</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>Foo(int<sp/>x);</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Returns<sp/>bar</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>int<sp/>bar</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>int<sp/>bar();</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">```</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Running<sp/>Doxygen<sp/>Locally</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Before<sp/>proceeding,<sp/>you<sp/>need<sp/>to<sp/>install<sp/>[Doxygen](https://www.doxygen.nl/download.html).<sp/>It<sp/>is<sp/>supported<sp/>on<sp/>Windows,<sp/>Mac,<sp/>and<sp/>Linux.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">In<sp/>order<sp/>to<sp/>generate<sp/>the<sp/>UML<sp/>diagrams,<sp/>you<sp/>need<sp/>to<sp/>have<sp/>[PlantUML](https://plantuml.com/download)<sp/>installed.<sp/>Install<sp/>the<sp/>PlantUML<sp/>compiled<sp/>Jar<sp/>and<sp/>update<sp/>`PLANTUML_JAR_PATH`<sp/>to<sp/>the<sp/>appropriate<sp/>value.<sp/>For<sp/>example,<sp/>if<sp/>you<sp/>are<sp/>on<sp/>Windows<sp/>and<sp/>the<sp/>PlantUML<sp/>jar<sp/>is<sp/>located<sp/>in<sp/>your<sp/>Downloads<sp/>folder,<sp/>`PLANTUML_JAR_PATH`<sp/>probably<sp/>is<sp/>`C:\Users\{YOUR<sp/>NAME}\Downloads\plantuml.jar`</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">After<sp/>installing,<sp/>run<sp/>the<sp/>`doxygen`<sp/>command<sp/>in<sp/>the<sp/>`.doxygen/`<sp/>directory,<sp/>and<sp/>this<sp/>should<sp/>generate<sp/>the<sp/>HTML<sp/>documentation<sp/>files<sp/>for<sp/>ZotBins<sp/>Core.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">##<sp/>Doxygen<sp/>Github<sp/>Action</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Every<sp/>commit<sp/>to<sp/>`main`<sp/>will<sp/>start<sp/>the<sp/>Doxygen<sp/>Github<sp/>Action,<sp/>which<sp/>is<sp/>loaded<sp/>in<sp/>`.github/workflow/doxygen.yml`.<sp/>This<sp/>generates<sp/>HTML<sp/>files<sp/>using<sp/>Doxygen<sp/>and<sp/>deploys<sp/>it<sp/>to<sp/>Github<sp/>Pages.</highlight></codeline>
+    </programlisting>
+    <location file="C:/priya/ZotBins/ZotbinsCore/docs/doxygen.md"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="md__c_1_2priya_2_zot_bins_2_zotbins_core_2docs_2doxygen" kind="page">
+    <compoundname>md__c_1_2priya_2_zot_bins_2_zotbins_core_2docs_2doxygen</compoundname>
+    <title>Intro to Doxygen</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para><anchor id="md__c_1_2priya_2_zot_bins_2_zotbins_core_2docs_2doxygen_1autotoc_md3"/></para>
+<para>Doxygen is documentation generator tool from annotated C++ sources.</para>
+<para>It generates directly from the C++ source code, which makes it easier to keep the documentation consistant from the source code.</para>
+<sect1 id="md__c_1_2priya_2_zot_bins_2_zotbins_core_2docs_2doxygen_1autotoc_md4">
+<title>Documentating Source Code</title><para>In order to have the documentation generate correctly, you need to add a file header with an description about the file. This needs to be present in every file that needs documentation.</para>
+<para><programlisting><codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@file<sp/>foo.hpp</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Header<sp/>file<sp/>for<sp/>Foo<sp/>class</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@version<sp/>0.1</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@date<sp/>2022-04-27</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+</programlisting></para>
+<para>To document functions, you need to add Doxygen-style comments <programlisting><codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Calculates<sp/>the<sp/>area<sp/>of<sp/>circle</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@param[in]<sp/>radius<sp/>of<sp/>circle</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@return<sp/>float<sp/>Area</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal">float<sp/>calc_area(float<sp/>radius)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Calculates<sp/>quotient</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@param[in]<sp/>top<sp/>numerator</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@param[in]<sp/>bot<sp/>denominator</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@param[out]<sp/>remainder</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@return<sp/>int<sp/>quotient</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal">int<sp/>divide(int<sp/>top,<sp/>int<sp/>bot,<sp/>int<sp/>&amp;remainder)</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>...</highlight></codeline>
+<codeline><highlight class="normal">}</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="md__c_1_2priya_2_zot_bins_2_zotbins_core_2docs_2doxygen_1autotoc_md5">
+<title>Example Source File</title><para><programlisting><codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@file<sp/>foo.hpp</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Header<sp/>file<sp/>for<sp/>Foo<sp/>class</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@version<sp/>0.1</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@date<sp/>2022-04-27</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*<sp/>@brief<sp/>Example<sp/>class</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal">class<sp/>Foo</highlight></codeline>
+<codeline><highlight class="normal">{</highlight></codeline>
+<codeline><highlight class="normal">public:</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Construct<sp/>a<sp/>new<sp/>Foo<sp/>object.</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*<sp/>@param<sp/>x<sp/>Parameter</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>Foo(int<sp/>x);</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>/**</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*<sp/>@brief<sp/>Returns<sp/>bar</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>int<sp/>bar</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/><sp/>*/</highlight></codeline>
+<codeline><highlight class="normal"><sp/><sp/><sp/><sp/>int<sp/>bar();</highlight></codeline>
+<codeline><highlight class="normal">};</highlight></codeline>
+</programlisting></para>
+</sect1>
+<sect1 id="md__c_1_2priya_2_zot_bins_2_zotbins_core_2docs_2doxygen_1autotoc_md6">
+<title>Running Doxygen Locally</title><para>Before proceeding, you need to install <ulink url="https://www.doxygen.nl/download.html">Doxygen</ulink>. It is supported on Windows, Mac, and Linux.</para>
+<para>In order to generate the UML diagrams, you need to have <ulink url="https://plantuml.com/download">PlantUML</ulink> installed. Install the PlantUML compiled Jar and update <computeroutput>PLANTUML_JAR_PATH</computeroutput> to the appropriate value. For example, if you are on Windows and the PlantUML jar is located in your Downloads folder, <computeroutput>PLANTUML_JAR_PATH</computeroutput> probably is <computeroutput>C:\Users\{YOUR NAME}\Downloads\plantuml.jar</computeroutput></para>
+<para>After installing, run the <computeroutput>doxygen</computeroutput> command in the <computeroutput>.doxygen/</computeroutput> directory, and this should generate the HTML documentation files for ZotBins Core.</para>
+</sect1>
+<sect1 id="md__c_1_2priya_2_zot_bins_2_zotbins_core_2docs_2doxygen_1autotoc_md7">
+<title>Doxygen Github Action</title><para>Every commit to <computeroutput>main</computeroutput> will start the Doxygen Github Action, which is loaded in <computeroutput>.github/workflow/doxygen.yml</computeroutput>. This generates HTML files using Doxygen and deploys it to Github Pages. </para>
+</sect1>
+    </detaileddescription>
+    <location file="C:/priya/ZotBins/ZotbinsCore/docs/doxygen.md"/>
+  </compounddef>
+</doxygen>

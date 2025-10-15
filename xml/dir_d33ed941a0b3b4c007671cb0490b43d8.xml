@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="dir_d33ed941a0b3b4c007671cb0490b43d8" kind="dir">
+    <compoundname>include</compoundname>
+    <innerfile refid="camera_task_8hpp">cameraTask.hpp</innerfile>
+    <innerfile refid="client_task_8hpp">clientTask.hpp</innerfile>
+    <innerfile refid="fullness_task_8hpp">fullnessTask.hpp</innerfile>
+    <innerfile refid="message_8hpp">message.hpp</innerfile>
+    <innerfile refid="servo_task_8hpp">servoTask.hpp</innerfile>
+    <innerfile refid="task_8hpp">task.hpp</innerfile>
+    <innerfile refid="usage_task_8hpp">usageTask.hpp</innerfile>
+    <innerfile refid="weight_task_8hpp">weightTask.hpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/"/>
+  </compounddef>
+</doxygen>

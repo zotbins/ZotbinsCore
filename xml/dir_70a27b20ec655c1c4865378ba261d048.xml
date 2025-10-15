@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="dir_70a27b20ec655c1c4865378ba261d048" kind="dir">
+    <compoundname>components</compoundname>
+    <innerdir refid="dir_146b4bb221d08ec1504ff7eab64a9efa">ClientComponent</innerdir>
+    <innerdir refid="dir_2d4ed195d3044a17e712bbce84c0fca6">FullnessComponent</innerdir>
+    <innerdir refid="dir_f39174809e8d07604e6033550995d661">hx711</innerdir>
+    <innerdir refid="dir_4f2ebdb4ffb43c7088f97e2cc06142a8">TaskComponent</innerdir>
+    <innerdir refid="dir_1d6cdda65033bd38bf3fd0d9756808e9">WeightComponent</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/"/>
+  </compounddef>
+</doxygen>

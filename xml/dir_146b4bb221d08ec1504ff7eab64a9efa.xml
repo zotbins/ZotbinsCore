@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="dir_146b4bb221d08ec1504ff7eab64a9efa" kind="dir">
+    <compoundname>ClientComponent</compoundname>
+    <innerdir refid="dir_efad44f8fe85814218570b3a67933999">include</innerdir>
+    <innerfile refid="_client_8cpp">Client.cpp</innerfile>
+    <innerfile refid="_serialize_8cpp">Serialize.cpp</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/ClientComponent/"/>
+  </compounddef>
+</doxygen>

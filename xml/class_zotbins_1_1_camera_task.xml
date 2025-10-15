@@ -1,0 +1,194 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="class_zotbins_1_1_camera_task" kind="class" language="C++" prot="public">
+    <compoundname>Zotbins::CameraTask</compoundname>
+    <basecompoundref refid="class_zotbins_1_1_task" prot="public" virt="non-virtual">Zotbins::Task</basecompoundref>
+    <includes refid="camera_task_8hpp" local="no">cameraTask.hpp</includes>
+    <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="class_zotbins_1_1_camera_task_1af20be97e27299ef518f7ad164f64f281" prot="private" static="no" mutable="no">
+        <type>QueueHandle_t &amp;</type>
+        <definition>QueueHandle_t&amp; Zotbins::CameraTask::mMessageQueue</definition>
+        <argsstring></argsstring>
+        <name>mMessageQueue</name>
+        <qualifiedname>Zotbins::CameraTask::mMessageQueue</qualifiedname>
+        <briefdescription>
+<para><ref refid="struct_zotbins_1_1_message" kindref="compound">Message</ref> queue to WiFi task. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" line="68" column="23" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" bodystart="68" bodyend="-1"/>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_zotbins_1_1_camera_task_1addbc2a881a115d0bea5b6bc8c31b7b83" prot="public" static="no" const="no" explicit="yes" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>CameraTask::CameraTask</definition>
+        <argsstring>(QueueHandle_t &amp;messageQueue)</argsstring>
+        <name>CameraTask</name>
+        <qualifiedname>Zotbins::CameraTask::CameraTask</qualifiedname>
+        <param>
+          <type>QueueHandle_t &amp;</type>
+          <declname>messageQueue</declname>
+        </param>
+        <briefdescription>
+<para>Construct a new Camera <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>messageQueue</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="struct_zotbins_1_1_message" kindref="compound">Message</ref> queue to WiFi <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" line="33" column="18" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/cameraTask.cpp" bodystart="178" bodyend="181"/>
+        <references refid="class_zotbins_1_1_camera_task_1af20be97e27299ef518f7ad164f64f281" compoundref="camera_task_8hpp" startline="68">mMessageQueue</references>
+        <references refid="camera_task_8cpp_1a8f8f80d37794cde9472343e4487ba3eb" compoundref="camera_task_8cpp" startline="14">name</references>
+        <references refid="camera_task_8cpp_1a47b03cec33388ca17717791b81c634bc" compoundref="camera_task_8cpp" startline="15">priority</references>
+        <references refid="camera_task_8cpp_1a0dfea47b4bb6f03a7066171bc0c83054" compoundref="camera_task_8cpp" startline="16">stackSize</references>
+        <references refid="class_zotbins_1_1_task_1aac7494327c74bcd8bf14fb00a755b00e" compoundref="task_8hpp" startline="31" endline="34">Zotbins::Task::Task</references>
+      </memberdef>
+      <memberdef kind="function" id="class_zotbins_1_1_camera_task_1acf7c27b24e013dfe6796f471b9c9cefa" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void CameraTask::start</definition>
+        <argsstring>() override</argsstring>
+        <name>start</name>
+        <qualifiedname>Zotbins::CameraTask::start</qualifiedname>
+        <reimplements refid="class_zotbins_1_1_task_1aee93140852ee591c22613eff1b6959c4">start</reimplements>
+        <briefdescription>
+<para>Start execution of Camera <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" line="39" column="14" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/cameraTask.cpp" bodystart="183" bodyend="186"/>
+        <references refid="class_zotbins_1_1_task_1a66bd8c1720804bce64146ccfc0446a78" compoundref="task_8hpp" startline="47">Zotbins::Task::mName</references>
+        <references refid="class_zotbins_1_1_task_1a84584bfe090c4c3fb388c6cbb100dce8" compoundref="task_8hpp" startline="53">Zotbins::Task::mPriority</references>
+        <references refid="class_zotbins_1_1_task_1ae389a070ae6bde070b9770e173fdbed3" compoundref="task_8hpp" startline="59">Zotbins::Task::mStackSize</references>
+        <references refid="class_zotbins_1_1_camera_task_1a0a2266ec42f356b39789560cc91ee62e" compoundref="camera_task_8cpp" startline="188" endline="193">taskFunction</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="class_zotbins_1_1_camera_task_1a0a2266ec42f356b39789560cc91ee62e" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CameraTask::taskFunction</definition>
+        <argsstring>(void *task)</argsstring>
+        <name>taskFunction</name>
+        <qualifiedname>Zotbins::CameraTask::taskFunction</qualifiedname>
+        <param>
+          <type>void *</type>
+          <declname>task</declname>
+        </param>
+        <briefdescription>
+<para>Function to be called by FreeRTOS function xTaskCreate(). Calls <ref refid="class_zotbins_1_1_camera_task_1a400438e833103a0ad34e0c55156d41fb" kindref="member">setup()</ref> and <ref refid="class_zotbins_1_1_camera_task_1aac45ce073b220fa1b249daf29ceaa9b8" kindref="member">loop()</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>task</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Camera <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> objet casted as void pointer </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" line="48" column="21" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/cameraTask.cpp" bodystart="188" bodyend="193"/>
+        <references refid="class_zotbins_1_1_camera_task_1addbc2a881a115d0bea5b6bc8c31b7b83" compoundref="camera_task_8cpp" startline="178" endline="181">CameraTask</references>
+        <references refid="class_zotbins_1_1_camera_task_1aac45ce073b220fa1b249daf29ceaa9b8" compoundref="camera_task_8cpp" startline="199" endline="272">loop</references>
+        <references refid="class_zotbins_1_1_camera_task_1a400438e833103a0ad34e0c55156d41fb" compoundref="camera_task_8cpp" startline="195" endline="197">setup</references>
+      </memberdef>
+    </sectiondef>
+    <sectiondef kind="private-func">
+      <memberdef kind="function" id="class_zotbins_1_1_camera_task_1a400438e833103a0ad34e0c55156d41fb" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CameraTask::setup</definition>
+        <argsstring>()</argsstring>
+        <name>setup</name>
+        <qualifiedname>Zotbins::CameraTask::setup</qualifiedname>
+        <briefdescription>
+<para>Setup Camera <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> before looping forever. This function should not be called outside of <ref refid="class_zotbins_1_1_camera_task_1a0a2266ec42f356b39789560cc91ee62e" kindref="member">taskFunction()</ref> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" line="55" column="14" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/cameraTask.cpp" bodystart="195" bodyend="197"/>
+      </memberdef>
+      <memberdef kind="function" id="class_zotbins_1_1_camera_task_1aac45ce073b220fa1b249daf29ceaa9b8" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void CameraTask::loop</definition>
+        <argsstring>()</argsstring>
+        <name>loop</name>
+        <qualifiedname>Zotbins::CameraTask::loop</qualifiedname>
+        <briefdescription>
+<para>Loop inside of Camera <ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref>. This function should not be called outside of <ref refid="class_zotbins_1_1_camera_task_1a0a2266ec42f356b39789560cc91ee62e" kindref="member">taskFunction()</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" line="62" column="14" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/cameraTask.cpp" bodystart="199" bodyend="272"/>
+        <references refid="namespace_client_1a75bb0320fd6288305016f903c27dc7eb" compoundref="_client_8cpp" startline="144" endline="147">Client::clientPublish</references>
+        <references refid="namespace_client_1a23c8f471615af75d9260051c1f5e8ca2" compoundref="_client_8cpp" startline="149" endline="152">Client::clientPublishStr</references>
+        <references refid="camera_task_8cpp_1a4b7500cdd379ec29d4713f67697de34d" compoundref="camera_task_8cpp" startline="114">flashPIN</references>
+        <references refid="camera_task_8cpp_1ad176824310c9373e8e47b0f862e7c84a" compoundref="camera_task_8cpp" startline="165" endline="176">init_camera</references>
+        <references refid="camera_task_8cpp_1a7de6ad45139eab31333d9f19685b0a96" compoundref="camera_task_8cpp" startline="115">inputPIN</references>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para><ref refid="class_zotbins_1_1_task" kindref="compound">Task</ref> to measure the camera rate of the bin using the breakbeam sensor. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>Zotbins::CameraTask</label>
+        <link refid="class_zotbins_1_1_camera_task"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Zotbins::Task</label>
+        <link refid="class_zotbins_1_1_task"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>Zotbins::CameraTask</label>
+        <link refid="class_zotbins_1_1_camera_task"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>Zotbins::Task</label>
+        <link refid="class_zotbins_1_1_task"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" line="25" column="5" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/TaskComponent/include/cameraTask.hpp" bodystart="26" bodyend="70"/>
+    <listofallmembers>
+      <member refid="class_zotbins_1_1_camera_task_1addbc2a881a115d0bea5b6bc8c31b7b83" prot="public" virt="non-virtual"><scope>Zotbins::CameraTask</scope><name>CameraTask</name></member>
+      <member refid="class_zotbins_1_1_camera_task_1aac45ce073b220fa1b249daf29ceaa9b8" prot="private" virt="non-virtual"><scope>Zotbins::CameraTask</scope><name>loop</name></member>
+      <member refid="class_zotbins_1_1_camera_task_1af20be97e27299ef518f7ad164f64f281" prot="private" virt="non-virtual"><scope>Zotbins::CameraTask</scope><name>mMessageQueue</name></member>
+      <member refid="class_zotbins_1_1_task_1a66bd8c1720804bce64146ccfc0446a78" prot="protected" virt="non-virtual"><scope>Zotbins::CameraTask</scope><name>mName</name></member>
+      <member refid="class_zotbins_1_1_task_1a84584bfe090c4c3fb388c6cbb100dce8" prot="protected" virt="non-virtual"><scope>Zotbins::CameraTask</scope><name>mPriority</name></member>
+      <member refid="class_zotbins_1_1_task_1ae389a070ae6bde070b9770e173fdbed3" prot="protected" virt="non-virtual"><scope>Zotbins::CameraTask</scope><name>mStackSize</name></member>
+      <member refid="class_zotbins_1_1_camera_task_1a400438e833103a0ad34e0c55156d41fb" prot="private" virt="non-virtual"><scope>Zotbins::CameraTask</scope><name>setup</name></member>
+      <member refid="class_zotbins_1_1_camera_task_1acf7c27b24e013dfe6796f471b9c9cefa" prot="public" virt="virtual"><scope>Zotbins::CameraTask</scope><name>start</name></member>
+      <member refid="class_zotbins_1_1_task_1aac7494327c74bcd8bf14fb00a755b00e" prot="public" virt="non-virtual"><scope>Zotbins::CameraTask</scope><name>Task</name></member>
+      <member refid="class_zotbins_1_1_camera_task_1a0a2266ec42f356b39789560cc91ee62e" prot="private" virt="non-virtual"><scope>Zotbins::CameraTask</scope><name>taskFunction</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

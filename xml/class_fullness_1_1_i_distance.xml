@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.14.0" xml:lang="en-US">
+  <compounddef id="class_fullness_1_1_i_distance" kind="class" language="C++" prot="public" abstract="yes">
+    <compoundname>Fullness::IDistance</compoundname>
+    <derivedcompoundref refid="class_fullness_1_1_mock_distance" prot="public" virt="non-virtual">Fullness::MockDistance</derivedcompoundref>
+    <includes refid="_i_distance_8hpp" local="no">IDistance.hpp</includes>
+    <sectiondef kind="public-func">
+      <memberdef kind="function" id="class_fullness_1_1_i_distance_1aefb2616ccaba12fd47575c7488d8d1f3" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>int32_t</type>
+        <definition>virtual int32_t Fullness::IDistance::getDistance</definition>
+        <argsstring>()=0</argsstring>
+        <name>getDistance</name>
+        <qualifiedname>Fullness::IDistance::getDistance</qualifiedname>
+        <reimplementedby refid="class_fullness_1_1_mock_distance_1a0c193f518f29f4ef41092d1a8e04ffb4">getDistance</reimplementedby>
+        <briefdescription>
+<para>Returns the distance of the sensor. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><simplesect kind="return"><para>int32_t Distance in millimeters </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/IDistance.hpp" line="29" column="25"/>
+      </memberdef>
+    </sectiondef>
+    <briefdescription>
+<para>Interface (abstract) class for mock and real hardware ultrasonic (fullness/distance) sensor. Used to inherit the getDistance method in derived classes. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>Fullness::IDistance</label>
+        <link refid="class_fullness_1_1_i_distance"/>
+      </node>
+      <node id="2">
+        <label>Fullness::MockDistance</label>
+        <link refid="class_fullness_1_1_mock_distance"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>Fullness::IDistance</label>
+        <link refid="class_fullness_1_1_i_distance"/>
+      </node>
+    </collaborationgraph>
+    <location file="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/IDistance.hpp" line="21" column="5" bodyfile="C:/priya/ZotBins/ZotbinsCore/components/FullnessComponent/include/IDistance.hpp" bodystart="22" bodyend="30"/>
+    <listofallmembers>
+      <member refid="class_fullness_1_1_i_distance_1aefb2616ccaba12fd47575c7488d8d1f3" prot="public" virt="pure-virtual"><scope>Fullness::IDistance</scope><name>getDistance</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
