@@ -281,7 +281,7 @@ UBaseType_t uxTaskGetNumberOfTasks(void);
 TaskHandle_t xTaskGetCurrentTaskHandle(void);
 ```
 
-## Communication Protocalls
+## Communication Protocols
 
 
 ## Hardware Basics
