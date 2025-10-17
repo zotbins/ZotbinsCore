@@ -68,7 +68,7 @@ void IRAM_ATTR increment_usage(void *arg)
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken); // Allows context switch wihtout waiting for the next tick.
     }
 
-    else 
+    else
     {
         xResult = xEventGroupClearBitsFromISR(manager_eg, USAGE_EVENT_BIT);
     }

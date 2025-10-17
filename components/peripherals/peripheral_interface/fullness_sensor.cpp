@@ -77,12 +77,12 @@ float get_fullness(void)
 {
     uint32_t distance;
     float fullness;
-    ultrasonic_measure_cm(&hcsr04, 1000, &distance);      // TODO: convert to percentage
+    ultrasonic_measure_cm(&hcsr04, 1000, &distance); // TODO: convert to percentage
 
     ESP_LOGI(TAG, "Raw distance reading: %" PRIu32 "cm", distance);
 
     fullness = 100.0 - (distance / MAX_DISTANCE * 100.0); // Convert distance to fullness percentage
-    
+
     if (fullness > 100.0 && fullness < 110.0)
     { // Likely a sensor measurement error, cap at 100%
         fullness = 100.0;

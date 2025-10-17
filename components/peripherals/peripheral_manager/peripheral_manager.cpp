@@ -91,7 +91,6 @@ static void run_manager(void *arg)
         publish_payload(fullness, weight, usage);
 
         xEventGroupClearBits(manager_eg, MANAGER_STATUS_EVENT_BIT); // Indicate that the peripheral manager is stopped
-        
     }
 }
 

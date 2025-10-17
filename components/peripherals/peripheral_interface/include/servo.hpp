@@ -46,15 +46,15 @@ esp_err_t servo_set_angle(float degrees);
 
 /**
  * @brief Open servo preset - sets servo to 90 degrees.
- * 
- * @return esp_err_t 
+ *
+ * @return esp_err_t
  */
 esp_err_t open_servo(void);
 
 /**
  * @brief Close servo preset - sets servo to 0 degrees.
- * 
- * @return esp_err_t 
+ *
+ * @return esp_err_t
  */
 esp_err_t close_servo(void);
 
