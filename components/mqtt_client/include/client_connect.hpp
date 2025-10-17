@@ -1,6 +1,8 @@
 #ifndef CLIENT_CONNECT_HPP
 #define CLIENT_CONNECT_HPP
 
+#define CLIENT_CONNECT_STATUS_EVENT_BIT BIT0
+
 #include "mqtt_client.h"
 
 /**

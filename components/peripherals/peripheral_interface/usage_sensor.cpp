@@ -60,12 +60,17 @@ void IRAM_ATTR increment_usage(void *arg)
 
     xHigherPriorityTaskWoken = pdFALSE; // Must be initialized to pdFALSE.
 
-    xResult = xEventGroupSetBitsFromISR(manager_eg, BIT0, &xHigherPriorityTaskWoken); // Signal the manager task that the breakbeam was tripped
+    xResult = xEventGroupSetBitsFromISR(manager_eg, USAGE_EVENT_BIT, &xHigherPriorityTaskWoken); // Signal the manager task that the breakbeam was tripped
 
     if (xResult != pdFAIL)
     {
         // If unblocked task is higher priority than the daemon task, request an immediate context switch
         portYIELD_FROM_ISR(xHigherPriorityTaskWoken); // Allows context switch wihtout waiting for the next tick.
+    }
+
+    else 
+    {
+        xResult = xEventGroupClearBitsFromISR(manager_eg, USAGE_EVENT_BIT);
     }
 }
 

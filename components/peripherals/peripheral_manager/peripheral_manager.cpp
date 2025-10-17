@@ -30,17 +30,17 @@ EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors h
 void init_manager(void)
 {
 
-    // Initialize sensors
+    // Initialize sensors and servo
     esp_err_t hx711_status = init_hx711();
     esp_err_t hcsr04_status = init_hcsr04();
-    init_breakbeam(); // TODO: change return value to esp_err_t
+    if (init_servo() == ESP_OK) close_servo();
 
     manager_eg = xEventGroupCreate(); // Create the event group to store sensor event bits---for example, when the breakbeam is tripped, or when the servo has finished moving.
 
-    if (init_servo() == ESP_OK)
-    {
-        servo_set_angle(0);
-    }
+    // Initialize breakbeam sensor
+
+    init_breakbeam(); // TODO: change return value to esp_err_t
+    // Breakbeam depends on manager_eg being initialized.
 
     xTaskCreate(
         run_manager,          /* Task function. */
@@ -61,11 +61,11 @@ static void run_manager(void *arg)
     uint32_t last_usage = get_usage_count();
     bool gate_open = false;
     TickType_t open_since = 0;
-    constexpr TickType_t kHoldMs = 600;
+    constexpr TickType_t kHoldMs = 6000; // 6 seconds
 
     while (1)
     {
-        xEventGroupWaitBits(manager_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
+        xEventGroupWaitBits(manager_eg, USAGE_EVENT_BIT, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
 
         // Collect sensor data---add additional sensors here as needed
         float weight = get_weight();

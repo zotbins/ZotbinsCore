@@ -43,7 +43,7 @@ static const gpio_config_t PIN_SCK_CONFIG = {
 static const char *TAG = "weight_sensor"; // Tag for ESP logging
 
 static const float SCALE_FACTOR = 1.0; // Calibration factor---weight is divided by this value to scale the reading to a chosen unit. TODO: calibrate
-static const float OFFSET = 0.0;       // Calibration offset---weight is adjusted by this value (weight - OFFSET) to calibrate the reading to zero when no weight is applied. TODO: calibrate
+static const float OFFSET = 13700.0;       // Calibration offset---weight is adjusted by this value (weight - OFFSET) to calibrate the reading to zero when no weight is applied. TODO: calibrate
 
 static hx711_t hx711 = { // HX711 sensor object
     .dout = PIN_DT,
@@ -79,7 +79,8 @@ float get_weight(void)
     int32_t weight;
     float calibrated_weight;
     hx711_read_average(&hx711, 10, &weight);
-    calibrated_weight = (-1) * (weight / SCALE_FACTOR) - OFFSET; // Apply calibration. Multipled by -1 because the amplifier in the HX711 inverts the signal.
-    ESP_LOGI(TAG, "Weight of trash: %f%%", calibrated_weight);
+    ESP_LOGI(TAG, "Raw weight reading: %" PRId32, weight);
+    calibrated_weight = (weight / SCALE_FACTOR) - OFFSET; // Apply calibration. Multipled by -1 because the amplifier in the HX711 inverts the signal.
+    ESP_LOGI(TAG, "Weight of trash: %f", calibrated_weight);
     return calibrated_weight;
 }

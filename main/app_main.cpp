@@ -58,7 +58,7 @@ extern "C" void app_main(void)
 
     // Wait for MQTT connection to be established
     ESP_LOGI(TAG, "Waiting for client to intialize...");
-    xEventGroupWaitBits(sys_init_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY);
+    xEventGroupWaitBits(sys_init_eg, CLIENT_CONNECT_STATUS_EVENT_BIT, pdTRUE, pdTRUE, portMAX_DELAY);
     ESP_LOGI(TAG, "Client initialized!");
 
     // Initialize peripheral manager after system initialization is complete, this manages the sensors (peripheral_manager.cpp)
