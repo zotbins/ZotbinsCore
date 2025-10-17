@@ -1,10 +1,5 @@
-idf_component_register(     
-    SRCS "main.cpp"
-    INCLUDE_DIRS "."
-    REQUIRES ClientComponent FullnessComponent TaskComponent
-)
-
-# you also need to change this compile definition in the taskcomponent and clientcomponent cmakelists.txt
-                    
-# add_compile_definitions(SENSOR)
-add_compile_definitions(CAMERA)
+idf_component_register(SRCS "app_main.cpp"
+                    INCLUDE_DIRS "."
+                    REQUIRES nvs_flash esp_wifi esp_event esp_system protocol_examples_common freertos
+                    PRIV_REQUIRES mqtt_client publish peripheral_manager
+                    )

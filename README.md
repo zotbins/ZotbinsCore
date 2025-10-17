@@ -1,20 +1,25 @@
-## BACKGROUND
+## Version 0.1
 
-ZotbinsCore is an IoT (Internet of Things) "smart bin" which currently collects valuable waste metrics on the *University of California, Irvine* campus. A smart bin is a waste bin equipped with intelligent hardware—our smart bin is called the ZotBin.
+The current version of newzotbinscore can:
 
-ZotbinsCore collects waste metrics such as image data and bin usage, interfacing with the **[Zotbins App](https://apps.apple.com/us/app/zotbins/id6743295314)** to help users locate bins and properly dispose their trash. From an organizational standpoint, ZotbinsCore can also be extremely useful for analyzing waste footprint and exposing insightful trends that can help to correct improper practices.
+- Detect trash items
+- Measure trash weight and bin fullness
+- Efficiently manage processing resources by suspending sensor tasks until a piece of trash is detected by the breakbeam
+- Connect to the Zotbins AWS IoT MQTT broker
+- Serialize and publish data to the MQTT broker as a JSON string
+- .clang-format provides settings for maintaining code consistency without making any breaking changes
+- Automatic build (GitHub Actions)
 
-Once the data is collected, it is relayed to our AWS IoT MQTT (Message Queuing Telemetry Transport) Broker which allows us to seamlessly connect an entire network of ZotBins to collect data across an entire campus.
+Action items:
 
-The current iteration uses a dual ESP-32 system to support the large number of sensors and prioritize speed. We eventually plan to reduce the cost and footprint of the ZotBin.
-
-## CHANGELOG
-
-### VERSION 1.0
-
-Currently ZotbinsCore collects the following metrics:
-- Pictures of trash disposed in the ZotBin 
-	- These images are categorized by Zotbins' Waste Recognition team
-- Number of items disposed in the ZotBin
-- Weight of items disposed in the ZotBin
-- Fullness of the ZotBin
+- Classes to protect variables
+- MCP23017 GPIO extender firmware
+- OV2460 external camera module without the ESP-CAM board
+- Replace ultrasonic sensor with time of flight sensor
+- OTA updates
+- Servo motor and timing
+- Get ESP32 debug board working again
+- Change pin layout (ex. Weight sensor uses GPIO 2, however this is a strapping pin which changes the boot mode of the device)
+- Bluetooth to interface with bin users
+- LCD screen, speaker, and buttons to provide real-time waste info on the bin
+- Implement peripheral_queue, which will manage a queue of messages to publish in case the ESP drops the connection

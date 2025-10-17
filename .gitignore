@@ -1,19 +1,8 @@
-# PlatformIO
-.pio
-.vscode/.browse.c_cpp.db*
-.vscode/c_cpp_properties.json
-.vscode/launch.json
-.vscode/ipch
-.vscode/settings.json
+.vscode
+.devcontainer
+.DS_Store
 build
-config.hpp
-.env
-.cache/
-**/.DS_Store
-dependencies.lock
-components/ClientComponent/aws.url
-components/ClientComponent/ca.crt
-components/ClientComponent/client.crt
-components/ClientComponent/client.key
-sdkconfig*
-!sdkconfig.defaults
+components/mqtt_client/credentials/aws.url
+components/mqtt_client/credentials/ca.crt
+components/mqtt_client/credentials/client.crt
+components/mqtt_client/credentials/client.key

@@ -1,11 +1,10 @@
 ---
-name: hx711
-description: Driver for HX711 24-bit ADC for weigh scales
+name: ultrasonic
+description: Driver for ultrasonic range meters, e.g. HC-SR04, HY-SRF05
 version: 1.0.0
 groups:
-  - adc-dac
-code_owners:
-  - UncleRus
+  - misc
+code_owners: UncleRus
 depends:
   - driver
   - freertos
@@ -26,4 +25,4 @@ targets:
 license: BSD-3
 copyrights:
   - name: UncleRus
-    year: 2019
+    year: 2016
