@@ -1,9 +1,14 @@
 #ifndef PERIPHERAL_MANAGER_HPP
 #define PERIPHERAL_MANAGER_HPP
 
+#define MANAGER_STATUS_EVENT_BIT BIT2
+#define MANAGER_RUNNING 1
+#define MANAGER_STOPPED 0
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
+#include "freertos/timers.h"
 
 /**
  * @brief Initialize the peripheral manager task, which includes intializing its task, all peripherals, and the peripheral manager event group.

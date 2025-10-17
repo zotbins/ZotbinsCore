@@ -73,7 +73,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
     {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-        xEventGroupSetBits(sys_init_eg, BIT0); // Bit_0 indicates MQTT connection established, sys_init_eg defined in initialization.cpp
+        xEventGroupSetBits(sys_init_eg, CLIENT_CONNECT_STATUS_EVENT_BIT); // Bit_0 indicates MQTT connection established, sys_init_eg defined in initialization.cpp
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");

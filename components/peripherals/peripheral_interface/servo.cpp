@@ -135,3 +135,15 @@ esp_err_t servo_set_angle(float degrees)
     const uint32_t pulse = (uint32_t)(kMinUs + (float)(kMaxUs - kMinUs) * (degrees / 180.0f));
     return servo_set_pulse_us(pulse);
 }
+
+esp_err_t open_servo(void)
+{
+    esp_err_t success = servo_set_angle(90);
+    return success;
+}
+
+esp_err_t close_servo(void)
+{
+    esp_err_t success = servo_set_angle(0);
+    return success;
+}

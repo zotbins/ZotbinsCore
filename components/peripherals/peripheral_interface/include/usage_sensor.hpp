@@ -1,6 +1,8 @@
 #ifndef USAGE_SENSOR_HPP
 #define USAGE_SENSOR_HPP
 
+#define USAGE_EVENT_BIT BIT0
+
 #include "esp_err.h"
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
