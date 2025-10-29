@@ -42,6 +42,7 @@
 #include <freertos/task.h>
 #include <esp_timer.h>
 #include <ets_sys.h>
+#include <esp_intr_alloc.h">
 
 #define TRIGGER_LOW_DELAY 4
 #define TRIGGER_HIGH_DELAY 10
@@ -69,13 +70,26 @@ static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 #define CHECK(x) do { esp_err_t __; if ((__ = x) != ESP_OK) return __; } while (0)
 #define RETURN_CRITICAL(RES) do { PORT_EXIT_CRITICAL; return RES; } while(0)
 
+void IRAM_ATTR echo_isr_handler(void* parameters){
+    // How do i send the values to the main function
+    if(gpio_get_level(dev->echo_pin),1){
+        int64_t echo_start = esp_timer_get_time();
+    }
+    else if(gpio_get_level(dev->echo_pin),0){
+        int64_t echo_end = esp_timer_get_time();
+    }
+}
+
 esp_err_t ultrasonic_init(const ultrasonic_sensor_t *dev)
 {
     CHECK_ARG(dev);
-
     CHECK(gpio_set_direction(dev->trigger_pin, GPIO_MODE_OUTPUT));
     CHECK(gpio_set_direction(dev->echo_pin, GPIO_MODE_INPUT));
-
+    // Sets ISR to active on rising edge
+    CHECK(gpio_set_intr_type(dev->echo_pin, GPIO_INTR_POSEDGE));
+    //Unsure of what flag to use. Either edge? o IRAM
+    CHECK(gpio_install_isr_service(ESP_INTR_FLAG_EDGE));
+    CHECK(gpio_isr_handler_add(dev->echo_pin,echo_isr_handler,NULL))
     return gpio_set_level(dev->trigger_pin, 0);
 }
 
