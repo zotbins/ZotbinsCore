@@ -1,0 +1,35 @@
+\chapter{Version 0.\+1 }
+\hypertarget{md__r_e_a_d_m_e}{}\label{md__r_e_a_d_m_e}\index{Version 0.1@{Version 0.1}}
+\label{md__r_e_a_d_m_e_autotoc_md0}%
+\Hypertarget{md__r_e_a_d_m_e_autotoc_md0}%
+
+
+The current version of newzotbinscore can\+:
+
+
+\begin{DoxyItemize}
+\item Detect trash items
+\item Measure trash weight and bin fullness
+\item Efficiently manage processing resources by suspending sensor tasks until a piece of trash is detected by the breakbeam
+\item Connect to the Zotbins AWS IoT MQTT broker
+\item Serialize and publish data to the MQTT broker as a JSON string
+\item .clang-\/format provides settings for maintaining code consistency without making any breaking changes
+\end{DoxyItemize}
+
+Action items\+:
+
+
+\begin{DoxyItemize}
+\item Classes to protect variables
+\item MCP23017 GPIO extender firmware
+\item OV2460 external camera module without the ESP-\/\+CAM board
+\item Replace ultrasonic sensor with time of flight sensor
+\item OTA updates
+\item Servo motor and timing
+\item automatic build (Git\+Hub Actions)
+\item Get ESP32 debug board working again
+\item Change pin layout (ex. Weight sensor uses GPIO 2, however this is a strapping pin which changes the boot mode of the device)
+\item Bluetooth to interface with bin users
+\item LCD screen, speaker, and buttons to provide real-\/time waste info on the bin
+\item Implement peripheral\+\_\+queue, which will manage a queue of messages to publish in case the ESP drops the connection 
+\end{DoxyItemize}

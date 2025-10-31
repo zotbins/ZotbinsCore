@@ -1,9 +1,0 @@
-var searchData=
-[
-  ['serialize_0',['serialize',['../namespace_client.html#a908f2725af70c00999406a4832d32fa7',1,'Client']]],
-  ['servotask_1',['ServoTask',['../class_zotbins_1_1_servo_task.html#aa996d81e130422f7304920365288b816',1,'Zotbins::ServoTask']]],
-  ['setup_2',['setup',['../class_zotbins_1_1_camera_task.html#a400438e833103a0ad34e0c55156d41fb',1,'Zotbins::CameraTask::setup()'],['../class_zotbins_1_1_client_task.html#ad3187c77e3804676cf6f0606ddbf5ec5',1,'Zotbins::ClientTask::setup()'],['../class_zotbins_1_1_fullness_task.html#a54a829852b23d36280bef7e67dec2593',1,'Zotbins::FullnessTask::setup()'],['../class_zotbins_1_1_servo_task.html#a0acd6aeae118156fbf49eb693af19de8',1,'Zotbins::ServoTask::setup()'],['../class_zotbins_1_1_usage_task.html#a6d693f3355250846424b03b30f0d70a3',1,'Zotbins::UsageTask::setup()'],['../class_zotbins_1_1_weight_task.html#ab91a9f483e5e45f077040aab7ac89da6',1,'Zotbins::WeightTask::setup()']]],
-  ['shellsort_3',['shellSort',['../class_fullness_1_1_fullness_metric.html#a9d071f64098f1d35167b22914d5101a2',1,'Fullness::FullnessMetric']]],
-  ['start_4',['start',['../class_zotbins_1_1_camera_task.html#acf7c27b24e013dfe6796f471b9c9cefa',1,'Zotbins::CameraTask::start()'],['../class_zotbins_1_1_client_task.html#aa64cb12742e64b3094c5d5a18497bd32',1,'Zotbins::ClientTask::start()'],['../class_zotbins_1_1_fullness_task.html#aff5e585c18462393aa5c8464edf40c36',1,'Zotbins::FullnessTask::start()'],['../class_zotbins_1_1_servo_task.html#a57c10bea25a9bde5e4bd09915b6e5858',1,'Zotbins::ServoTask::start()'],['../class_zotbins_1_1_task.html#aee93140852ee591c22613eff1b6959c4',1,'Zotbins::Task::start()'],['../class_zotbins_1_1_usage_task.html#a3bb884dc2548f464386855914030bba6',1,'Zotbins::UsageTask::start()'],['../class_zotbins_1_1_weight_task.html#a778cdf289a705dba5daec29e325583d8',1,'Zotbins::WeightTask::start()']]],
-  ['startsleep_5',['startSleep',['../camera_task_8cpp.html#a330fadacf3d2cfeac3549dde1bca0390',1,'cameraTask.cpp']]]
-];

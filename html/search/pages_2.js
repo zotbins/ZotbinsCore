@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['code_0',['Documentating Source Code',['../md__c_1_2priya_2_zot_bins_2_zotbins_core_2docs_2doxygen.html#autotoc_md4',1,'']]],
-  ['core_1',['ZotBins Core',['../C:/priya/ZotBins/ZotbinsCore/README.md#autotoc_md0',1,'']]]
+  ['version_200_201_0',['Version 0.1',['../md__r_e_a_d_m_e.html',1,'']]]
 ];

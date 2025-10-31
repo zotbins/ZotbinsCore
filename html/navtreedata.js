@@ -24,7 +24,7 @@
 */
 var NAVTREE =
 [
-  [ "NewZotBins Core", "index.html", ]
+  [ "Zotbins Core", "index.html", ]
 ];
 
 var NAVTREEINDEX =
