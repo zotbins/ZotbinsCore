@@ -92,10 +92,10 @@ float get_fullness(void)
 
     else if (fullness >= 110.0)
     { // Something is probably wrong, time to check up on the bin...
-        ESP_LOGW(TAG, "Fullness reading out of range: %" PRIu32 " %", fullness);
+        ESP_LOGW(TAG, "Fullness reading out of range: %f%%", fullness);
         return fullness;
     }
 
-    ESP_LOGI(TAG, "Distance to trash: %" PRIu32 " %", fullness);
+    ESP_LOGI(TAG, "Distance to trash: %F%%", fullness);
     return fullness;
 }

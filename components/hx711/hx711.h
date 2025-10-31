@@ -40,8 +40,8 @@
 #define __HX711_H__
 
 #include <driver/gpio.h>
-#include <stdbool.h>
 #include <esp_err.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C"

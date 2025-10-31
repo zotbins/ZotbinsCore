@@ -80,6 +80,6 @@ float get_weight(void)
     float calibrated_weight;
     hx711_read_average(&hx711, 10, &weight);
     calibrated_weight = (-1) * (weight / SCALE_FACTOR) - OFFSET; // Apply calibration. Multipled by -1 because the amplifier in the HX711 inverts the signal.
-    ESP_LOGI(TAG, "Weight of trash: %" PRId32, calibrated_weight);
+    ESP_LOGI(TAG, "Weight of trash: %f%%", calibrated_weight);
     return calibrated_weight;
 }
