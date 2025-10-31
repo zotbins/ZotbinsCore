@@ -43,13 +43,16 @@
 #include <esp_timer.h>
 #include <ets_sys.h>
 #include <esp_intr_alloc.h">
-
+#include <freertos/event_groups.h">
+#include <freertos/queue.h>
 #define TRIGGER_LOW_DELAY 4
 #define TRIGGER_HIGH_DELAY 10
 #define PING_TIMEOUT 6000
 #define ROUNDTRIP_M 5800.0f
 #define ROUNDTRIP_CM 58
 #define HALF_SPEED_OF_SOUND_AT_0C_M_S 165.7 // Half speed of sound in m/s at 0 degrees Celsius
+#define ECHO_START_BIT (1 << 0)
+#define ECHO_STOP_BIT (1 << 1)
 
 #if HELPER_TARGET_IS_ESP32
 static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
@@ -69,14 +72,27 @@ static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 #define CHECK_ARG(VAL) do { if (!(VAL)) return ESP_ERR_INVALID_ARG; } while (0)
 #define CHECK(x) do { esp_err_t __; if ((__ = x) != ESP_OK) return __; } while (0)
 #define RETURN_CRITICAL(RES) do { PORT_EXIT_CRITICAL; return RES; } while(0)
-
+//is this good practice / is there a better way?
+EventGroupHandle_t xEventCheck; 
+QueueHandle_t xTimes;
 void IRAM_ATTR echo_isr_handler(void* parameters){
-    // How do i send the values to the main function
-    if(gpio_get_level(dev->echo_pin),1){
-        int64_t echo_start = esp_timer_get_time();
+    BaseType_t xResult,xHigherPriorityTaskWoken;
+    xHigherPriorityTaskWoken = pdFalse;
+    int64_t startTime;
+    int64_t stopTime;
+    //Do i need the HigherPriortyTaskWoken
+    if(gpio_get_level(dev->echo_pin)==1){
+        xResult = xEventSetBitsFromISR(xEventCheck,ECHO_START_BIT,&xHigherPriorityTaskWoken);
+        startTime = esp_timer_get_time();
+        xQueueSendFromISR(xTimes,&startTime,&HigherPriorityTaskWoken);
     }
-    else if(gpio_get_level(dev->echo_pin),0){
-        int64_t echo_end = esp_timer_get_time();
+    else if(gpio_get_level(dev->echo_pin)==0){
+        xResult = xEventSetBitsFromISR(xEventCheck,ECHO_STOP_BIT,&xHigherPriorityTaskWoken);
+        stopTime = esp_timer_get_time();
+        xQueueSendFromISR(xTimes,&stopTime,&HigherPriorityTaskWoken);
+    }
+    if(xHigherPriorityTaskWoken == pdTrue){     
+        portYIELD_FROM_ISR();
     }
 }
 
@@ -85,10 +101,22 @@ esp_err_t ultrasonic_init(const ultrasonic_sensor_t *dev)
     CHECK_ARG(dev);
     CHECK(gpio_set_direction(dev->trigger_pin, GPIO_MODE_OUTPUT));
     CHECK(gpio_set_direction(dev->echo_pin, GPIO_MODE_INPUT));
-    // Sets ISR to active on rising edge
-    CHECK(gpio_set_intr_type(dev->echo_pin, GPIO_INTR_POSEDGE));
-    //Unsure of what flag to use. Either edge? o IRAM
-    CHECK(gpio_install_isr_service(ESP_INTR_FLAG_EDGE));
+    xEventCheck = xEventGroupCreate()
+    if(xEventCheck == NULL){
+        ESP_LOGE("Event","Could Not Create EventGroup");
+        return;
+    }
+    xTimes = xQueueCreate(
+        2,
+        sizeof(int64_t)
+    );
+    if(xTimes==NULL){
+        ESP_LOGE("Queue","Could not Create Queue");
+        return;
+    }
+    // Sets ISR to active on rising edge and falling edge
+    CHECK(gpio_set_intr_type(dev->echo_pin, GPIO_INTR_ANYEDGE));
+    CHECK(gpio_install_isr_service(ESP_INTR_FLAG_IRAM));
     CHECK(gpio_isr_handler_add(dev->echo_pin,echo_isr_handler,NULL))
     return gpio_set_level(dev->trigger_pin, 0);
 }
@@ -111,7 +139,8 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
     if (gpio_get_level(dev->echo_pin))
         RETURN_CRITICAL(ESP_ERR_ULTRASONIC_PING);
 
-    // Wait for echo
+    
+    /*Wait for echo
     int64_t start = esp_timer_get_time();
     while (!gpio_get_level(dev->echo_pin))
     {
@@ -129,6 +158,8 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
             RETURN_CRITICAL(ESP_ERR_ULTRASONIC_ECHO_TIMEOUT);
     }
     PORT_EXIT_CRITICAL;
+    */
+
 
     *time_us = time - echo_start;
 
