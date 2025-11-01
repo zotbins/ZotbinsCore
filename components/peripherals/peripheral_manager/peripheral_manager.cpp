@@ -21,14 +21,77 @@
 #include "esp_log.h"
 #include "serialize.hpp"
 #include "events.hpp"
+#include "mcp23x17.h"
+
+#define GPA0 0x0001
+#define GPA1 0x0002
+#define GPA2 0x0004
+#define GPA3 0x0008
+#define GPA4 0x0010
+#define GPA5 0x0020
+#define GPA6 0x0040
+#define GPA7 0x0080
+#define GPB0 0x0100
+#define GPB1 0x0200
+#define GPB2 0x0400
+#define GPB3 0x0800
+#define GPB4 0x1000
+#define GPB5 0x2000
+#define GPB6 0x4000
+#define GPB7 0x8000
 
 static const char *TAG = "peripheral_manager"; // Tag for ESP logging
 static TaskHandle_t manager_handle = nullptr;  // Task handle for the peripheral manager task
 
 EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors have finished collecting data.
 
+const uint8_t DEVICE_ADDR = 0x20;
+
 void init_manager(void)
 {
+
+    // Initialize i2cdev subsystem (creates port mutexes and internal state)
+    i2cdev_init();
+
+    // Initialize empty devie, will break without
+    mcp23x17_t mcp23017_device = {0};
+
+    // I2C address, requires A0, A1, A2 tied to ground on device
+    uint8_t mcp23017_addr = DEVICE_ADDR;
+
+    /* External pullups preferred since internal pullups are 3.3v, 5v required for 1MHz on I2C. Therefore, keep the pullups disabled. 10kohm pullups work */
+
+    // mcp23017_device.cfg.sda_pullup_en = 1; // enable internal SDA pull-up
+    // mcp23017_device.cfg.scl_pullup_en = 1; // enable internal SCL pull-up
+
+    // Initialize I2C line
+    esp_err_t err = mcp23x17_init_desc(&mcp23017_device, mcp23017_addr, I2C_NUM_0, GPIO_NUM_21, GPIO_NUM_22);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "mcp23x17_init_desc failed: %s", esp_err_to_name(err));
+        return;
+    }
+
+    // Set pin (GPA0) to output (0xFFFF)
+    err = mcp23x17_port_set_mode(&mcp23017_device, 0xFFFF | GPA0);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %s", esp_err_to_name(err));
+    }
+
+    // Set pullup resistors on pins
+    mcp23x17_port_set_pullup(&mcp23017_device, 0x0001);
+
+    uint16_t value;
+
+    /* Read instructions for gpio expander. TODO */
+    // while (1) {
+    //     vTaskDelay(1 / portTICK_PERIOD_MS);
+    //     err = mcp23x17_port_read(&mcp23017_device, &value);
+    //     if (err == ESP_OK) {
+    //         ESP_LOGI(TAG, "port value=0x%04x", value);
+    //     } else {
+    //         ESP_LOGE(TAG, "mcp23x17_port_read failed: %s", esp_err_to_name(err));
+    //     }
+    // }
 
     // Initialize sensors
     esp_err_t hx711_status = init_hx711();
