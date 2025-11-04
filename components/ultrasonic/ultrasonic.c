@@ -77,10 +77,11 @@ QueueHandle_t xTimes;
 void IRAM_ATTR echo_isr_handler(void* parameters){
     BaseType_t xResult,xHigherPriorityTaskWoken;
     xHigherPriorityTaskWoken = pdFALSE;
-    int64_t startTime;
+    int64_t time;
+    //Sets ECHO_BIT and sends time through queue
     xResult = xEventGroupSetBitsFromISR(xEventCheck,ECHO_BIT,&xHigherPriorityTaskWoken);
-    startTime = esp_timer_get_time();
-    xQueueSendFromISR(xTimes,&startTime,&xHigherPriorityTaskWoken);
+    time = esp_timer_get_time();
+    xQueueSendFromISR(xTimes,&time,&xHigherPriorityTaskWoken);
     if(xHigherPriorityTaskWoken == pdTRUE){     
         portYIELD_FROM_ISR();
     }
