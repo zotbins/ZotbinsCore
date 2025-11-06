@@ -39,9 +39,12 @@
 #ifndef __HX711_H__
 #define __HX711_H__
 
-#include <driver/gpio.h>
+//////////////////////////////////////// #include <driver/gpio.h> took this out (not using esp anymore but mcp)
 #include <esp_err.h>
 #include <stdbool.h>
+#include <stdint.h> ////////////////////////////////// added
+
+#include "mcp23x17.h" //////////////////////////////////// added
 
 #ifdef __cplusplus
 extern "C"
@@ -63,8 +66,11 @@ extern "C"
      */
     typedef struct
     {
-        gpio_num_t dout;
-        gpio_num_t pd_sck;
+        mcp23x17_t *io;          // pointer to MCP23x17 expander device
+        // gpio_num_t dout;     /////////////////////////////////////// removed 
+        // gpio_num_t pd_sck;   ////////////////////////////////////// removed
+        uint8_t dout;            // MCP23x17 pin for DOUT
+        uint8_t pd_sck;          // MCP23x17 pin for PD_SCK
         hx711_gain_t gain;
     } hx711_t;
 
