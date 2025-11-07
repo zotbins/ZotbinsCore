@@ -54,36 +54,34 @@ typedef struct
     i2c_dev_t *devices[CONFIG_I2CDEV_MAX_DEVICES_PER_PORT]; // Track devices registered on this port
 } i2c_port_state_t;
 
-static i2c_port_state_t states[I2C_NUM_MAX] = { 0 };
+static i2c_port_state_t states[I2C_NUM_MAX] = {0};
 
 #if CONFIG_I2CDEV_NOLOCK
 #define SEMAPHORE_TAKE(port)
 #else
-#define SEMAPHORE_TAKE(port)                                                                                                                                                                           \
-    do                                                                                                                                                                                                 \
-    {                                                                                                                                                                                                  \
-        if (!xSemaphoreTake(states[port].lock, pdMS_TO_TICKS(CONFIG_I2CDEV_TIMEOUT)))                                                                                                                  \
-        {                                                                                                                                                                                              \
-            ESP_LOGE(TAG, "Could not take port mutex %d", port);                                                                                                                                       \
-            return ESP_ERR_TIMEOUT;                                                                                                                                                                    \
-        }                                                                                                                                                                                              \
-    }                                                                                                                                                                                                  \
-    while (0)
+#define SEMAPHORE_TAKE(port)                                                          \
+    do                                                                                \
+    {                                                                                 \
+        if (!xSemaphoreTake(states[port].lock, pdMS_TO_TICKS(CONFIG_I2CDEV_TIMEOUT))) \
+        {                                                                             \
+            ESP_LOGE(TAG, "Could not take port mutex %d", port);                      \
+            return ESP_ERR_TIMEOUT;                                                   \
+        }                                                                             \
+    } while (0)
 #endif
 
 #if CONFIG_I2CDEV_NOLOCK
 #define SEMAPHORE_GIVE(port)
 #else
-#define SEMAPHORE_GIVE(port)                                                                                                                                                                           \
-    do                                                                                                                                                                                                 \
-    {                                                                                                                                                                                                  \
-        if (!xSemaphoreGive(states[port].lock))                                                                                                                                                        \
-        {                                                                                                                                                                                              \
-            ESP_LOGE(TAG, "Could not give port mutex %d", port);                                                                                                                                       \
-            return ESP_FAIL;                                                                                                                                                                           \
-        }                                                                                                                                                                                              \
-    }                                                                                                                                                                                                  \
-    while (0)
+#define SEMAPHORE_GIVE(port)                                     \
+    do                                                           \
+    {                                                            \
+        if (!xSemaphoreGive(states[port].lock))                  \
+        {                                                        \
+            ESP_LOGE(TAG, "Could not give port mutex %d", port); \
+            return ESP_FAIL;                                     \
+        }                                                        \
+    } while (0)
 #endif
 
 /**
@@ -459,11 +457,11 @@ static esp_err_t i2c_setup_port(i2c_dev_t *dev)
     }
 
     // Initialize common fields
-    i2c_config_t legacy_cfg = { .mode = I2C_MODE_MASTER,
-        .sda_io_num = sda_pin, // Use locally determined pins
-        .scl_io_num = scl_pin, // Use locally determined pins
-        .sda_pullup_en = dev->cfg.sda_pullup_en ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE,
-        .scl_pullup_en = dev->cfg.scl_pullup_en ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE };
+    i2c_config_t legacy_cfg = {.mode = I2C_MODE_MASTER,
+                               .sda_io_num = sda_pin, // Use locally determined pins
+                               .scl_io_num = scl_pin, // Use locally determined pins
+                               .sda_pullup_en = dev->cfg.sda_pullup_en ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE,
+                               .scl_pullup_en = dev->cfg.scl_pullup_en ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE};
 
 #ifdef CONFIG_IDF_TARGET_ESP8266
     // ESP8266 uses clk_stretch_tick instead of master.clk_speed
@@ -637,7 +635,7 @@ esp_err_t i2c_dev_read(const i2c_dev_t *dev, const void *out_data, size_t out_si
         i2c_master_start(cmd);
         i2c_master_write_byte(cmd, (dev->addr << 1) | 1, true); // Addr + Read bit (1)
         i2c_master_read(cmd, in_data, in_size,
-            I2C_MASTER_LAST_NACK); // NACK the last byte to signal end
+                        I2C_MASTER_LAST_NACK); // NACK the last byte to signal end
         i2c_master_stop(cmd);
 
         // Execute the command

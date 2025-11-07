@@ -48,16 +48,16 @@
 #include <driver/gpio.h>
 #include <esp_err.h>
 
-
 #define MCP23X17_ADDR_BASE 0x20
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #ifdef CONFIG_MCP23X17_IFACE_I2C
 
-typedef i2c_dev_t mcp23x17_t;
+    typedef i2c_dev_t mcp23x17_t;
 
 #else
 
@@ -77,59 +77,59 @@ typedef struct
 
 #endif
 
-/**
- * GPIO mode
- */
-typedef enum
-{
-    MCP23X17_GPIO_OUTPUT = 0,
-    MCP23X17_GPIO_INPUT
-} mcp23x17_gpio_mode_t;
+    /**
+     * GPIO mode
+     */
+    typedef enum
+    {
+        MCP23X17_GPIO_OUTPUT = 0,
+        MCP23X17_GPIO_INPUT
+    } mcp23x17_gpio_mode_t;
 
-/**
- * INTA/INTB pins mode
- */
-typedef enum
-{
-    MCP23X17_ACTIVE_LOW = 0, //!< Low level on interrupt
-    MCP23X17_ACTIVE_HIGH,    //!< High level on interrupt
-    MCP23X17_OPEN_DRAIN      //!< Open drain
-} mcp23x17_int_out_mode_t;
+    /**
+     * INTA/INTB pins mode
+     */
+    typedef enum
+    {
+        MCP23X17_ACTIVE_LOW = 0, //!< Low level on interrupt
+        MCP23X17_ACTIVE_HIGH,    //!< High level on interrupt
+        MCP23X17_OPEN_DRAIN      //!< Open drain
+    } mcp23x17_int_out_mode_t;
 
-/**
- * Interrupt mode
- */
-typedef enum
-{
-    MCP23X17_INT_DISABLED = 0, //!< No interrupt
-    MCP23X17_INT_LOW_EDGE,     //!< Interrupt on low edge
-    MCP23X17_INT_HIGH_EDGE,    //!< Interrupt on high edge
-    MCP23X17_INT_ANY_EDGE      //!< Interrupt on any edge
-} mcp23x17_gpio_intr_t;
+    /**
+     * Interrupt mode
+     */
+    typedef enum
+    {
+        MCP23X17_INT_DISABLED = 0, //!< No interrupt
+        MCP23X17_INT_LOW_EDGE,     //!< Interrupt on low edge
+        MCP23X17_INT_HIGH_EDGE,    //!< Interrupt on high edge
+        MCP23X17_INT_ANY_EDGE      //!< Interrupt on any edge
+    } mcp23x17_gpio_intr_t;
 
 #ifdef CONFIG_MCP23X17_IFACE_I2C
 
-/**
- * @brief Initialize device descriptor
- *
- * Default SCL frequency is 1MHz.
- *
- * @param dev Pointer to device descriptor
- * @param port I2C port number
- * @param addr I2C address
- * @param sda_gpio SDA GPIO
- * @param scl_gpio SCL GPIO
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_init_desc(mcp23x17_t *dev, uint8_t addr, i2c_port_t port, gpio_num_t sda_gpio, gpio_num_t scl_gpio);
+    /**
+     * @brief Initialize device descriptor
+     *
+     * Default SCL frequency is 1MHz.
+     *
+     * @param dev Pointer to device descriptor
+     * @param port I2C port number
+     * @param addr I2C address
+     * @param sda_gpio SDA GPIO
+     * @param scl_gpio SCL GPIO
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_init_desc(mcp23x17_t *dev, uint8_t addr, i2c_port_t port, gpio_num_t sda_gpio, gpio_num_t scl_gpio);
 
-/**
- * @brief Free device descriptor
- *
- * @param dev Pointer to device descriptor
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_free_desc(mcp23x17_t *dev);
+    /**
+     * @brief Free device descriptor
+     *
+     * @param dev Pointer to device descriptor
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_free_desc(mcp23x17_t *dev);
 
 #else
 
@@ -157,216 +157,215 @@ esp_err_t mcp23x17_free_desc_spi(mcp23x17_t *dev);
 
 #ifdef CONFIG_MCP23X17_IFACE_SPI
 
-/**
- * @brief Enable or disable hardware addressing (usage of pins A0..A2).
- *
- * Works only with MCP23S17.
- * Warining! According to the datasheet, hardware addressing is disabled by default.
- *
- * @param dev Pointer to device descriptor
- * @param enable `true` to enable hardware addressing
- * @param new_addr New I2C address (`0b0100<A2><A1><A0>` after the addressing enabled).
- *                 If `enable` is `false`, address will be set automatically
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_setup_hw_addr(mcp23x17_t *dev, bool enable, uint8_t new_addr);
+    /**
+     * @brief Enable or disable hardware addressing (usage of pins A0..A2).
+     *
+     * Works only with MCP23S17.
+     * Warining! According to the datasheet, hardware addressing is disabled by default.
+     *
+     * @param dev Pointer to device descriptor
+     * @param enable `true` to enable hardware addressing
+     * @param new_addr New I2C address (`0b0100<A2><A1><A0>` after the addressing enabled).
+     *                 If `enable` is `false`, address will be set automatically
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_setup_hw_addr(mcp23x17_t *dev, bool enable, uint8_t new_addr);
 
 #endif
 
-/**
- * @brief Get INTA/INTB pins mode
- *
- * @param dev Pointer to device descriptor
- * @param[out] mode Buffer to store mode
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_get_int_out_mode(mcp23x17_t *dev, mcp23x17_int_out_mode_t *mode);
+    /**
+     * @brief Get INTA/INTB pins mode
+     *
+     * @param dev Pointer to device descriptor
+     * @param[out] mode Buffer to store mode
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_get_int_out_mode(mcp23x17_t *dev, mcp23x17_int_out_mode_t *mode);
 
-/**
- * @brief Set INTA/INTB pins mode
- *
- * @param dev Pointer to device descriptor
- * @param mode INTA/INTB pins mode
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_set_int_out_mode(mcp23x17_t *dev, mcp23x17_int_out_mode_t mode);
+    /**
+     * @brief Set INTA/INTB pins mode
+     *
+     * @param dev Pointer to device descriptor
+     * @param mode INTA/INTB pins mode
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_set_int_out_mode(mcp23x17_t *dev, mcp23x17_int_out_mode_t mode);
 
-/**
- * @brief Get GPIO pins mode
- *
- * 0 - output, 1 - input for each bit in `val`
- *
- * @param dev Pointer to device descriptor
- * @param[out] val Buffer to store mode, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
- * @return
- */
-esp_err_t mcp23x17_port_get_mode(mcp23x17_t *dev, uint16_t *val);
+    /**
+     * @brief Get GPIO pins mode
+     *
+     * 0 - output, 1 - input for each bit in `val`
+     *
+     * @param dev Pointer to device descriptor
+     * @param[out] val Buffer to store mode, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
+     * @return
+     */
+    esp_err_t mcp23x17_port_get_mode(mcp23x17_t *dev, uint16_t *val);
 
-/**
- * @brief Set GPIO pins mode
- *
- * 0 - output, 1 - input for each bit in `val`
- *
- * @param dev Pointer to device descriptor
- * @param val Mode, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_port_set_mode(mcp23x17_t *dev, uint16_t val);
+    /**
+     * @brief Set GPIO pins mode
+     *
+     * 0 - output, 1 - input for each bit in `val`
+     *
+     * @param dev Pointer to device descriptor
+     * @param val Mode, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_port_set_mode(mcp23x17_t *dev, uint16_t val);
 
-/**
- * @brief Get GPIO pullups status
- *
- * 0 - pullup disabled, 1 - pullup enabled for each bit in `val`
- *
- * @param dev Pointer to device descriptor
- * @param[out] val Pullup status, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_port_get_pullup(mcp23x17_t *dev, uint16_t *val);
+    /**
+     * @brief Get GPIO pullups status
+     *
+     * 0 - pullup disabled, 1 - pullup enabled for each bit in `val`
+     *
+     * @param dev Pointer to device descriptor
+     * @param[out] val Pullup status, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_port_get_pullup(mcp23x17_t *dev, uint16_t *val);
 
-/**
- * @brief Set GPIO pullups status
- *
- * 0 - pullup disabled, 1 - pullup enabled for each bit in `val`
- *
- * @param dev Pointer to device descriptor
- * @param val Pullup status, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_port_set_pullup(mcp23x17_t *dev, uint16_t val);
+    /**
+     * @brief Set GPIO pullups status
+     *
+     * 0 - pullup disabled, 1 - pullup enabled for each bit in `val`
+     *
+     * @param dev Pointer to device descriptor
+     * @param val Pullup status, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_port_set_pullup(mcp23x17_t *dev, uint16_t val);
 
-/**
- * @brief Read GPIO port value
- *
- * @param dev Pointer to device descriptor
- * @param[out] val 16-bit GPIO port value, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_port_read(mcp23x17_t *dev, uint16_t *val);
+    /**
+     * @brief Read GPIO port value
+     *
+     * @param dev Pointer to device descriptor
+     * @param[out] val 16-bit GPIO port value, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_port_read(mcp23x17_t *dev, uint16_t *val);
 
-/**
- * @brief Write value to GPIO port
- *
- * @param dev Pointer to device descriptor
- * @param val GPIO port value, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_port_write(mcp23x17_t *dev, uint16_t val);
+    /**
+     * @brief Write value to GPIO port
+     *
+     * @param dev Pointer to device descriptor
+     * @param val GPIO port value, 0 bit for PORTA/GPIO0..15 bit for PORTB/GPIO7
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_port_write(mcp23x17_t *dev, uint16_t val);
 
-/**
- * @brief Get GPIO pin mode
- *
- * @param dev Pointer to device descriptor
- * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
- * @param[out] mode GPIO pin mode
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_get_mode(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_mode_t *mode);
+    /**
+     * @brief Get GPIO pin mode
+     *
+     * @param dev Pointer to device descriptor
+     * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
+     * @param[out] mode GPIO pin mode
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_get_mode(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_mode_t *mode);
 
-/**
- * @brief Set GPIO pin mode
- *
- * @param dev Pointer to device descriptor
- * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
- * @param mode GPIO pin mode
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_set_mode(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_mode_t mode);
+    /**
+     * @brief Set GPIO pin mode
+     *
+     * @param dev Pointer to device descriptor
+     * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
+     * @param mode GPIO pin mode
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_set_mode(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_mode_t mode);
 
-/**
- * @brief Get pullup mode of GPIO pin
- *
- * @param dev Pointer to device descriptor
- * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
- * @param[out] enable pullup mode
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_get_pullup(mcp23x17_t *dev, uint8_t pin, bool *enable);
+    /**
+     * @brief Get pullup mode of GPIO pin
+     *
+     * @param dev Pointer to device descriptor
+     * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
+     * @param[out] enable pullup mode
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_get_pullup(mcp23x17_t *dev, uint8_t pin, bool *enable);
 
-/**
- * @brief Set pullup mode of GPIO pin
- *
- * @param dev Pointer to device descriptor
- * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
- * @param enable `true` to enable pullup
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_set_pullup(mcp23x17_t *dev, uint8_t pin, bool enable);
+    /**
+     * @brief Set pullup mode of GPIO pin
+     *
+     * @param dev Pointer to device descriptor
+     * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
+     * @param enable `true` to enable pullup
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_set_pullup(mcp23x17_t *dev, uint8_t pin, bool enable);
 
-/**
- * @brief Read GPIO pin level
- *
- * @param dev Pointer to device descriptor
- * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
- * @param[out] val `true` if pin currently in high state
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_get_level(mcp23x17_t *dev, uint8_t pin, uint32_t *val);
+    /**
+     * @brief Read GPIO pin level
+     *
+     * @param dev Pointer to device descriptor
+     * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
+     * @param[out] val `true` if pin currently in high state
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_get_level(mcp23x17_t *dev, uint8_t pin, uint32_t *val);
 
-/**
- * @brief Set GPIO pin level
- *
- * Pin must be set up as output
- *
- * @param dev Pointer to device descriptor
- * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
- * @param[out] val `true` if pin currently in high state
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_set_level(mcp23x17_t *dev, uint8_t pin, uint32_t val);
+    /**
+     * @brief Set GPIO pin level
+     *
+     * Pin must be set up as output
+     *
+     * @param dev Pointer to device descriptor
+     * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
+     * @param[out] val `true` if pin currently in high state
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_set_level(mcp23x17_t *dev, uint8_t pin, uint32_t val);
 
-/**
- * @brief Setup interrupt for group of GPIO pins
- *
- * @param dev Pointer to device descriptor
- * @param mask Pins to setup
- * @param intr Interrupt mode
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_port_set_interrupt(mcp23x17_t *dev, uint16_t mask, mcp23x17_gpio_intr_t intr);
+    /**
+     * @brief Setup interrupt for group of GPIO pins
+     *
+     * @param dev Pointer to device descriptor
+     * @param mask Pins to setup
+     * @param intr Interrupt mode
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_port_set_interrupt(mcp23x17_t *dev, uint16_t mask, mcp23x17_gpio_intr_t intr);
 
-/**
- * @brief Setup interrupt for GPIO pin
- *
- * @param dev Pointer to device descriptor
- * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
- * @param intr Interrupt mode
- * @return `ESP_OK` on success
- */
-esp_err_t mcp23x17_set_interrupt(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_intr_t intr);
+    /**
+     * @brief Setup interrupt for GPIO pin
+     *
+     * @param dev Pointer to device descriptor
+     * @param pin Pin number, 0 for PORTA/GPIO0..15 for PORTB/GPIO7
+     * @param intr Interrupt mode
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp23x17_set_interrupt(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_intr_t intr);
 
+    ////////////////////////////////////////////////////////////////////// added helpers
 
-////////////////////////////////////////////////////////////////////// added helpers 
+    /**
+     * @brief Set GPIO pin direction
+     */
+    esp_err_t mcp23x17_set_direction(mcp23x17_t *dev, uint8_t pin, bool is_output);
 
-/**
- * @brief Set GPIO pin direction
- */
-esp_err_t mcp23x17_set_direction(mcp23x17_t *dev, uint8_t pin, bool is_output);
+    /**
+     * @brief Write GPIO pin level
+     */
+    esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint8_t pin, bool level);
 
-/**
- * @brief Write GPIO pin level
- */
-esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint8_t pin, bool level);
+    /**
+     * @brief Read GPIO pin level
+     */
+    esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint8_t pin, bool *level);
 
-/**
- * @brief Read GPIO pin level
- */
-esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint8_t pin, bool *level);
+    /**
+     * @brief Enable or disable interrupt mirroring on INTA and INTB pins
+     *
+     * When enabled, the INTB pin will mirror the state of the INTA pin.
+     * This means that if either port generates an interrupt, both INT pins will be activated.
+     * When disabled, INTA and INTB will operate independently, each reflecting the interrupt status of their respective ports.
+     *
+     * @param dev Pointer to device descriptor
+     * @param enable `true` to enable interrupt mirroring, `false` to disable
+     * @return `ESP_OK` on success
+     */
+    esp_err_t mcp_gpio_mirror_interrupts(mcp23x17_t *dev, bool enable);
 
-/**
- * @brief Enable or disable interrupt mirroring on INTA and INTB pins
- *
- * When enabled, the INTB pin will mirror the state of the INTA pin.
- * This means that if either port generates an interrupt, both INT pins will be activated.
- * When disabled, INTA and INTB will operate independently, each reflecting the interrupt status of their respective ports.
- *
- * @param dev Pointer to device descriptor
- * @param enable `true` to enable interrupt mirroring, `false` to disable
- * @return `ESP_OK` on success
- */
-esp_err_t mcp_gpio_mirror_interrupts(mcp23x17_t *dev, bool enable);
-
-/////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
 
 #ifdef __cplusplus
 }

@@ -60,7 +60,7 @@ extern "C"
      */
     typedef struct
     {
-        mcp23x17_t *io;        //!< Pointer to MCP expander ////////////////// added 
+        mcp23x17_t *io;         //!< Pointer to MCP expander ////////////////// added
         gpio_num_t trigger_pin; //!< GPIO output pin for trigger
         gpio_num_t echo_pin;    //!< GPIO input pin for echo
     } ultrasonic_sensor_t;
@@ -128,7 +128,7 @@ extern "C"
      *         - ::ESP_ERR_ULTRASONIC_PING_TIMEOUT - Device is not responding
      *         - ::ESP_ERR_ULTRASONIC_ECHO_TIMEOUT - Distance is too big or wave is scattered
      */
-    esp_err_t ultrasonic_measure_temp_compensated(const ultrasonic_sensor_t *dev);  // float max_distance, float *distance, float temperature_
+    esp_err_t ultrasonic_measure_temp_compensated(const ultrasonic_sensor_t *dev); // float max_distance, float *distance, float temperature_
 
     /**
      * @brief Measure distance in centimeters with temperature compensation

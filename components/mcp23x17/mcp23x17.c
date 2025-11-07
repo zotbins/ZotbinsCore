@@ -42,40 +42,51 @@
 
 static const char *TAG = "mcp23x17";
 
-#define I2C_FREQ_HZ 1000000  // Max 1MHz for esp-idf, but device supports up to 1.7Mhz
+#define I2C_FREQ_HZ 1000000 // Max 1MHz for esp-idf, but device supports up to 1.7Mhz
 
-#define REG_IODIRA   0x00
-#define REG_IODIRB   0x01
-#define REG_IPOLA    0x02
-#define REG_IPOLB    0x03
+#define REG_IODIRA 0x00
+#define REG_IODIRB 0x01
+#define REG_IPOLA 0x02
+#define REG_IPOLB 0x03
 #define REG_GPINTENA 0x04
 #define REG_GPINTENB 0x05
-#define REG_DEFVALA  0x06
-#define REG_DEFVALB  0x07
-#define REG_INTCONA  0x08
-#define REG_INTCONB  0x09
-#define REG_IOCON    0x0A
-#define REG_GPPUA    0x0C
-#define REG_GPPUB    0x0D
-#define REG_INTFA    0x0E
-#define REG_INTFB    0x0F
-#define REG_INTCAPA  0x10
-#define REG_INTCAPB  0x11
-#define REG_GPIOA    0x12
-#define REG_GPIOB    0x13
-#define REG_OLATA    0x14
-#define REG_OLATB    0x15
+#define REG_DEFVALA 0x06
+#define REG_DEFVALB 0x07
+#define REG_INTCONA 0x08
+#define REG_INTCONB 0x09
+#define REG_IOCON 0x0A
+#define REG_GPPUA 0x0C
+#define REG_GPPUB 0x0D
+#define REG_INTFA 0x0E
+#define REG_INTFB 0x0F
+#define REG_INTCAPA 0x10
+#define REG_INTCAPB 0x11
+#define REG_GPIOA 0x12
+#define REG_GPIOB 0x13
+#define REG_OLATA 0x14
+#define REG_OLATB 0x15
 
 #define BIT_IOCON_INTPOL 1
-#define BIT_IOCON_ODR    2
-#define BIT_IOCON_HAEN   3
+#define BIT_IOCON_ODR 2
+#define BIT_IOCON_HAEN 3
 #define BIT_IOCON_DISSLW 4
-#define BIT_IOCON_SEQOP  5
+#define BIT_IOCON_SEQOP 5
 #define BIT_IOCON_MIRROR 6
-#define BIT_IOCON_BANK   7
+#define BIT_IOCON_BANK 7
 
-#define CHECK(x) do { esp_err_t __; if ((__ = x) != ESP_OK) return __; } while (0)
-#define CHECK_ARG(VAL) do { if (!(VAL)) return ESP_ERR_INVALID_ARG; } while (0)
+#define CHECK(x)                \
+    do                          \
+    {                           \
+        esp_err_t __;           \
+        if ((__ = x) != ESP_OK) \
+            return __;          \
+    } while (0)
+#define CHECK_ARG(VAL)                  \
+    do                                  \
+    {                                   \
+        if (!(VAL))                     \
+            return ESP_ERR_INVALID_ARG; \
+    } while (0)
 #define BV(x) (1 << (x))
 
 #ifdef CONFIG_MCP23X17_IFACE_I2C
@@ -164,14 +175,14 @@ static esp_err_t read_reg_16(mcp23x17_t *dev, uint8_t reg, uint16_t *val)
 {
     CHECK_ARG(dev && val);
 
-    uint8_t rx[4] = { 0 };
-    uint8_t tx[4] = { (dev->addr << 1) | 0x01, reg, 0, 0 };
+    uint8_t rx[4] = {0};
+    uint8_t tx[4] = {(dev->addr << 1) | 0x01, reg, 0, 0};
 
     spi_transaction_t t;
     memset(&t, 0, sizeof(spi_transaction_t));
     t.rx_buffer = rx;
     t.tx_buffer = tx;
-    t.length = 32;   // 32 bits
+    t.length = 32; // 32 bits
 
     CHECK(spi_transmit(dev, &t));
 
@@ -184,12 +195,12 @@ static esp_err_t write_reg_16(mcp23x17_t *dev, uint8_t reg, uint16_t val)
 {
     CHECK_ARG(dev);
 
-    uint8_t tx[4] = { dev->addr << 1, reg, val, val >> 8 };
+    uint8_t tx[4] = {dev->addr << 1, reg, val, val >> 8};
 
     spi_transaction_t t;
     memset(&t, 0, sizeof(spi_transaction_t));
     t.tx_buffer = tx;
-    t.length = 32;   // 32 bits
+    t.length = 32; // 32 bits
 
     CHECK(spi_transmit(dev, &t));
 
@@ -210,14 +221,14 @@ static esp_err_t read_reg_8(mcp23x17_t *dev, uint8_t reg, uint8_t *val)
 {
     CHECK_ARG(dev && val);
 
-    uint8_t rx[3] = { 0 };
-    uint8_t tx[3] = { (dev->addr << 1) | 0x01, reg, 0 };
+    uint8_t rx[3] = {0};
+    uint8_t tx[3] = {(dev->addr << 1) | 0x01, reg, 0};
 
     spi_transaction_t t;
     memset(&t, 0, sizeof(spi_transaction_t));
     t.rx_buffer = rx;
     t.tx_buffer = tx;
-    t.length = 24;   // 24 bits
+    t.length = 24; // 24 bits
 
     CHECK(spi_transmit(dev, &t));
 
@@ -230,18 +241,17 @@ static esp_err_t write_reg_8(mcp23x17_t *dev, uint8_t reg, uint8_t val)
 {
     CHECK_ARG(dev);
 
-    uint8_t tx[3] = { dev->addr << 1, reg, val };
+    uint8_t tx[3] = {dev->addr << 1, reg, val};
 
     spi_transaction_t t;
     memset(&t, 0, sizeof(spi_transaction_t));
     t.tx_buffer = tx;
-    t.length = 24;   // 24 bits
+    t.length = 24; // 24 bits
 
     CHECK(spi_transmit(dev, &t));
 
     return ESP_OK;
 }
-
 
 static esp_err_t read_reg_bit_8(mcp23x17_t *dev, uint8_t reg, bool *val, uint8_t bit)
 {
@@ -507,43 +517,53 @@ esp_err_t mcp23x17_set_interrupt(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_int
     return mcp23x17_port_set_interrupt(dev, BV(pin), intr);
 }
 
-////////////////////////////////////////////////////////////////////// defined helpers 
+////////////////////////////////////////////////////////////////////// defined helpers
 
-esp_err_t mcp23x17_set_direction(mcp23x17_t *dev, uint8_t pin, bool is_output){
-    CHECK_ARG(dev && pin < 16);                     // make sure device is valid and pin is in range 0-15
+esp_err_t mcp23x17_set_direction(mcp23x17_t *dev, uint8_t pin, bool is_output)
+{
+    CHECK_ARG(dev && pin < 16); // make sure device is valid and pin is in range 0-15
     uint16_t iodir;
-    CHECK(read_reg_16(dev, REG_IODIRA, &iodir));    // read current direction register (i/o direction)
-    if(is_output){
-        iodir &= ~(1 << pin);                       // clear bit to set as output
-    } else {
-        iodir |= (1 << pin);                        // set bit to set as input
+    CHECK(read_reg_16(dev, REG_IODIRA, &iodir)); // read current direction register (i/o direction)
+    if (is_output)
+    {
+        iodir &= ~(1 << pin); // clear bit to set as output
+    }
+    else
+    {
+        iodir |= (1 << pin); // set bit to set as input
     }
     return write_reg_16(dev, REG_IODIRA, iodir);
 }
 
-esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint8_t pin, bool level){
-    CHECK_ARG(dev && pin < 16);                     // make sure device is valid and pin is in range 0-15
+esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint8_t pin, bool level)
+{
+    CHECK_ARG(dev && pin < 16); // make sure device is valid and pin is in range 0-15
     uint16_t latch;
-    CHECK(read_reg_16(dev, REG_GPIOA, &latch));      // read current latch register
-    if(level){
-        latch |= (1 << pin);                         // set bit to set pin high
-    } else {
-        latch &= ~(1 << pin);                        // clear bit to set pin low
+    CHECK(read_reg_16(dev, REG_GPIOA, &latch)); // read current latch register
+    if (level)
+    {
+        latch |= (1 << pin); // set bit to set pin high
+    }
+    else
+    {
+        latch &= ~(1 << pin); // clear bit to set pin low
     }
     return write_reg_16(dev, REG_GPIOA, latch);
 }
 
-esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint8_t pin, bool *level){
+esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint8_t pin, bool *level)
+{
 
-    CHECK_ARG(dev && pin < 16 && level);            // make sure device is valid and pin is in range 0-15
+    CHECK_ARG(dev && pin < 16 && level); // make sure device is valid and pin is in range 0-15
     uint16_t gpio;
-    CHECK(read_reg_16(dev, REG_GPIOA, &gpio));      // read current GPIO register
-    *level = (gpio & (1 << pin)) != 0;              // get pin level
+    CHECK(read_reg_16(dev, REG_GPIOA, &gpio)); // read current GPIO register
+    *level = (gpio & (1 << pin)) != 0;         // get pin level
     return ESP_OK;
 }
 
-esp_err_t mcp_gpio_mirror_interrupts(mcp23x17_t *dev, bool enable){
-    return write_reg_bit_8(dev, REG_IOCON, enable, BIT_IOCON_MIRROR);  // set or clear MIRROR bit
+esp_err_t mcp_gpio_mirror_interrupts(mcp23x17_t *dev, bool enable)
+{
+    return write_reg_bit_8(dev, REG_IOCON, enable, BIT_IOCON_MIRROR); // set or clear MIRROR bit
 }
 
 /////////////////////////////////////////////////////////////////////

@@ -47,9 +47,9 @@ static const char *TAG = "i2cdev";
 #define I2C_ADDR_BIT_LEN_10 1
 #endif
 
-#define I2C_DEFAULT_FREQ_HZ         400000
-#define I2C_MAX_RETRIES             3
-#define I2C_RETRY_BASE_DELAY_MS     20
+#define I2C_DEFAULT_FREQ_HZ 400000
+#define I2C_MAX_RETRIES 3
+#define I2C_RETRY_BASE_DELAY_MS 20
 #define I2CDEV_MAX_STACK_ALLOC_SIZE 32 // Stack allocation threshold to avoid heap fragmentation for small buffers
 
 typedef struct
@@ -62,8 +62,8 @@ typedef struct
     int scl_pin_current;                // Actual SCL pin the bus was initialized with
 } i2c_port_state_t;
 
-static i2c_port_state_t i2c_ports[I2C_NUM_MAX] = { 0 };
-static i2c_dev_t *active_devices[I2C_NUM_MAX][CONFIG_I2CDEV_MAX_DEVICES_PER_PORT] = { { NULL } };
+static i2c_port_state_t i2c_ports[I2C_NUM_MAX] = {0};
+static i2c_dev_t *active_devices[I2C_NUM_MAX][CONFIG_I2CDEV_MAX_DEVICES_PER_PORT] = {{NULL}};
 
 // Helper to register a device
 static esp_err_t register_device(i2c_dev_t *dev)
@@ -385,9 +385,9 @@ static esp_err_t i2c_setup_port(i2c_dev_t *dev) // dev is non-const to update de
 #endif
 
         ESP_LOGI(TAG,
-            "[Port %d] First initialization. Configuring bus with SDA=%d, SCL=%d (Pullups "
-            "SCL:%d SDA:%d)",
-            dev->port, sda_pin, scl_pin, scl_pullup, sda_pullup);
+                 "[Port %d] First initialization. Configuring bus with SDA=%d, SCL=%d (Pullups "
+                 "SCL:%d SDA:%d)",
+                 dev->port, sda_pin, scl_pin, scl_pullup, sda_pullup);
 
         i2c_master_bus_config_t bus_config = {
             .i2c_port = dev->port,
@@ -430,9 +430,9 @@ static esp_err_t i2c_setup_port(i2c_dev_t *dev) // dev is non-const to update de
         if (sda_desired != port_state->sda_pin_current || scl_desired != port_state->scl_pin_current)
         {
             ESP_LOGE(TAG,
-                "[Port %d] Pin mismatch for device 0x%02x! Bus on SDA=%d,SCL=%d. Device wants "
-                "SDA=%d,SCL=%d",
-                dev->port, dev->addr, port_state->sda_pin_current, port_state->scl_pin_current, sda_desired, scl_desired);
+                     "[Port %d] Pin mismatch for device 0x%02x! Bus on SDA=%d,SCL=%d. Device wants "
+                     "SDA=%d,SCL=%d",
+                     dev->port, dev->addr, port_state->sda_pin_current, port_state->scl_pin_current, sda_desired, scl_desired);
             res = ESP_ERR_INVALID_STATE; // Cannot change pins for an installed bus
         }
         else
@@ -480,9 +480,9 @@ static esp_err_t i2c_setup_device(i2c_dev_t *dev) // dev is non-const - modifies
     if (dev->addr_bit_len == I2C_ADDR_BIT_LEN_7 && dev->addr > 0x7F)
     {
         ESP_LOGW(TAG,
-            "[0x%02x at %d] Device address > 0x7F but addr_bit_len is 7-bit. Ensure address "
-            "is correct.",
-            dev->addr, dev->port);
+                 "[0x%02x at %d] Device address > 0x7F but addr_bit_len is 7-bit. Ensure address "
+                 "is correct.",
+                 dev->addr, dev->port);
     }
 
 #if !defined(SOC_I2C_SUPPORT_10BIT_ADDR) || !SOC_I2C_SUPPORT_10BIT_ADDR
@@ -516,9 +516,9 @@ static esp_err_t i2c_setup_device(i2c_dev_t *dev) // dev is non-const - modifies
         if (effective_dev_speed == 0)
         {
             ESP_LOGW(TAG,
-                "[0x%02x at %d] Device speed (dev->cfg.master.clk_speed) is 0, using default: "
-                "%" PRIu32 " Hz",
-                dev->addr, dev->port, (uint32_t)I2C_DEFAULT_FREQ_HZ);
+                     "[0x%02x at %d] Device speed (dev->cfg.master.clk_speed) is 0, using default: "
+                     "%" PRIu32 " Hz",
+                     dev->addr, dev->port, (uint32_t)I2C_DEFAULT_FREQ_HZ);
             effective_dev_speed = I2C_DEFAULT_FREQ_HZ;
         }
 
@@ -558,7 +558,7 @@ static esp_err_t i2c_setup_device(i2c_dev_t *dev) // dev is non-const - modifies
 
 // Helper function with retry mechanism for I2C operations
 static esp_err_t i2c_do_operation_with_retry(i2c_dev_t *dev, esp_err_t (*i2c_func)(i2c_master_dev_handle_t, const void *, size_t, void *, size_t, int), const void *write_buffer, size_t write_size,
-    void *read_buffer, size_t read_size)
+                                             void *read_buffer, size_t read_size)
 {
     if (!dev)
         return ESP_ERR_INVALID_ARG;
@@ -584,9 +584,9 @@ static esp_err_t i2c_do_operation_with_retry(i2c_dev_t *dev, esp_err_t (*i2c_fun
         if (!dev->dev_handle)
         {
             ESP_LOGE(TAG,
-                "[0x%02x at %d] Device handle is NULL after setup (Try %d)! Cannot perform "
-                "operation.",
-                dev->addr, dev->port, retry);
+                     "[0x%02x at %d] Device handle is NULL after setup (Try %d)! Cannot perform "
+                     "operation.",
+                     dev->addr, dev->port, retry);
             // This indicates a persistent problem with adding the device to the bus.
             // No point retrying the i2c_func if handle is null.
             res = ESP_ERR_INVALID_STATE;
@@ -611,22 +611,22 @@ static esp_err_t i2c_do_operation_with_retry(i2c_dev_t *dev, esp_err_t (*i2c_fun
         bool should_remove_handle = false;
         switch (res)
         {
-            case ESP_ERR_INVALID_ARG:
-                // Handle was likely removed by another task or is corrupted
-                should_remove_handle = true;
-                ESP_LOGW(TAG, "[0x%02x at %d] Invalid argument error - handle may be corrupted", dev->addr, dev->port);
-                break;
-            case ESP_ERR_INVALID_STATE:
-                // I2C driver is in invalid state, handle likely needs recreation
-                should_remove_handle = true;
-                ESP_LOGW(TAG, "[0x%02x at %d] Invalid state error - handle may need recreation", dev->addr, dev->port);
-                break;
-            default:
-                // For other errors (timeout, NACK, bus busy, etc.), keep the handle
-                // These are usually temporary and don't require handle recreation
-                should_remove_handle = false;
-                ESP_LOGV(TAG, "[0x%02x at %d] Temporary error - keeping handle for retry", dev->addr, dev->port);
-                break;
+        case ESP_ERR_INVALID_ARG:
+            // Handle was likely removed by another task or is corrupted
+            should_remove_handle = true;
+            ESP_LOGW(TAG, "[0x%02x at %d] Invalid argument error - handle may be corrupted", dev->addr, dev->port);
+            break;
+        case ESP_ERR_INVALID_STATE:
+            // I2C driver is in invalid state, handle likely needs recreation
+            should_remove_handle = true;
+            ESP_LOGW(TAG, "[0x%02x at %d] Invalid state error - handle may need recreation", dev->addr, dev->port);
+            break;
+        default:
+            // For other errors (timeout, NACK, bus busy, etc.), keep the handle
+            // These are usually temporary and don't require handle recreation
+            should_remove_handle = false;
+            ESP_LOGV(TAG, "[0x%02x at %d] Temporary error - keeping handle for retry", dev->addr, dev->port);
+            break;
         }
 
         if (should_remove_handle && dev->dev_handle)
@@ -679,7 +679,7 @@ esp_err_t i2c_dev_read(const i2c_dev_t *dev, const void *out_data, size_t out_si
     ESP_LOGV(TAG, "[0x%02x at %d] i2c_dev_read called (out_size: %u, in_size: %u)", dev->addr, dev->port, out_size, in_size);
 
     esp_err_t result = i2c_do_operation_with_retry((i2c_dev_t *)dev, // Cast to non-const for i2c_setup_device internal modifications
-        out_data && out_size ? i2c_master_transmit_receive_wrapper : i2c_master_receive_wrapper, out_data, out_size, in_data, in_size);
+                                                   out_data && out_size ? i2c_master_transmit_receive_wrapper : i2c_master_receive_wrapper, out_data, out_size, in_data, in_size);
 
     ESP_LOGV(TAG, "[0x%02x at %d] i2c_dev_read result: %s (%d)", dev->addr, dev->port, esp_err_to_name(result), result);
     return result;

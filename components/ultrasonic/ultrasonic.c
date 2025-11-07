@@ -65,9 +65,25 @@ static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
 #define timeout_expired(start, len) ((esp_timer_get_time() - (start)) >= (len))
 
-#define CHECK_ARG(VAL) do { if (!(VAL)) return ESP_ERR_INVALID_ARG; } while (0)
-#define CHECK(x) do { esp_err_t __; if ((__ = x) != ESP_OK) return __; } while (0)
-#define RETURN_CRITICAL(RES) do { PORT_EXIT_CRITICAL; return RES; } while(0)
+#define CHECK_ARG(VAL)                  \
+    do                                  \
+    {                                   \
+        if (!(VAL))                     \
+            return ESP_ERR_INVALID_ARG; \
+    } while (0)
+#define CHECK(x)                \
+    do                          \
+    {                           \
+        esp_err_t __;           \
+        if ((__ = x) != ESP_OK) \
+            return __;          \
+    } while (0)
+#define RETURN_CRITICAL(RES) \
+    do                       \
+    {                        \
+        PORT_EXIT_CRITICAL;  \
+        return RES;          \
+    } while (0)
 
 esp_err_t ultrasonic_init(const ultrasonic_sensor_t *dev)
 {
@@ -79,12 +95,11 @@ esp_err_t ultrasonic_init(const ultrasonic_sensor_t *dev)
     return gpio_set_level(dev->trigger_pin, 0); */
 
     CHECK_ARG(dev && dev->io);
-    CHECK(mcp23x17_set_direction(dev->io, dev->trigger_pin, true));  // trigger = output
-    CHECK(mcp23x17_set_direction(dev->io, dev->echo_pin, false));    // echo = input
-    CHECK(mcp_gpio_write(dev->io, dev->trigger_pin, 0));             // start low
+    CHECK(mcp23x17_set_direction(dev->io, dev->trigger_pin, true)); // trigger = output
+    CHECK(mcp23x17_set_direction(dev->io, dev->echo_pin, false));   // echo = input
+    CHECK(mcp_gpio_write(dev->io, dev->trigger_pin, 0));            // start low
     return ESP_OK;
 }
-
 
 esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_time_us, uint32_t *time_us)
 {
@@ -137,7 +152,8 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
     // wait for echo to go high
     int64_t start = esp_timer_get_time();
     bool echo;
-    do {
+    do
+    {
         mcp_gpio_read(dev->io, dev->echo_pin, &echo);
         if (esp_timer_get_time() - start > PING_TIMEOUT)
             return ESP_ERR_ULTRASONIC_PING_TIMEOUT;
@@ -145,7 +161,8 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
 
     // measure echo high time
     int64_t echo_start = esp_timer_get_time();
-    while (echo) {
+    while (echo)
+    {
         mcp_gpio_read(dev->io, dev->echo_pin, &echo);
         if (esp_timer_get_time() - echo_start > max_time_us)
             return ESP_ERR_ULTRASONIC_ECHO_TIMEOUT;
@@ -153,8 +170,6 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
 
     *time_us = (uint32_t)(esp_timer_get_time() - echo_start);
     return ESP_OK;
-
-
 }
 
 esp_err_t ultrasonic_measure(const ultrasonic_sensor_t *dev, float max_distance, float *distance)
