@@ -79,11 +79,11 @@ static uint32_t read_raw(hx711_t *dev)
     // 24 pulses to read data
     for (size_t i = 0; i < 24; i++)
     {
-        mcp_gpio_write(dev->io, pd_sck, 1); // set clock high
+        mcp_gpio_write(dev->io, dev->pd_sck, 1); // set clock high
         ets_delay_us(1);
-        mcp_gpio_read(dev->io, dout, &bit); // read bit
+        mcp_gpio_read(dev->io, dev->dout, &bit); // read bit
         data |= (bit << (23 - i));
-        mcp_gpio_write(dev->io, pd_sck, 0); // set clock low
+        mcp_gpio_write(dev->io, dev->pd_sck, 0); // set clock low
         ets_delay_us(1);
 
         /* gpio_set_level(pd_sck, 1);
@@ -161,7 +161,7 @@ esp_err_t hx711_set_gain(hx711_t *dev, hx711_gain_t gain)
 {
     CHECK_ARG(dev && gain <= HX711_GAIN_A_64);
     CHECK(hx711_wait(dev, 200)); // 200 ms timeout
-    read_raw(dev->dout, dev->pd_sck, gain);
+    read_raw(dev);
     dev->gain = gain;
     return ESP_OK;
 }
