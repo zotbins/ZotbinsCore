@@ -44,7 +44,7 @@
 #include <stdbool.h>
 #include <stdint.h> ////////////////////////////////// added
 
-#include "mcp23x17.h" //////////////////////////////////// added
+// #include "mcp23x17.h" //////////////////////////////////// added
 
 #ifdef __cplusplus
 extern "C"

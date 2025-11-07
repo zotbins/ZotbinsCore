@@ -44,7 +44,7 @@
 //#include <driver/gpio.h>
 #include <esp_err.h>
 
-#include "mcp23x17.h"
+// #include "mcp23x17.h"
 
 #ifdef __cplusplus
 extern "C"
