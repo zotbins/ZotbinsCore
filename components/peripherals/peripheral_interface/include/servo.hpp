@@ -1,6 +1,11 @@
 #ifndef SERVO_HPP
 #define SERVO_HPP
 
+#define SERVO_STATE_EVENT_BIT BIT1
+
+#define GATE_OPEN 1
+#define GATE_CLOSED 0
+
 #include "esp_err.h"
 
 /**
@@ -38,6 +43,20 @@ esp_err_t init_servo(void);
  * - ESP_ERR_INVALID_STATE if the driver is not initialized
  */
 esp_err_t servo_set_angle(float degrees);
+
+/**
+ * @brief Open servo preset - sets servo to 90 degrees.
+ *
+ * @return esp_err_t
+ */
+esp_err_t open_servo(void);
+
+/**
+ * @brief Close servo preset - sets servo to 0 degrees.
+ *
+ * @return esp_err_t
+ */
+esp_err_t close_servo(void);
 
 /**
  * @brief Set the raw PWM pulse width sent to the servo.

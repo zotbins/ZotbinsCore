@@ -77,7 +77,10 @@ float get_fullness(void)
 {
     uint32_t distance;
     float fullness;
-    ultrasonic_measure_cm(&hcsr04, 1000, &distance);      // TODO: convert to percentage
+    ultrasonic_measure_cm(&hcsr04, 1000, &distance); // TODO: convert to percentage
+
+    ESP_LOGI(TAG, "Raw distance reading: %" PRIu32 "cm", distance);
+
     fullness = 100.0 - (distance / MAX_DISTANCE * 100.0); // Convert distance to fullness percentage
 
     if (fullness > 100.0 && fullness < 110.0)
@@ -96,6 +99,6 @@ float get_fullness(void)
         return fullness;
     }
 
-    ESP_LOGI(TAG, "Distance to trash: %F%%", fullness);
+    ESP_LOGI(TAG, "Fullness of bin: %F%%", fullness);
     return fullness;
 }

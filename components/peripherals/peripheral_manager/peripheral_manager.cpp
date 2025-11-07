@@ -30,17 +30,17 @@ EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors h
 void init_manager(void)
 {
 
-    // Initialize sensors
+    // Initialize sensors and servo
     esp_err_t hx711_status = init_hx711();
     esp_err_t hcsr04_status = init_hcsr04();
-    init_breakbeam(); // TODO: change return value to esp_err_t
+    // if (init_servo() == ESP_OK) close_servo();
 
     manager_eg = xEventGroupCreate(); // Create the event group to store sensor event bits---for example, when the breakbeam is tripped, or when the servo has finished moving.
 
-    if (init_servo() == ESP_OK)
-    {
-        servo_set_angle(0);
-    }
+    // Initialize breakbeam sensor
+
+    init_breakbeam(); // TODO: change return value to esp_err_t
+    // Breakbeam depends on manager_eg being initialized.
 
     xTaskCreate(
         run_manager,          /* Task function. */
@@ -54,40 +54,43 @@ void init_manager(void)
 
 static void run_manager(void *arg)
 {
-
     ESP_LOGI(TAG, "Peripheral manager started!");
 
     // Servo parameters
     uint32_t last_usage = get_usage_count();
     bool gate_open = false;
     TickType_t open_since = 0;
-    constexpr TickType_t kHoldMs = 600;
+    constexpr TickType_t kHoldMs = 6000; // 6 seconds
 
     while (1)
     {
-        xEventGroupWaitBits(manager_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
+        xEventGroupWaitBits(manager_eg, USAGE_EVENT_BIT, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
+
+        xEventGroupSetBits(manager_eg, MANAGER_STATUS_EVENT_BIT); // Indicate that the peripheral manager is running
 
         // Collect sensor data---add additional sensors here as needed
         float weight = get_weight();
         float fullness = get_fullness();
         uint32_t usage = get_usage_count();
 
-        if (usage != last_usage)
-        { // Instructs servo to open bin
-            servo_set_angle(90);
-            gate_open = true;
-            open_since = xTaskGetTickCount();
-            last_usage = usage;
-        }
+        // if (usage != last_usage)
+        // { // Instructs servo to open bin
+        //     servo_set_angle(90);
+        //     gate_open = true;
+        //     open_since = xTaskGetTickCount();
+        //     last_usage = usage;
+        // }
 
-        if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs))
-        { // Instructs servo to close bin
-            servo_set_angle(0);
-            gate_open = false;
-        }
+        // if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs))
+        // { // Instructs servo to close bin
+        //     servo_set_angle(0);
+        //     gate_open = false;
+        // }
 
         // Publish data
         publish_payload(fullness, weight, usage);
+
+        xEventGroupClearBits(manager_eg, MANAGER_STATUS_EVENT_BIT); // Indicate that the peripheral manager is stopped
     }
 }
 
