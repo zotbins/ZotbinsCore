@@ -96,9 +96,9 @@ static uint32_t read_raw(hx711_t *dev)
     // config gain + channel for next read
     for (size_t i = 0; i <= dev->gain; i++)
     {
-        mcp_gpio_write(dev->io, pd_sck, 1);
+        mcp_gpio_write(dev->io, dev->pd_sck, 1);
         ets_delay_us(1);
-        mcp_gpio_write(dev->io, pd_sck, 0);
+        mcp_gpio_write(dev->io, dev->pd_sck, 0);
         ets_delay_us(1);
 
         /* gpio_set_level(pd_sck, 1);
