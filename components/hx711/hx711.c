@@ -52,7 +52,9 @@ static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 #define BIT64 BIT
 #endif
 
-static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain)
+
+//gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain)
+static uint32_t read_raw(hx711_t *dev)
 {
 #if HELPER_TARGET_IS_ESP32
     portENTER_CRITICAL(&mux);
@@ -62,22 +64,38 @@ static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain)
 
     // read data
     uint32_t data = 0;
+    bool bit = 0;
+
+    // 24 pulses to read data
     for (size_t i = 0; i < 24; i++)
     {
-        gpio_set_level(pd_sck, 1);
+        mcp_gpio_write(dev->io, pd_sck, 1); // set clock high
+        ets_delay_us(1);
+        mcp_gpio_read(dev->io, dout, &bit); // read bit
+        data |= (bit << (23 - i));
+        mcp_gpio_write(dev->io, pd_sck, 0); // set clock low
+        ets_delay_us(1);
+   
+        /* gpio_set_level(pd_sck, 1);
         ets_delay_us(1);
         data |= gpio_get_level(dout) << (23 - i);
         gpio_set_level(pd_sck, 0);
-        ets_delay_us(1);
+        ets_delay_us(1); */
     }
 
     // config gain + channel for next read
-    for (size_t i = 0; i <= gain; i++)
+    for (size_t i = 0; i <= dev->gain; i++)
     {
-        gpio_set_level(pd_sck, 1);
+        mcp_gpio_write(dev->io, pd_sck, 1);
+        ets_delay_us(1);
+        mcp_gpio_write(dev->io, pd_sck, 0);
+        ets_delay_us(1);
+
+        /* gpio_set_level(pd_sck, 1);
         ets_delay_us(1);
         gpio_set_level(pd_sck, 0);
         ets_delay_us(1);
+        */
     }
 
 #if HELPER_TARGET_IS_ESP32
@@ -93,8 +111,8 @@ static uint32_t read_raw(gpio_num_t dout, gpio_num_t pd_sck, hx711_gain_t gain)
 
 esp_err_t hx711_init(hx711_t *dev)
 {
-    CHECK_ARG(dev);
-
+    CHECK_ARG(dev && dev->io);
+    /*
     gpio_config_t conf = {
         .pin_bit_mask = BIT64(dev->dout),
         .mode = GPIO_MODE_INPUT,
@@ -109,16 +127,22 @@ esp_err_t hx711_init(hx711_t *dev)
     CHECK(gpio_config(&conf));
 
     CHECK(hx711_power_down(dev, false));
+    */
 
+    CHECK(mcp23x17_set_direction(dev->io, dev->dout, false)); // set DOUT as input
+    CHECK(mcp23x17_set_direction(dev->io, dev->pd_sck, true)); // set PD_SCK as output
+    CHECK(mcp_gpio_write(dev->io, dev->pd_sck, 0));         // set PD_SCK low
+    
+    // power up and set gain
+    CHECK(hx711_power_down(dev, false));
     return hx711_set_gain(dev, dev->gain);
 }
 
 esp_err_t hx711_power_down(hx711_t *dev, bool down)
 {
     CHECK_ARG(dev);
-
-    CHECK(gpio_set_level(dev->pd_sck, down));
-    vTaskDelay(1);
+    CHECK(mcp_gpio_write(dev->io, dev->pd_sck, down ? 1 : 0)); // set PD_SCK high to power down, low to power up
+    vTaskDelay(pdMS_TO_TICKS(1)); // wait for power up/down
 
     return ESP_OK;
 }
@@ -126,32 +150,31 @@ esp_err_t hx711_power_down(hx711_t *dev, bool down)
 esp_err_t hx711_set_gain(hx711_t *dev, hx711_gain_t gain)
 {
     CHECK_ARG(dev && gain <= HX711_GAIN_A_64);
-
     CHECK(hx711_wait(dev, 200)); // 200 ms timeout
-
     read_raw(dev->dout, dev->pd_sck, gain);
     dev->gain = gain;
-
     return ESP_OK;
 }
 
 esp_err_t hx711_is_ready(hx711_t *dev, bool *ready)
 {
     CHECK_ARG(dev && ready);
-
-    *ready = !gpio_get_level(dev->dout);
-
+    bool dout_level;
+    CHECK(mcp_gpio_read(dev->io, dev->dout, &dout_level));
+    *ready = !dout_level;
     return ESP_OK;
 }
 
 esp_err_t hx711_wait(hx711_t *dev, size_t timeout_ms)
 {
+    bool ready = false;
     uint64_t started = esp_timer_get_time() / 1000;
+
     while (esp_timer_get_time() / 1000 - started < timeout_ms)
     {
-        if (!gpio_get_level(dev->dout))
-            return ESP_OK;
-        vTaskDelay(1);
+        CHECK(hx711_is_ready(dev, &ready));
+        if (ready) return ESP_OK;
+        vTaskDelay(pdMS_TO_TICKS(1));
     }
 
     return ESP_ERR_TIMEOUT;
@@ -160,8 +183,8 @@ esp_err_t hx711_wait(hx711_t *dev, size_t timeout_ms)
 esp_err_t hx711_read_data(hx711_t *dev, int32_t *data)
 {
     CHECK_ARG(dev && data);
-
-    uint32_t raw = read_raw(dev->dout, dev->pd_sck, dev->gain);
+    // dev->dout, dev->pd_sck, dev->gain
+    uint32_t raw = read_raw(dev);
     if (raw & 0x800000)
         raw |= 0xff000000;
     *data = *((int32_t *)&raw);

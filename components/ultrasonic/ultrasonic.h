@@ -44,6 +44,8 @@
 #include <driver/gpio.h>
 #include <esp_err.h>
 
+#include "mcp23x17.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -58,6 +60,7 @@ extern "C"
      */
     typedef struct
     {
+        mcp23x17_t *io;        //!< Pointer to MCP expander ////////////////// added 
         gpio_num_t trigger_pin; //!< GPIO output pin for trigger
         gpio_num_t echo_pin;    //!< GPIO input pin for echo
     } ultrasonic_sensor_t;
@@ -81,7 +84,7 @@ extern "C"
      *         - ::ESP_ERR_ULTRASONIC_PING_TIMEOUT - Device is not responding
      *         - ::ESP_ERR_ULTRASONIC_ECHO_TIMEOUT - Distance is too big or wave is scattered
      */
-    esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_time_us, uint32_t *time_us);
+    esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev); //  uint32_t max_time_us, uint32_t *time_us
 
     /**
      * @brief Measure distance in meters
@@ -94,7 +97,7 @@ extern "C"
      *         - ::ESP_ERR_ULTRASONIC_PING_TIMEOUT - Device is not responding
      *         - ::ESP_ERR_ULTRASONIC_ECHO_TIMEOUT - Distance is too big or wave is scattered
      */
-    esp_err_t ultrasonic_measure(const ultrasonic_sensor_t *dev, float max_distance, float *distance);
+    esp_err_t ultrasonic_measure(const ultrasonic_sensor_t *dev); // float max_distance, float *distance
 
     /**
      * @brief Measure distance in centimeters
@@ -107,7 +110,7 @@ extern "C"
      *         - ::ESP_ERR_ULTRASONIC_PING_TIMEOUT - Device is not responding
      *         - ::ESP_ERR_ULTRASONIC_ECHO_TIMEOUT - Distance is too big or wave is scattered
      */
-    esp_err_t ultrasonic_measure_cm(const ultrasonic_sensor_t *dev, uint32_t max_distance, uint32_t *distance);
+    esp_err_t ultrasonic_measure_cm(const ultrasonic_sensor_t *dev); // uint32_t max_distance, uint32_t *distance
 
     /**
      * @brief Measure distance in meters with temperature compensation
@@ -125,7 +128,7 @@ extern "C"
      *         - ::ESP_ERR_ULTRASONIC_PING_TIMEOUT - Device is not responding
      *         - ::ESP_ERR_ULTRASONIC_ECHO_TIMEOUT - Distance is too big or wave is scattered
      */
-    esp_err_t ultrasonic_measure_temp_compensated(const ultrasonic_sensor_t *dev, float max_distance, float *distance, float temperature_c);
+    esp_err_t ultrasonic_measure_temp_compensated(const ultrasonic_sensor_t *dev);  // float max_distance, float *distance, float temperature_
 
     /**
      * @brief Measure distance in centimeters with temperature compensation
