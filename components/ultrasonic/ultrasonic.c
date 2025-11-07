@@ -45,6 +45,8 @@
 #include <esp_intr_alloc.h>
 #include <freertos/event_groups.h>
 #include <freertos/queue.h>
+#include "esp_log.h"
+
 #define TRIGGER_LOW_DELAY 4
 #define TRIGGER_HIGH_DELAY 10
 #define PING_TIMEOUT 6000
@@ -74,14 +76,20 @@ static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 EventGroupHandle_t xEventCheck; 
 QueueHandle_t xTimes;
 
+const char *TAG = "ultrasonic";
+
 void IRAM_ATTR echo_isr_handler(void* parameters){
     BaseType_t xResult,xHigherPriorityTaskWoken;
     xHigherPriorityTaskWoken = pdFALSE;
+    
     int64_t time;
-    //Sets ECHO_BIT and sends time through queue
-    xResult = xEventGroupSetBitsFromISR(xEventCheck,ECHO_BIT,&xHigherPriorityTaskWoken);
+
+    // Sets ECHO_BIT and sends time through queue
     time = esp_timer_get_time();
     xQueueSendFromISR(xTimes,&time,&xHigherPriorityTaskWoken);
+
+    xResult = xEventGroupSetBitsFromISR(xEventCheck,ECHO_BIT,&xHigherPriorityTaskWoken);
+
     if(xHigherPriorityTaskWoken == pdTRUE){     
         portYIELD_FROM_ISR();
     }
@@ -99,23 +107,28 @@ esp_err_t ultrasonic_init(const ultrasonic_sensor_t *dev)
         sizeof(int64_t)
     );
     // Sets ISR to active on rising edge and falling edge
-    CHECK(gpio_set_intr_type(dev->echo_pin, GPIO_INTR_ANYEDGE));
-    CHECK(gpio_install_isr_service(ESP_INTR_FLAG_IRAM));
-    CHECK(gpio_isr_handler_add(dev->echo_pin,echo_isr_handler,NULL));
+    ESP_LOGI(TAG, "Setting up ISR handler for echo pin...");
+    ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_set_intr_type(dev->echo_pin, GPIO_INTR_ANYEDGE));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(gpio_isr_handler_add(dev->echo_pin,echo_isr_handler,NULL));
+    ESP_LOGI(TAG, "ISR handler configured!");
     return gpio_set_level(dev->trigger_pin, 0);
 }
 
 
 esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_time_us, uint32_t *time_us)
 {
+
+    xQueueReset(xTimes);  // Clear any stale data
+    xEventGroupClearBits(xEventCheck, ECHO_BIT);
+
     CHECK_ARG(dev && time_us);
     EventBits_t timeBits;
     TickType_t startTimeout = pdMS_TO_TICKS(PING_TIMEOUT);
     int64_t start;
     int64_t time;
-    PORT_ENTER_CRITICAL;
 
     // Ping: Low for 2..4 us, then high 10 us
+    ESP_LOGI(TAG, "Sending ping...");
     CHECK(gpio_set_level(dev->trigger_pin,0));
     ets_delay_us(TRIGGER_LOW_DELAY);
     CHECK(gpio_set_level(dev->trigger_pin,1));
@@ -127,6 +140,7 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
         RETURN_CRITICAL(ESP_ERR_ULTRASONIC_PING);
 
     //Waits for Start Bit
+    ESP_LOGI(TAG, "Waiting for echo rising edge...");
     timeBits = xEventGroupWaitBits(
         xEventCheck,
         ECHO_BIT,
@@ -134,11 +148,15 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
         pdTRUE,
         startTimeout    
     );
+    ESP_LOGI(TAG, "Echo rising edge received!");
     
+    // Returns Error if no value is passed by Queue
     if(xQueueReceive(xTimes,&start,0)!=pdTRUE){
         return ESP_ERR_ULTRASONIC_ECHO_TIMEOUT;
     }
+
     //Waits for Stop Bit
+    ESP_LOGI(TAG, "Waiting for echo falling edge...");
     timeBits = xEventGroupWaitBits(
         xEventCheck,
         ECHO_BIT,
@@ -146,11 +164,14 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
         pdTRUE,
         startTimeout
     ); 
-    //Returns Error if no value is passed by Queue
+    ESP_LOGI(TAG, "Echo falling edge received!");
+
+    // Returns Error if no value is passed by Queue
     if(xQueueReceive(xTimes,&time,0)!=pdTRUE){
         return ESP_ERR_ULTRASONIC_ECHO_TIMEOUT;
     }
-    PORT_EXIT_CRITICAL;
+
+    // Calculate time of pulse
     *time_us = time - start;
     xQueueReset(xTimes);
     return ESP_OK;

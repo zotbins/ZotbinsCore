@@ -18,6 +18,9 @@
 #include "usage_sensor.hpp"
 #include "esp_log.h"
 
+#define DEBOUNCE_TIME_MS 50
+static TimerHandle_t debounce_timer = NULL;
+
 static const char *TAG = "usage_sensor";
 
 /*
@@ -34,12 +37,6 @@ static const char *TAG = "usage_sensor";
 */
 
 const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
-static_assert(GPIO_IS_VALID_GPIO(PIN_BREAKBEAM), "Breakbeam pin must be a valid GPIO line");
-static_assert(PIN_BREAKBEAM < GPIO_NUM_34, "Breakbeam requires an input with pull-up capability");
-static_assert(PIN_BREAKBEAM != GPIO_NUM_36 && PIN_BREAKBEAM != GPIO_NUM_39,
-              "Pin 18 avoids the errata affecting GPIO36/GPIO39 interrupts during Wi-Fi/BLE use");
-static_assert(PIN_BREAKBEAM == GPIO_NUM_18,
-              "ZotbinsCore PCB routes the breakbeam sensor through VSPI CLK (GPIO18); update mapping if hardware changes");
 
 // Intention with GPIO_INTR_NEGEDGE and the reduced ISR is to reduce the time the ISR is running, the only thing the ISR needs to do is mark rising and falling edge and increment or set values accordingly.
 const gpio_config_t PIN_BREAKBEAM_CONFIG = {
@@ -51,17 +48,24 @@ const gpio_config_t PIN_BREAKBEAM_CONFIG = {
 
 static uint32_t usage_count = 0;
 
+static void debounce_timer_callback(TimerHandle_t xTimer) {
+    gpio_intr_enable(PIN_BREAKBEAM);
+}
+
 // Breakbeam ISR
 void IRAM_ATTR increment_usage(void *arg)
 {
-    usage_count++; // Increment usage count
-
+    
     BaseType_t xHigherPriorityTaskWoken, xResult; // from https://www.freertos.org/Documentation/02-Kernel/04-API-references/12-Event-groups-or-flags/06-xEventGroupSetBitsFromISR
-
     xHigherPriorityTaskWoken = pdFALSE; // Must be initialized to pdFALSE.
 
-    xResult = xEventGroupSetBitsFromISR(manager_eg, BIT0, &xHigherPriorityTaskWoken); // Signal the manager task that the breakbeam was tripped
+    gpio_intr_disable(PIN_BREAKBEAM);
+    xTimerStartFromISR(debounce_timer, &xHigherPriorityTaskWoken);
 
+    usage_count++; // Increment usage count
+
+    xResult = xEventGroupSetBitsFromISR(manager_eg, BIT0, &xHigherPriorityTaskWoken); // Signal the manager task that the breakbeam was tripped
+    
     if (xResult != pdFAIL)
     {
         // If unblocked task is higher priority than the daemon task, request an immediate context switch
@@ -71,14 +75,18 @@ void IRAM_ATTR increment_usage(void *arg)
 
 void init_breakbeam(void)
 {
+    debounce_timer = xTimerCreate(
+        "debounce",
+        pdMS_TO_TICKS(DEBOUNCE_TIME_MS),
+        pdFALSE,  // One-shot timer
+        NULL,
+        debounce_timer_callback
+    );
+
     ESP_LOGI(TAG, "Initializing usage sensor...");
     // ABSOLUTELY NECESSARY FOR SOME PINS, COMPLETELY OVERRIDES PREVIOUS CONFIGURATION
     ESP_ERROR_CHECK_WITHOUT_ABORT(
         gpio_config(&PIN_BREAKBEAM_CONFIG));
-
-    ESP_LOGI(TAG, "Installing ISR service...");
-    ESP_ERROR_CHECK_WITHOUT_ABORT(
-        gpio_install_isr_service(0));
 
     ESP_LOGI(TAG, "Adding ISR handler...");
     ESP_ERROR_CHECK_WITHOUT_ABORT(

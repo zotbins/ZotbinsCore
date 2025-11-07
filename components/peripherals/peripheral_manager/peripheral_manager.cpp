@@ -11,6 +11,8 @@
 
 #include <stdint.h>
 
+#include <driver/gpio.h>
+
 #include "fullness_sensor.hpp"
 #include "servo.hpp"
 #include "usage_sensor.hpp"
@@ -29,6 +31,10 @@ EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors h
 
 void init_manager(void)
 {
+
+    ESP_LOGI(TAG, "Installing ISR service...");
+    ESP_ERROR_CHECK_WITHOUT_ABORT(
+        gpio_install_isr_service(0));
 
     // Initialize sensors
     esp_err_t hx711_status = init_hx711();
@@ -57,11 +63,11 @@ static void run_manager(void *arg)
 
     ESP_LOGI(TAG, "Peripheral manager started!");
 
-    // Servo parameters
-    uint32_t last_usage = get_usage_count();
-    bool gate_open = false;
-    TickType_t open_since = 0;
-    constexpr TickType_t kHoldMs = 600;
+    // // Servo parameters
+    // uint32_t last_usage = get_usage_count();
+    // bool gate_open = false;
+    // TickType_t open_since = 0;
+    // constexpr TickType_t kHoldMs = 600;
 
     while (1)
     {
@@ -72,22 +78,23 @@ static void run_manager(void *arg)
         float fullness = get_fullness();
         uint32_t usage = get_usage_count();
 
-        if (usage != last_usage)
-        { // Instructs servo to open bin
-            servo_set_angle(90);
-            gate_open = true;
-            open_since = xTaskGetTickCount();
-            last_usage = usage;
-        }
+        // if (usage != last_usage)
+        // { // Instructs servo to open bin
+        //     servo_set_angle(90);
+        //     gate_open = true;
+        //     open_since = xTaskGetTickCount();
+        //     last_usage = usage;
+        // }
 
-        if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs))
-        { // Instructs servo to close bin
-            servo_set_angle(0);
-            gate_open = false;
-        }
+        // if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs))
+        // { // Instructs servo to close bin
+        //     servo_set_angle(0);
+        //     gate_open = false;
+        // }
 
         // Publish data
         publish_payload(fullness, weight, usage);
+
     }
 }
 

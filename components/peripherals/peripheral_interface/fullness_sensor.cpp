@@ -96,6 +96,7 @@ float get_fullness(void)
         return fullness;
     }
 
-    ESP_LOGI(TAG, "Distance to trash: %F%%", fullness);
+    ESP_LOGI(TAG, "Distance to trash: %" PRIu32 "cm", distance);
+    ESP_LOGI(TAG, "Fullness of trash: %f%%", fullness);
     return fullness;
 }
