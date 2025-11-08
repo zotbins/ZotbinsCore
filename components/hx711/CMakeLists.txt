@@ -3,7 +3,7 @@ if(${IDF_TARGET} STREQUAL esp8266)
 elseif(${IDF_VERSION_MAJOR} STREQUAL 4 AND ${IDF_VERSION_MINOR} STREQUAL 1 AND ${IDF_VERSION_PATCH} STREQUAL 3)
     	set(req driver freertos esp_idf_lib_helpers)
 else()
-    set(req driver freertos esp_idf_lib_helpers esp_timer)
+    set(req driver freertos esp_idf_lib_helpers esp_timer mcp23x17)
 endif()
 
 idf_component_register(

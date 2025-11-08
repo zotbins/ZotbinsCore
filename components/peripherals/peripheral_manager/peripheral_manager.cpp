@@ -54,7 +54,7 @@ void init_manager(void)
     i2cdev_init();
 
     // Initialize empty devie, will break without
-    mcp23x17_t mcp23017_device = {0};
+    mcp23x17_t mcp23017_device = {};
 
     // I2C address, requires A0, A1, A2 tied to ground on device
     uint8_t mcp23017_addr = DEVICE_ADDR;
