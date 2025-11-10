@@ -6,3 +6,5 @@ components/mqtt_client/credentials/aws.url
 components/mqtt_client/credentials/ca.crt
 components/mqtt_client/credentials/client.crt
 components/mqtt_client/credentials/client.key
+components/ota_updates/test_certs/server_key.pem
+components/ota_updates/test_certs/server_cert.pem
