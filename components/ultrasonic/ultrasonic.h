@@ -41,7 +41,7 @@
 #ifndef __ULTRASONIC_H__
 #define __ULTRASONIC_H__
 
-//#include <driver/gpio.h>
+// #include <driver/gpio.h>
 #include <esp_err.h>
 
 #include "mcp23x17.h"
@@ -60,7 +60,7 @@ extern "C"
      */
     typedef struct
     {
-        mcp23x17_t *io;         //!< Pointer to MCP expander ////////////////// added
+        mcp23x17_t *io;      //!< Pointer to MCP expander ////////////////// added
         uint8_t trigger_pin; //!< GPIO output pin for trigger
         uint8_t echo_pin;    //!< GPIO input pin for echo
     } ultrasonic_sensor_t;
@@ -84,7 +84,7 @@ extern "C"
      *         - ::ESP_ERR_ULTRASONIC_PING_TIMEOUT - Device is not responding
      *         - ::ESP_ERR_ULTRASONIC_ECHO_TIMEOUT - Distance is too big or wave is scattered
      */
-   esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_time_us, uint32_t *time_us); //  uint32_t max_time_us, uint32_t *time_us
+    esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_time_us, uint32_t *time_us); //  uint32_t max_time_us, uint32_t *time_us
 
     /**
      * @brief Measure distance in meters
