@@ -77,11 +77,10 @@ void init_manager(void)
     // Set pin (GPA0) to input (0x0001)
     err = mcp23x17_port_set_mode(&mcp23017_device, 0xFFFF & GPA0);
     if (err != ESP_OK) {
-        val = mcp23x17_port_get_pullup(&mcp23017_device, &val);
         ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %s", esp_err_to_name(err));
     } else {
-        val = mcp23x17_port_get_pullup(&mcp23017_device, &val);
-        ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %" PRIu32, val);
+        mcp23x17_port_get_pullup(&mcp23017_device, &val);
+        ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %" PRIu16, val);
     }
 
     // Set pullup resistors on pins
@@ -89,8 +88,8 @@ void init_manager(void)
     if (err != ESP_OK) {
         ESP_LOGW(TAG, "mcp23x17_port_set_pullup returned %s", esp_err_to_name(err));
     } else {
-        val = mcp23x17_port_get_pullup(&mcp23017_device, &val);
-        ESP_LOGW(TAG, "mcp23x17_port_set_pullup returned %" PRIu32, val);
+        mcp23x17_port_get_pullup(&mcp23017_device, &val);
+        ESP_LOGW(TAG, "mcp23x17_port_set_pullup returned %" PRIu16, val);
     }
 
     uint16_t value;
