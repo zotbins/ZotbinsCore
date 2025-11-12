@@ -64,34 +64,47 @@ void init_manager(void)
     // mcp23017_device.cfg.sda_pullup_en = 1; // enable internal SDA pull-up
     // mcp23017_device.cfg.scl_pullup_en = 1; // enable internal SCL pull-up
 
-    // Initialize I2C line
-    esp_err_t err = mcp23x17_init_desc(&mcp23017_device, mcp23017_addr, I2C_NUM_0, GPIO_NUM_21, GPIO_NUM_22);
+    // Initialize I2C line (SDA=12, SCL=14) (SDA is first)
+    esp_err_t err = mcp23x17_init_desc(&mcp23017_device, mcp23017_addr, I2C_NUM_0, GPIO_NUM_12, GPIO_NUM_14);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "mcp23x17_init_desc failed: %s", esp_err_to_name(err));
         return;
     }
 
-    // Set pin (GPA0) to output (0xFFFF)
-    err = mcp23x17_port_set_mode(&mcp23017_device, 0xFFFF | GPA0);
+    uint16_t val;
+
+    // 1 is input, 0 is output
+    // Set pin (GPA0) to input (0x0001)
+    err = mcp23x17_port_set_mode(&mcp23017_device, 0xFFFF & GPA0);
     if (err != ESP_OK) {
+        val = mcp23x17_port_get_pullup(&mcp23017_device, &val);
         ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %s", esp_err_to_name(err));
+    } else {
+        val = mcp23x17_port_get_pullup(&mcp23017_device, &val);
+        ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %" PRIu32, val);
     }
 
     // Set pullup resistors on pins
-    mcp23x17_port_set_pullup(&mcp23017_device, 0x0001);
+    err = mcp23x17_port_set_pullup(&mcp23017_device, 0xFFFF & GPA0);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "mcp23x17_port_set_pullup returned %s", esp_err_to_name(err));
+    } else {
+        val = mcp23x17_port_get_pullup(&mcp23017_device, &val);
+        ESP_LOGW(TAG, "mcp23x17_port_set_pullup returned %" PRIu32, val);
+    }
 
     uint16_t value;
 
     /* Read instructions for gpio expander. TODO */
-    // while (1) {
-    //     vTaskDelay(1 / portTICK_PERIOD_MS);
-    //     err = mcp23x17_port_read(&mcp23017_device, &value);
-    //     if (err == ESP_OK) {
-    //         ESP_LOGI(TAG, "port value=0x%04x", value);
-    //     } else {
-    //         ESP_LOGE(TAG, "mcp23x17_port_read failed: %s", esp_err_to_name(err));
-    //     }
-    // }
+    while (1) {
+        vTaskDelay(100 / portTICK_PERIOD_MS);
+        err = mcp23x17_port_read(&mcp23017_device, &value);
+        if (err == ESP_OK) {
+            ESP_LOGI(TAG, "port value=0x%04x", value);
+        } else {
+            ESP_LOGE(TAG, "mcp23x17_port_read failed: %s", esp_err_to_name(err));
+        }
+    }
 
     // Initialize sensors
     esp_err_t hx711_status = init_hx711();
