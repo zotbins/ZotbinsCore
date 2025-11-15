@@ -23,6 +23,8 @@
 #include "events.hpp"
 #include "mcp23x17.h"
 
+#include "mcp_dev.h"
+
 #define GPA0 0x0001
 #define GPA1 0x0002
 #define GPA2 0x0004
@@ -71,6 +73,8 @@ void init_manager(void)
         ESP_LOGE(TAG, "mcp23x17_init_desc failed: %s", esp_err_to_name(err));
         return;
     }
+
+    mcp_dev = &mcp23017_device; // Set global MCP device pointer
 
     uint16_t val;
 

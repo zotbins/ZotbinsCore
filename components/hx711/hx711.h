@@ -66,7 +66,7 @@ extern "C"
      */
     typedef struct
     {
-        mcp23x17_t *mcp_dev_addr; // pointer to MCP23x17 expander device
+        mcp23x17_t *mcp_dev; // pointer to MCP23x17 expander device
         // gpio_num_t dout;     /////////////////////////////////////// removed
         // gpio_num_t pd_sck;   ////////////////////////////////////// removed
         uint8_t dout;   // MCP23x17 pin for DOUT

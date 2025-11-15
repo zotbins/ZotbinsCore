@@ -519,9 +519,9 @@ esp_err_t mcp23x17_set_interrupt(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_int
 
 /* <----------------- ZotBins Helpers!!!! :3 -----------------> */
  
-esp_err_t mcp_gpio_set_direction(mcp23x17_t *dev, uint16_t pin, bool direction)
+esp_err_t mcp_gpio_set_direction(mcp23x17_t *dev, uint8_t pin, bool direction)
 {
-    CHECK_ARG(dev && pin <= 0xFFFF); // make sure device is valid and pin is in range 0-15
+    CHECK_ARG(dev && pin < 16); // make sure device is valid and pin is in range 0-15
     uint16_t iodir;
     CHECK(read_reg_16(dev, REG_IODIRA, &iodir)); // read current direction register (i/o direction)
     if (direction)
@@ -535,9 +535,9 @@ esp_err_t mcp_gpio_set_direction(mcp23x17_t *dev, uint16_t pin, bool direction)
     return write_reg_16(dev, REG_IODIRA, iodir);
 }
 
-esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint16_t pin, bool level)
+esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint8_t pin, bool level)
 {
-    CHECK_ARG(dev && pin <= 0xFFFF); // make sure device is valid and pin is in range 0-15
+    CHECK_ARG(dev && pin < 16); // make sure device is valid and pin is in range 0-15
     uint16_t latch;
     CHECK(read_reg_16(dev, REG_GPIOA, &latch)); // read current latch register
     if (level)
@@ -551,19 +551,19 @@ esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint16_t pin, bool level)
     return write_reg_16(dev, REG_GPIOA, latch);
 }
 
-esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint16_t pin, bool *level)
+esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint8_t pin, bool *level)
 {
 
-    CHECK_ARG(dev && pin <= 0xFFFF && level); // make sure device is valid and pin is in range 0-15
+    CHECK_ARG(dev && pin < 16 && level); // make sure device is valid and pin is in range 0-15
     uint16_t gpio;
     CHECK(read_reg_16(dev, REG_GPIOA, &gpio)); // read current GPIO register
     *level = (gpio & (1 << pin)) != 0;         // get pin level
     return ESP_OK;
 }
 
-esp_err_t mcp_gpio_config_mirrored_interrupts(mcp23x17_t *dev, bool enable)
+esp_err_t mcp_gpio_config_mirrored_interrupts(mcp23x17_t *dev, bool enabled)
 {
-    return write_reg_bit_8(dev, REG_IOCON, enable, BIT_IOCON_MIRROR); // set or clear MIRROR bit
+    return write_reg_bit_8(dev, REG_IOCON, enabled, BIT_IOCON_MIRROR); // set or clear MIRROR bit
 }
 
 /* <----------------- End of ZotBins Helpers!!!! :3 -----------------> */

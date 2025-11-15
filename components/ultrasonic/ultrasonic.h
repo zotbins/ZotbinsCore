@@ -60,7 +60,7 @@ extern "C"
      */
     typedef struct
     {
-        mcp23x17_t *mcp_dev_addr;      //!< Pointer to MCP expander ////////////////// added
+        mcp23x17_t *mcp_dev;      //!< Pointer to MCP expander ////////////////// added
         uint16_t trigger_pin; //!< GPIO output pin for trigger
         uint16_t echo_pin;    //!< GPIO input pin for echo
     } ultrasonic_sensor_t;

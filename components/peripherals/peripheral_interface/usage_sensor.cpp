@@ -18,6 +18,10 @@
 #include "usage_sensor.hpp"
 #include "esp_log.h"
 
+#include "mcp23x17.h"
+#include "mcp_gpio_macros.h"
+#include "mcp_dev.h"
+
 static const char *TAG = "usage_sensor";
 
 /*
@@ -33,27 +37,29 @@ static const char *TAG = "usage_sensor";
     ESP32: Please do not use the interrupt of GPIO36 and GPIO39 when using ADC or Wi-Fi and Bluetooth with sleep mode enabled. Please refer to the comments of adc1_get_raw. Please refer to Section 3.11 of ESP32 ECO and Workarounds for Bugs for the description of this issue.
 */
 
-const gpio_num_t PIN_BREAKBEAM = GPIO_NUM_18;
-static_assert(GPIO_IS_VALID_GPIO(PIN_BREAKBEAM), "Breakbeam pin must be a valid GPIO line");
-static_assert(PIN_BREAKBEAM < GPIO_NUM_34, "Breakbeam requires an input with pull-up capability");
-static_assert(PIN_BREAKBEAM != GPIO_NUM_36 && PIN_BREAKBEAM != GPIO_NUM_39,
-              "Pin 18 avoids the errata affecting GPIO36/GPIO39 interrupts during Wi-Fi/BLE use");
-static_assert(PIN_BREAKBEAM == GPIO_NUM_18,
-              "ZotbinsCore PCB routes the breakbeam sensor through VSPI CLK (GPIO18); update mapping if hardware changes");
+/*
+    PIN CONFIGS are up to date for ZB25_WROVER-DEV_01-02
+*/
+const gpio_num_t MCP_PIN_INTB = GPIO_NUM_15;
+
+const uint16_t PIN_BREAKBEAM = MCP_PORTB_GPIO1; // GPIO pin connected to INTB of MCP23017
+
+extern mcp23x17_t *mcp_dev; // MCP device address declared in peripheral_manager.cpp
 
 // Intention with GPIO_INTR_NEGEDGE and the reduced ISR is to reduce the time the ISR is running, the only thing the ISR needs to do is mark rising and falling edge and increment or set values accordingly.
 const gpio_config_t PIN_BREAKBEAM_CONFIG = {
-    .pin_bit_mask = (1ULL << PIN_BREAKBEAM),
+    .pin_bit_mask = (1ULL << MCP_PIN_INTB),
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_ENABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_NEGEDGE};
+    .intr_type = GPIO_INTR_POSEDGE}; // Interrupt on rising edge (MCP interrupt goes high when breakbeam goes low)
 
 static uint32_t usage_count = 0;
 
 // Breakbeam ISR
 void IRAM_ATTR increment_usage(void *arg)
 {
+    mcp_gpio_read(mcp_dev, PIN_BREAKBEAM, nullptr); // Clear interrupt on MCP device
     usage_count++; // Increment usage count
 
     BaseType_t xHigherPriorityTaskWoken, xResult; // from https://www.freertos.org/Documentation/02-Kernel/04-API-references/12-Event-groups-or-flags/06-xEventGroupSetBitsFromISR
@@ -82,7 +88,10 @@ void init_breakbeam(void)
 
     ESP_LOGI(TAG, "Adding ISR handler...");
     ESP_ERROR_CHECK_WITHOUT_ABORT(
-        gpio_isr_handler_add(PIN_BREAKBEAM, increment_usage, NULL));
+        gpio_isr_handler_add(MCP_PIN_INTB, increment_usage, NULL));
+
+    ESP_LOGI(TAG, "Configuring MCP23017 interrupt for breakbeam...");
+    mcp23x17_port_set_interrupt(mcp_dev, MCP_PORTB_GPIO1, MCP23X17_INT_LOW_EDGE); // Set interrupt on breakbeam pin for rising edge (breakbeam goes low when tripped, interrupt goes high)
 
     ESP_LOGI(TAG, "Usage sensor initialized!");
 }

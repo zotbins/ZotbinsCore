@@ -18,6 +18,7 @@
 #include "fullness_sensor.hpp"
 
 #include "mcp_gpio_macros.h"
+#include "mcp_dev.h"
 
 /*
     GPIO Pin Configuation
@@ -25,41 +26,29 @@
     Please refer to the ESP32-WROVER datasheet for the pinouts.
     https://www.espressif.com/sites/default/files/documentation/esp32-wrover-e_esp32-wrover-ie_datasheet_en.pdf
 */
-const gpio_num_t PIN_TRIG = GPIO_NUM_22; // TODO: reason for pin choice
-const gpio_num_t PIN_ECHO = GPIO_NUM_23; // TODO: reason for pin choice
 
-// NECESSARY for some pins. Always safer to use a gpio_config_t to configure pins.
-static const gpio_config_t PIN_TRIG_CONFIG = {
-    .pin_bit_mask = 1ULL << PIN_TRIG,
-    .mode = GPIO_MODE_OUTPUT,
-    .pull_up_en = GPIO_PULLUP_DISABLE,
-    .pull_down_en = GPIO_PULLDOWN_ENABLE,
-    .intr_type = GPIO_INTR_DISABLE};
-static const gpio_config_t PIN_ECHO_CONFIG = {
-    .pin_bit_mask = 1ULL << PIN_ECHO,
-    .mode = GPIO_MODE_INPUT,
-    .pull_up_en = GPIO_PULLUP_DISABLE,
-    .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_DISABLE};
+/*
+    PIN CONFIGS are up to date for ZB25_WROVER-DEV_01-02
+*/
+const uint16_t PIN_TRIG = MCP_PORTA_GPIO2; // TODO: reason for pin choice
+const uint16_t PIN_ECHO = MCP_PORTB_GPIO0; // TODO: reason for pin choice
 
 static const char *TAG = "fullness_sensor"; // Tag for ESP logging
 
 static const float MAX_DISTANCE = 400.0; // Maximum measurable distance in cm. Used in this formula: 100% - (distance / MAX_DISTANCE * 100%) = fullness percentage. TODO: calibrate
 
+extern mcp23x17_t *mcp_dev; // MCP device address declared in peripheral_manager.cpp
+
 static ultrasonic_sensor_t hcsr04 = { // HC-SR04 ultrasonic sensor object
+    .mcp_dev = mcp_dev,
     .trigger_pin = PIN_TRIG,
-    .echo_pin = PIN_ECHO};
+    .echo_pin = PIN_ECHO
+};
 
 esp_err_t init_hcsr04(void)
 {
 
     ESP_LOGI(TAG, "Initializing fullness sensor...");
-
-    // ABSOLUTELY NECESSARY FOR SOME PINS, COMPLETELY OVERRIDES PREVIOUS CONFIGURATION
-    ESP_ERROR_CHECK_WITHOUT_ABORT(
-        gpio_config(&PIN_TRIG_CONFIG));
-    ESP_ERROR_CHECK_WITHOUT_ABORT(
-        gpio_config(&PIN_ECHO_CONFIG));
 
     esp_err_t hcsr04_device_status = ultrasonic_init(&hcsr04);
 

@@ -340,17 +340,17 @@ esp_err_t mcp23x17_free_desc_spi(mcp23x17_t *dev);
     /**
      * @brief Set GPIO pin direction
      */
-    esp_err_t mcp_gpio_set_direction(mcp23x17_t *dev, uint16_t pin, bool direction);
+    esp_err_t mcp_gpio_set_direction(mcp23x17_t *dev, uint8_t pin, bool direction);
 
     /**
      * @brief Write GPIO pin level
      */
-    esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint16_t pin, bool level);
+    esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint8_t pin, bool level);
 
     /**
      * @brief Read GPIO pin level
      */
-    esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint16_t pin, bool *level);
+    esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint8_t pin, bool *level);
 
     /**
      * @brief Enable or disable interrupt mirroring on INTA and INTB pins
@@ -364,35 +364,7 @@ esp_err_t mcp23x17_free_desc_spi(mcp23x17_t *dev);
      * @param enable `true` to enable interrupt mirroring, `false` to disable
      * @return `ESP_OK` on success
      */
-    esp_err_t mcp_gpio_config_mirrored_interrupts(mcp23x17_t *dev, bool enable);
-
-    /*
-
-    IMPORTANT!!!!
-
-    The current board iteration (ZB25_WROVER-DEV_01-02) only uses PORTB for interrupts.
-
-    These helper functions allow enabling/disabling interrupts specifically for PORTA and PORTB. 
-    
-    */
-
-    /**
-     * @brief Configure interrupts for PORTA
-     *
-     * @param dev Pointer to device descriptor
-     * @param enable `true` to enable interrupts on PORTA, `false` to disable
-     * @return `ESP_OK` on success
-     */
-    esp_err_t mcp_gpio_config_interrupt_porta(mcp23x17_t *dev, bool enable);
-
-    /**
-     * @brief Configure interrupts for PORTB
-     *
-     * @param dev Pointer to device descriptor
-     * @param enable `true` to enable interrupts on PORTB, `false` to disable
-     * @return `ESP_OK` on success
-     */
-    esp_err_t mcp_gpio_config_interrupt_portb(mcp23x17_t *dev, bool enable);
+    esp_err_t mcp_gpio_config_mirrored_interrupts(mcp23x17_t *dev, bool enabled);
 
     /* <----------------- End of ZotBins Helpers!!!! :3 -----------------> */
 
