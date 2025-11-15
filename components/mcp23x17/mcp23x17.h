@@ -301,7 +301,7 @@ esp_err_t mcp23x17_free_desc_spi(mcp23x17_t *dev);
      * @param[out] val `true` if pin currently in high state
      * @return `ESP_OK` on success
      */
-    esp_err_t mcp23x17_get_level(mcp23x17_t *dev, uint8_t pin, uint32_t *val);
+    esp_err_t mcp23x17_get_level(mcp23x17_t *dev, uint8_t pin, bool *val);
 
     /**
      * @brief Set GPIO pin level
@@ -334,39 +334,6 @@ esp_err_t mcp23x17_free_desc_spi(mcp23x17_t *dev);
      * @return `ESP_OK` on success
      */
     esp_err_t mcp23x17_set_interrupt(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_intr_t intr);
-
-    /* <----------------- ZotBins Helpers!!!! :3 -----------------> */
-
-    /**
-     * @brief Set GPIO pin direction
-     */
-    esp_err_t mcp_gpio_set_direction(mcp23x17_t *dev, uint8_t pin, bool direction);
-
-    /**
-     * @brief Write GPIO pin level
-     */
-    esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint8_t pin, bool level);
-
-    /**
-     * @brief Read GPIO pin level
-     */
-    esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint8_t pin, bool *level);
-
-    /**
-     * @brief Enable or disable interrupt mirroring on INTA and INTB pins
-     *
-     * When enabled, the INTB pin will mirror the state of the INTA pin.
-     * This means that if either port generates an interrupt, both INT pins will be activated.
-     * When disabled, INTA and INTB will operate independently, each reflecting the interrupt status of their respective ports.
-     * The current board iteration (ZB25_WROVER-DEV_01-02) only uses PORTB for interrupts. Mirroring interrupts will cause lots of issues on this board revision.
-     *
-     * @param dev Pointer to device descriptor
-     * @param enable `true` to enable interrupt mirroring, `false` to disable
-     * @return `ESP_OK` on success
-     */
-    esp_err_t mcp_gpio_config_mirrored_interrupts(mcp23x17_t *dev, bool enabled);
-
-    /* <----------------- End of ZotBins Helpers!!!! :3 -----------------> */
 
 #ifdef __cplusplus
 }

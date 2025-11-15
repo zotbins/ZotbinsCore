@@ -24,3 +24,6 @@
 
 #define MCP_HIGH 1
 #define MCP_LOW 0
+
+#define MCP_INT_ENABLE 1
+#define MCP_INT_DISABLE 0

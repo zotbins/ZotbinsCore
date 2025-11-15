@@ -59,7 +59,7 @@ static uint32_t usage_count = 0;
 // Breakbeam ISR
 void IRAM_ATTR increment_usage(void *arg)
 {
-    mcp_gpio_read(mcp_dev, PIN_BREAKBEAM, nullptr); // Clear interrupt on MCP device
+    mcp23x17_get_level(mcp_dev, PIN_BREAKBEAM, nullptr); // Clear the interrupt on the MCP by reading the GPIO register
     usage_count++; // Increment usage count
 
     BaseType_t xHigherPriorityTaskWoken, xResult; // from https://www.freertos.org/Documentation/02-Kernel/04-API-references/12-Event-groups-or-flags/06-xEventGroupSetBitsFromISR
@@ -91,7 +91,9 @@ void init_breakbeam(void)
         gpio_isr_handler_add(MCP_PIN_INTB, increment_usage, NULL));
 
     ESP_LOGI(TAG, "Configuring MCP23017 interrupt for breakbeam...");
-    mcp23x17_port_set_interrupt(mcp_dev, MCP_PORTB_GPIO1, MCP23X17_INT_LOW_EDGE); // Set interrupt on breakbeam pin for rising edge (breakbeam goes low when tripped, interrupt goes high)
+    mcp23x17_set_pullup(mcp_dev, MCP_PORTB_GPIO1, MCP_INT_ENABLE);
+    vTaskDelay(10 / portTICK_PERIOD_MS);                                      // Short delay to ensure pullup is set before enabling interrupt
+    mcp23x17_set_interrupt(mcp_dev, MCP_PORTB_GPIO1, MCP23X17_INT_LOW_EDGE); // Set interrupt on breakbeam pin for rising edge (breakbeam goes low when tripped, interrupt goes high)
 
     ESP_LOGI(TAG, "Usage sensor initialized!");
 }

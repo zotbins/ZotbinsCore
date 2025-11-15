@@ -97,9 +97,9 @@ esp_err_t ultrasonic_init(const ultrasonic_sensor_t *dev)
     return gpio_set_level(dev->trigger_pin, 0); */
 
     CHECK_ARG(dev && dev->mcp_dev);
-    CHECK(mcp_gpio_set_direction(dev->mcp_dev, dev->trigger_pin, true)); // trigger = output
-    CHECK(mcp_gpio_set_direction(dev->mcp_dev, dev->echo_pin, false));   // echo = input
-    CHECK(mcp_gpio_write(dev->mcp_dev, dev->trigger_pin, 0));            // start low
+    CHECK(mcp23x17_set_mode(dev->mcp_dev, dev->trigger_pin, true)); // trigger = output
+    CHECK(mcp23x17_set_mode(dev->mcp_dev, dev->echo_pin, false));   // echo = input
+    CHECK(mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, 0));            // start low
     return ESP_OK;
 }
 
@@ -145,18 +145,18 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
     return ESP_OK;*/
 
     // send trigger pulse
-    mcp_gpio_write(dev->mcp_dev, dev->trigger_pin, 0);
+    mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, 0);
     ets_delay_us(TRIGGER_LOW_DELAY);
-    mcp_gpio_write(dev->mcp_dev, dev->trigger_pin, 1);
+    mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, 1);
     ets_delay_us(TRIGGER_HIGH_DELAY);
-    mcp_gpio_write(dev->mcp_dev, dev->trigger_pin, 0);
+    mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, 0);
 
     // wait for echo to go high
     int64_t start = esp_timer_get_time();
     bool echo;
     do
     {
-        mcp_gpio_read(dev->mcp_dev, dev->echo_pin, &echo);
+        mcp23x17_get_level(dev->mcp_dev, dev->echo_pin, &echo);
         if (esp_timer_get_time() - start > PING_TIMEOUT)
             return ESP_ERR_ULTRASONIC_PING_TIMEOUT;
     } while (!echo);
@@ -165,7 +165,7 @@ esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_ti
     int64_t echo_start = esp_timer_get_time();
     while (echo)
     {
-        mcp_gpio_read(dev->mcp_dev, dev->echo_pin, &echo);
+        mcp23x17_get_level(dev->mcp_dev, dev->echo_pin, &echo);
         if (esp_timer_get_time() - echo_start > max_time_us)
             return ESP_ERR_ULTRASONIC_ECHO_TIMEOUT;
     }

@@ -24,25 +24,12 @@
 #include "mcp23x17.h"
 
 #include "mcp_dev.h"
-
-#define GPA0 0x0001
-#define GPA1 0x0002
-#define GPA2 0x0004
-#define GPA3 0x0008
-#define GPA4 0x0010
-#define GPA5 0x0020
-#define GPA6 0x0040
-#define GPA7 0x0080
-#define GPB0 0x0100
-#define GPB1 0x0200
-#define GPB2 0x0400
-#define GPB3 0x0800
-#define GPB4 0x1000
-#define GPB5 0x2000
-#define GPB6 0x4000
-#define GPB7 0x8000
+#include "mcp_gpio_macros.h"
 
 static const char *TAG = "peripheral_manager"; // Tag for ESP logging
+
+// Define the global MCP device pointer (declared as extern in mcp_dev.h)
+mcp23x17_t *mcp_dev = nullptr;
 static TaskHandle_t manager_handle = nullptr;  // Task handle for the peripheral manager task
 
 EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors have finished collecting data.
@@ -76,61 +63,39 @@ void init_manager(void)
 
     mcp_dev = &mcp23017_device; // Set global MCP device pointer
 
-    uint16_t val;
-
-    // 1 is input, 0 is output
-    // Set pin (GPA0) to input (0x0001)
-    err = mcp23x17_port_set_mode(&mcp23017_device, 0xFFFF & GPA0);
-    if (err != ESP_OK)
-    {
-        ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %s", esp_err_to_name(err));
-    }
-    else
-    {
-        mcp23x17_port_get_pullup(&mcp23017_device, &val);
-        ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %" PRIu16, val);
-    }
-
-    // Set pullup resistors on pins
-    err = mcp23x17_port_set_pullup(&mcp23017_device, 0xFFFF & GPA0);
-    if (err != ESP_OK)
-    {
-        ESP_LOGW(TAG, "mcp23x17_port_set_pullup returned %s", esp_err_to_name(err));
-    }
-    else
-    {
-        mcp23x17_port_get_pullup(&mcp23017_device, &val);
-        ESP_LOGW(TAG, "mcp23x17_port_set_pullup returned %" PRIu16, val);
-    }
-
-    uint16_t value;
-
     /* Read instructions for gpio expander. TODO */
-    while (1)
-    {
-        vTaskDelay(100 / portTICK_PERIOD_MS);
-        err = mcp23x17_port_read(&mcp23017_device, &value);
-        if (err == ESP_OK)
-        {
-            ESP_LOGI(TAG, "port value=0x%04x", value);
-        }
-        else
-        {
-            ESP_LOGE(TAG, "mcp23x17_port_read failed: %s", esp_err_to_name(err));
-        }
-    }
+    /* GPIO expander testing code */
+
+    // uint16_t value;
+
+    // while (1)
+    // {
+    //     vTaskDelay(100 / portTICK_PERIOD_MS);
+    //     err = mcp23x17_port_read(&mcp23017_device, &value);
+    //     if (err == ESP_OK)
+    //     {
+    //         ESP_LOGI(TAG, "port value=0x%04x", value);
+    //     }
+    //     else
+    //     {
+    //         ESP_LOGE(TAG, "mcp23x17_port_read failed: %s", esp_err_to_name(err));
+    //     }
+    // }
 
     // Initialize sensors
-    esp_err_t hx711_status = init_hx711();
+
+    // commented out; not implmeneted yet
+    // esp_err_t hx711_status = init_hx711();
+
     esp_err_t hcsr04_status = init_hcsr04();
     init_breakbeam(); // TODO: change return value to esp_err_t
 
     manager_eg = xEventGroupCreate(); // Create the event group to store sensor event bits---for example, when the breakbeam is tripped, or when the servo has finished moving.
 
-    if (init_servo() == ESP_OK)
-    {
-        servo_set_angle(0);
-    }
+    // if (init_servo() == ESP_OK)
+    // {
+    //     servo_set_angle(0);
+    // }
 
     xTaskCreate(
         run_manager,          /* Task function. */
@@ -158,23 +123,24 @@ static void run_manager(void *arg)
         xEventGroupWaitBits(manager_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
 
         // Collect sensor data---add additional sensors here as needed
-        float weight = get_weight();
+        // float weight = get_weight();
+        float weight = 0; // temp
         float fullness = get_fullness();
         uint32_t usage = get_usage_count();
 
-        if (usage != last_usage)
-        { // Instructs servo to open bin
-            servo_set_angle(90);
-            gate_open = true;
-            open_since = xTaskGetTickCount();
-            last_usage = usage;
-        }
+        // if (usage != last_usage)
+        // { // Instructs servo to open bin
+        //     servo_set_angle(90);
+        //     gate_open = true;
+        //     open_since = xTaskGetTickCount();
+        //     last_usage = usage;
+        // }
 
-        if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs))
-        { // Instructs servo to close bin
-            servo_set_angle(0);
-            gate_open = false;
-        }
+        // if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs))
+        // { // Instructs servo to close bin
+        //     servo_set_angle(0);
+        //     gate_open = false;
+        // }
 
         // Publish data
         publish_payload(fullness, weight, usage);
