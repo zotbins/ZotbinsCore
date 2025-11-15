@@ -30,7 +30,7 @@ static const char *TAG = "peripheral_manager"; // Tag for ESP logging
 
 // Define the global MCP device pointer (declared as extern in mcp_dev.h)
 mcp23x17_t *mcp_dev = nullptr;
-static TaskHandle_t manager_handle = nullptr;  // Task handle for the peripheral manager task
+static TaskHandle_t manager_handle = nullptr; // Task handle for the peripheral manager task
 
 EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors have finished collecting data.
 
@@ -43,7 +43,7 @@ void init_manager(void)
     i2cdev_init();
 
     // Initialize empty devie, will break without
-    mcp23x17_t mcp23017_device = {};
+    static mcp23x17_t mcp23017_device = {};
 
     // I2C address, requires A0, A1, A2 tied to ground on device
     uint8_t mcp23017_addr = DEVICE_ADDR;
@@ -87,7 +87,7 @@ void init_manager(void)
     // commented out; not implmeneted yet
     // esp_err_t hx711_status = init_hx711();
 
-    esp_err_t hcsr04_status = init_hcsr04();
+    init_hcsr04();
     init_breakbeam(); // TODO: change return value to esp_err_t
 
     manager_eg = xEventGroupCreate(); // Create the event group to store sensor event bits---for example, when the breakbeam is tripped, or when the servo has finished moving.
@@ -100,7 +100,7 @@ void init_manager(void)
     xTaskCreate(
         run_manager,          /* Task function. */
         "peripheral_manager", /* name of task. */
-        2048,                 /* Stack size of task */
+        4096,                 /* Stack size of task */
         NULL,                 /* parameter of the task */
         1,                    /* priority of the task */
         &manager_handle       /* Task handle to keep track of created task */
@@ -117,6 +117,31 @@ static void run_manager(void *arg)
     bool gate_open = false;
     TickType_t open_since = 0;
     constexpr TickType_t kHoldMs = 600;
+
+    // temp
+    while (1)
+    {
+        float fullness = get_fullness();
+        uint32_t usage = get_usage_count();
+
+        // read the breakbeam pin directly
+        bool breakbeam_state;
+        mcp23x17_get_level(mcp_dev, MCP_PORTB_GPIO1, &breakbeam_state);
+
+        ESP_LOGI(TAG, "Fullness: %.2f, Usage: %d, Breakbeam: %s",
+                 fullness, usage, breakbeam_state ? "HIGH" : "LOW");
+
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+
+    // temp
+    while (1)
+    {
+        float fullness = get_fullness();
+        uint32_t usage = get_usage_count();
+        ESP_LOGI(TAG, "Fullness: %.2f, Usage: %d", fullness, usage);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
 
     while (1)
     {

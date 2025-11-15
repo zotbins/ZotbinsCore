@@ -261,7 +261,7 @@ esp_err_t mcp23x17_free_desc_spi(mcp23x17_t *dev);
      * @param[out] mode GPIO pin mode
      * @return `ESP_OK` on success
      */
-    esp_err_t mcp23x17_get_mode(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_mode_t *mode);
+    esp_err_t mcp23x17_get_mode(mcp23x17_t *dev, uint8_t pin, bool *mode);
 
     /**
      * @brief Set GPIO pin mode
@@ -271,7 +271,7 @@ esp_err_t mcp23x17_free_desc_spi(mcp23x17_t *dev);
      * @param mode GPIO pin mode
      * @return `ESP_OK` on success
      */
-    esp_err_t mcp23x17_set_mode(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_mode_t mode);
+    esp_err_t mcp23x17_set_mode(mcp23x17_t *dev, uint8_t pin, bool mode);
 
     /**
      * @brief Get pullup mode of GPIO pin

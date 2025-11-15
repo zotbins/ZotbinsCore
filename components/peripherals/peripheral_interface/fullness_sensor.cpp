@@ -30,8 +30,8 @@
 /*
     PIN CONFIGS are up to date for ZB25_WROVER-DEV_01-02
 */
-const uint16_t PIN_TRIG = MCP_PORTA_GPIO2; // TODO: reason for pin choice
-const uint16_t PIN_ECHO = MCP_PORTB_GPIO0; // TODO: reason for pin choice
+const uint8_t PIN_TRIG = MCP_PORTA_GPIO2; // TODO: reason for pin choice
+const uint8_t PIN_ECHO = MCP_PORTB_GPIO0; // TODO: reason for pin choice
 
 static const char *TAG = "fullness_sensor"; // Tag for ESP logging
 
@@ -42,13 +42,22 @@ extern mcp23x17_t *mcp_dev; // MCP device address declared in peripheral_manager
 static ultrasonic_sensor_t hcsr04 = { // HC-SR04 ultrasonic sensor object
     .mcp_dev = mcp_dev,
     .trigger_pin = PIN_TRIG,
-    .echo_pin = PIN_ECHO
-};
+    .echo_pin = PIN_ECHO};
 
 esp_err_t init_hcsr04(void)
 {
 
     ESP_LOGI(TAG, "Initializing fullness sensor...");
+    ESP_LOGI(TAG, "mcp_dev pointer: %p", (void *)mcp_dev);
+
+    if (mcp_dev == nullptr)
+    {
+        ESP_LOGE(TAG, "mcp_dev is NULL!");
+        return ESP_FAIL;
+    }
+
+    // Update the mcp_dev pointer in the hcsr04 struct (it was initialized as nullptr)
+    hcsr04.mcp_dev = mcp_dev;
 
     esp_err_t hcsr04_device_status = ultrasonic_init(&hcsr04);
 
@@ -68,7 +77,14 @@ float get_fullness(void)
 {
     uint32_t distance;
     float fullness;
-    ultrasonic_measure_cm(&hcsr04, 1000, &distance);      // TODO: convert to percentage
+    esp_err_t err = ultrasonic_measure_cm(&hcsr04, MAX_DISTANCE, &distance); // TODO: convert to percentage
+    if (err != ESP_OK)
+    { // ← check for errors
+        ESP_LOGE(TAG, "ultrasonic_measure_cm failed: %s (0x%x)",
+                 esp_err_to_name(err), err);
+        return -1.0; // or some error value
+    }
+    ESP_LOGI(TAG, "Raw distance: %" PRIu32 " cm", distance);
     fullness = 100.0 - (distance / MAX_DISTANCE * 100.0); // Convert distance to fullness percentage
 
     if (fullness > 100.0 && fullness < 110.0)

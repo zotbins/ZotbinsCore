@@ -427,7 +427,7 @@ esp_err_t mcp23x17_port_write(mcp23x17_t *dev, uint16_t val)
     return write_reg_16(dev, REG_GPIOA, val);
 }
 
-esp_err_t mcp23x17_get_mode(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_mode_t *mode)
+esp_err_t mcp23x17_get_mode(mcp23x17_t *dev, uint8_t pin, bool *mode)
 {
     CHECK_ARG(mode);
 
@@ -438,7 +438,7 @@ esp_err_t mcp23x17_get_mode(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_mode_t *
     return ESP_OK;
 }
 
-esp_err_t mcp23x17_set_mode(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_mode_t mode)
+esp_err_t mcp23x17_set_mode(mcp23x17_t *dev, uint8_t pin, bool mode)
 {
     return write_reg_bit_16(dev, REG_IODIRA, mode, pin);
 }

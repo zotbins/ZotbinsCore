@@ -52,7 +52,7 @@ const gpio_config_t PIN_BREAKBEAM_CONFIG = {
     .mode = GPIO_MODE_INPUT,
     .pull_up_en = GPIO_PULLUP_ENABLE,
     .pull_down_en = GPIO_PULLDOWN_DISABLE,
-    .intr_type = GPIO_INTR_POSEDGE}; // Interrupt on rising edge (MCP interrupt goes high when breakbeam goes low)
+    .intr_type = GPIO_INTR_NEGEDGE}; // Interrupt on rising edge (MCP interrupt goes high when breakbeam goes low)
 
 static uint32_t usage_count = 0;
 
@@ -60,7 +60,7 @@ static uint32_t usage_count = 0;
 void IRAM_ATTR increment_usage(void *arg)
 {
     mcp23x17_get_level(mcp_dev, PIN_BREAKBEAM, nullptr); // Clear the interrupt on the MCP by reading the GPIO register
-    usage_count++; // Increment usage count
+    usage_count++;                                       // Increment usage count
 
     BaseType_t xHigherPriorityTaskWoken, xResult; // from https://www.freertos.org/Documentation/02-Kernel/04-API-references/12-Event-groups-or-flags/06-xEventGroupSetBitsFromISR
 
@@ -90,10 +90,16 @@ void init_breakbeam(void)
     ESP_ERROR_CHECK_WITHOUT_ABORT(
         gpio_isr_handler_add(MCP_PIN_INTB, increment_usage, NULL));
 
-    ESP_LOGI(TAG, "Configuring MCP23017 interrupt for breakbeam...");
-    mcp23x17_set_pullup(mcp_dev, MCP_PORTB_GPIO1, MCP_INT_ENABLE);
-    vTaskDelay(10 / portTICK_PERIOD_MS);                                      // Short delay to ensure pullup is set before enabling interrupt
-    mcp23x17_set_interrupt(mcp_dev, MCP_PORTB_GPIO1, MCP23X17_INT_LOW_EDGE); // Set interrupt on breakbeam pin for rising edge (breakbeam goes low when tripped, interrupt goes high)
+    ESP_LOGI(TAG, "Setting up MCP23017 pin mode for breakbeam...");
+    mcp23x17_set_mode(mcp_dev, PIN_BREAKBEAM, MCP_INPUT); // Set breakbeam pin as input
+    ESP_LOGI(TAG, "Configuring MCP23017 pin pullup for breakbeam...");
+    mcp23x17_set_pullup(mcp_dev, PIN_BREAKBEAM, MCP_PULLUP_ENABLE);
+    ESP_LOGI(TAG, "Setting MCP23017 pin interrupt for breakbeam...");
+    mcp23x17_set_int_out_mode(mcp_dev, MCP23X17_OPEN_DRAIN);               // Set INTA/INTB pins to active high
+    vTaskDelay(100 / portTICK_PERIOD_MS);                                  // Short delay to ensure pullup is set before enabling interrupt
+    mcp23x17_set_interrupt(mcp_dev, PIN_BREAKBEAM, MCP23X17_INT_LOW_EDGE); // Set interrupt on breakbeam pin for rising edge (breakbeam goes low when tripped, interrupt goes high)
+
+    mcp23x17_get_level(mcp_dev, PIN_BREAKBEAM, nullptr); // Clear any existing interrupt on the MCP by reading the GPIO register
 
     ESP_LOGI(TAG, "Usage sensor initialized!");
 }

@@ -44,6 +44,7 @@
 #include <ets_sys.h>
 
 #include "mcp23x17.h"
+#include "mcp_gpio_macros.h"
 
 #define TRIGGER_LOW_DELAY 4
 #define TRIGGER_HIGH_DELAY 10
@@ -80,97 +81,66 @@ static portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
         if ((__ = x) != ESP_OK) \
             return __;          \
     } while (0)
-#define RETURN_CRITICAL(RES) \
-    do                       \
-    {                        \
-        PORT_EXIT_CRITICAL;  \
-        return RES;          \
-    } while (0)
 
 esp_err_t ultrasonic_init(const ultrasonic_sensor_t *dev)
 {
-    /* CHECK_ARG(dev);
-
-    CHECK(gpio_set_direction(dev->trigger_pin, GPIO_MODE_OUTPUT));
-    CHECK(gpio_set_direction(dev->echo_pin, GPIO_MODE_INPUT));
-
-    return gpio_set_level(dev->trigger_pin, 0); */
-
     CHECK_ARG(dev && dev->mcp_dev);
-    CHECK(mcp23x17_set_mode(dev->mcp_dev, dev->trigger_pin, true)); // trigger = output
-    CHECK(mcp23x17_set_mode(dev->mcp_dev, dev->echo_pin, false));   // echo = input
-    CHECK(mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, 0));            // start low
+    CHECK(mcp23x17_set_mode(dev->mcp_dev, dev->trigger_pin, MCP_OUTPUT)); // trigger = output
+    CHECK(mcp23x17_set_mode(dev->mcp_dev, dev->echo_pin, MCP_INPUT));   // echo = input
+    CHECK(mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, MCP_LOW));            // start low
     return ESP_OK;
 }
 
 esp_err_t ultrasonic_measure_raw(const ultrasonic_sensor_t *dev, uint32_t max_time_us, uint32_t *time_us)
 {
+
+    bool echo_status = 1;
+
     CHECK_ARG(dev && dev->mcp_dev && time_us);
 
-    //  PORT_ENTER_CRITICAL;
+    // Note: We cannot use PORT_ENTER_CRITICAL here because mcp23x17 operations
+    // use I2C which acquires mutexes. Blocking in a critical section causes deadlocks.
+    // I2C operations already have their own thread-safe locking.
 
-    /*
     // Ping: Low for 2..4 us, then high 10 us
-    CHECK(gpio_set_level(dev->trigger_pin, 0));
+    CHECK(mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, MCP_LOW));
     ets_delay_us(TRIGGER_LOW_DELAY);
-    CHECK(gpio_set_level(dev->trigger_pin, 1));
+    CHECK(mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, MCP_HIGH));
     ets_delay_us(TRIGGER_HIGH_DELAY);
-    CHECK(gpio_set_level(dev->trigger_pin, 0));
+    CHECK(mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, MCP_LOW));
+
+    mcp23x17_get_level(dev->mcp_dev, dev->echo_pin, &echo_status);
 
     // Previous ping isn't ended
-    if (gpio_get_level(dev->echo_pin))
-        RETURN_CRITICAL(ESP_ERR_ULTRASONIC_PING);
+    if (echo_status)
+        return ESP_ERR_ULTRASONIC_PING;
 
     // Wait for echo
     int64_t start = esp_timer_get_time();
-    while (!gpio_get_level(dev->echo_pin))
+    
+    mcp23x17_get_level(dev->mcp_dev, dev->echo_pin, &echo_status); 
+
+    while (!echo_status)
     {
+        mcp23x17_get_level(dev->mcp_dev, dev->echo_pin, &echo_status);
         if (timeout_expired(start, PING_TIMEOUT))
-            RETURN_CRITICAL(ESP_ERR_ULTRASONIC_PING_TIMEOUT);
+            return ESP_ERR_ULTRASONIC_PING_TIMEOUT;
     }
 
     // got echo, measuring
     int64_t echo_start = esp_timer_get_time();
     int64_t time = echo_start;
-    while (gpio_get_level(dev->echo_pin))
+    
+    while (echo_status) // read echo pin level via MCP23x17
     {
+        mcp23x17_get_level(dev->mcp_dev, dev->echo_pin, &echo_status); 
         time = esp_timer_get_time();
         if (timeout_expired(echo_start, max_time_us))
-            RETURN_CRITICAL(ESP_ERR_ULTRASONIC_ECHO_TIMEOUT);
-    }
-    PORT_EXIT_CRITICAL;
-
-    *time_us = time - echo_start;
-
-    return ESP_OK;*/
-
-    // send trigger pulse
-    mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, 0);
-    ets_delay_us(TRIGGER_LOW_DELAY);
-    mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, 1);
-    ets_delay_us(TRIGGER_HIGH_DELAY);
-    mcp23x17_set_level(dev->mcp_dev, dev->trigger_pin, 0);
-
-    // wait for echo to go high
-    int64_t start = esp_timer_get_time();
-    bool echo;
-    do
-    {
-        mcp23x17_get_level(dev->mcp_dev, dev->echo_pin, &echo);
-        if (esp_timer_get_time() - start > PING_TIMEOUT)
-            return ESP_ERR_ULTRASONIC_PING_TIMEOUT;
-    } while (!echo);
-
-    // measure echo high time
-    int64_t echo_start = esp_timer_get_time();
-    while (echo)
-    {
-        mcp23x17_get_level(dev->mcp_dev, dev->echo_pin, &echo);
-        if (esp_timer_get_time() - echo_start > max_time_us)
             return ESP_ERR_ULTRASONIC_ECHO_TIMEOUT;
     }
 
-    *time_us = (uint32_t)(esp_timer_get_time() - echo_start);
+    *time_us = time - echo_start;
+
     return ESP_OK;
 }
 
