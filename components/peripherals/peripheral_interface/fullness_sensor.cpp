@@ -17,6 +17,8 @@
 #include "esp_log.h"
 #include "fullness_sensor.hpp"
 
+#include "mcp_gpio_macros.h"
+
 /*
     GPIO Pin Configuation
     DO NOT declare pin numbers as static to avoid duplicate pin assignments.

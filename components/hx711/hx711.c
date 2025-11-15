@@ -41,6 +41,8 @@
 #include <esp_idf_lib_helpers.h>
 #include "hx711.h"
 
+#include "mcp23x17.h"
+
 #define CHECK(x)                \
     do                          \
     {                           \
@@ -79,11 +81,11 @@ static uint32_t read_raw(hx711_t *dev)
     // 24 pulses to read data
     for (size_t i = 0; i < 24; i++)
     {
-        mcp_gpio_write(dev->io, dev->pd_sck, 1); // set clock high
+        mcp_gpio_write(dev->mcp_dev_addr, dev->pd_sck, 1); // set clock high
         ets_delay_us(1);
-        mcp_gpio_read(dev->io, dev->dout, &bit); // read bit
+        mcp_gpio_read(dev->mcp_dev_addr, dev->dout, &bit); // read bit
         data |= (bit << (23 - i));
-        mcp_gpio_write(dev->io, dev->pd_sck, 0); // set clock low
+        mcp_gpio_write(dev->mcp_dev_addr, dev->pd_sck, 0); // set clock low
         ets_delay_us(1);
 
         /* gpio_set_level(pd_sck, 1);
@@ -96,9 +98,9 @@ static uint32_t read_raw(hx711_t *dev)
     // config gain + channel for next read
     for (size_t i = 0; i <= dev->gain; i++)
     {
-        mcp_gpio_write(dev->io, dev->pd_sck, 1);
+        mcp_gpio_write(dev->mcp_dev_addr, dev->pd_sck, 1);
         ets_delay_us(1);
-        mcp_gpio_write(dev->io, dev->pd_sck, 0);
+        mcp_gpio_write(dev->mcp_dev_addr, dev->pd_sck, 0);
         ets_delay_us(1);
 
         /* gpio_set_level(pd_sck, 1);
@@ -121,7 +123,7 @@ static uint32_t read_raw(hx711_t *dev)
 
 esp_err_t hx711_init(hx711_t *dev)
 {
-    CHECK_ARG(dev && dev->io);
+    CHECK_ARG(dev && dev->mcp_dev_addr);
     /*
     gpio_config_t conf = {
         .pin_bit_mask = BIT64(dev->dout),
@@ -139,9 +141,9 @@ esp_err_t hx711_init(hx711_t *dev)
     CHECK(hx711_power_down(dev, false));
     */
 
-    CHECK(mcp23x17_set_direction(dev->io, dev->dout, false));  // set DOUT as input
-    CHECK(mcp23x17_set_direction(dev->io, dev->pd_sck, true)); // set PD_SCK as output
-    CHECK(mcp_gpio_write(dev->io, dev->pd_sck, 0));            // set PD_SCK low
+    CHECK(mcp_gpio_set_direction(dev->mcp_dev_addr, dev->dout, false));  // set DOUT as input
+    CHECK(mcp_gpio_set_direction(dev->mcp_dev_addr, dev->pd_sck, true)); // set PD_SCK as output
+    CHECK(mcp_gpio_write(dev->mcp_dev_addr, dev->pd_sck, 0));            // set PD_SCK low
 
     // power up and set gain
     CHECK(hx711_power_down(dev, false));
@@ -151,7 +153,7 @@ esp_err_t hx711_init(hx711_t *dev)
 esp_err_t hx711_power_down(hx711_t *dev, bool down)
 {
     CHECK_ARG(dev);
-    CHECK(mcp_gpio_write(dev->io, dev->pd_sck, down ? 1 : 0)); // set PD_SCK high to power down, low to power up
+    CHECK(mcp_gpio_write(dev->mcp_dev_addr, dev->pd_sck, down ? 1 : 0)); // set PD_SCK high to power down, low to power up
     vTaskDelay(pdMS_TO_TICKS(1));                              // wait for power up/down
 
     return ESP_OK;
@@ -170,7 +172,7 @@ esp_err_t hx711_is_ready(hx711_t *dev, bool *ready)
 {
     CHECK_ARG(dev && ready);
     bool dout_level;
-    CHECK(mcp_gpio_read(dev->io, dev->dout, &dout_level));
+    CHECK(mcp_gpio_read(dev->mcp_dev_addr, dev->dout, &dout_level));
     *ready = !dout_level;
     return ESP_OK;
 }
