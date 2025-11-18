@@ -38,7 +38,6 @@ typdef struct configuration{
 }configuration;
 
 
-
 esp_err_t set_value(const char* value, const char* key,){
     nvs_handle_t handler;
     esp_err_t err;
@@ -55,8 +54,40 @@ esp_err_t set_value(const char* value, const char* key,){
         return err;
     }
     nvs_close(handler);
+    return ESP_OK;
 }
 
+/*
+Bare Bones of the Parsing Command
+not the most scalable thing in the world
+*/
+
+esp_err_t parseCommand(const char* command){
+    cJSON *json = cJSON_Parse(command);
+    if(json == NULL){
+        cJSON_Delete(json);
+        return;
+    }
+    cJSON *location = cJSON_GetObjectItemCaseSensitive(json,"location");
+    cJSON *name = cJSON_GetObjectItemCaseSensitive(json,"name");
+    cJSON *ssid = cJSON_GetObjectItemCaseSensitive(json,"ssid");
+    cJSON *password = cJSON_GetObjectItemCaseSensitive(json,"password");
+    
+    if(cJSON_IsString(location) && location->valuestring!=NULL && location->valuestring!=""){
+        set_value("location",location->valuestring);
+    }
+    if(cJSON_IsString(name) && name->valuestring!=NULL && name->valuestring!=""){
+        set_value("name",location->valuestring);
+    }
+    if(cJSON_IsString(ssid) && ssid->valuestring!=NULL && ssid->valuestring!=""){
+        set_value("ssid",ssid->valuestring);
+    }
+    if(cJSON_IsString(password) && password->valuestring!=NULL && password->valuestring!=""){
+        set_value("password",location->valuestring);
+    }
+    cJSON_Delete(json);
+    return ESP_OK;
+}
 
 
 
