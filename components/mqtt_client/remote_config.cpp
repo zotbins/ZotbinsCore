@@ -20,22 +20,8 @@ Assuming a JSON command is sent like this:
 */
 
 /*
-for now I would probably work on the NVS stuff 
-*/
-
-
-
-
-/*
 Probably need some sort of configuration at the start?
 */
-
-typdef struct configuration{
-    const char* location,
-    const char* name,
-    const char* ssid,
-    const char* password
-}configuration;
 
 
 esp_err_t set_value(const char* value, const char* key,){
@@ -60,6 +46,7 @@ esp_err_t set_value(const char* value, const char* key,){
 /*
 Bare Bones of the Parsing Command
 not the most scalable thing in the world
+need to figure out security issues
 */
 
 esp_err_t parseCommand(const char* command){
@@ -89,7 +76,22 @@ esp_err_t parseCommand(const char* command){
     return ESP_OK;
 }
 
-
+/*
+get value function if required
+*/
+const char* get_value_nvs(const char* key){
+    nvs_handle_t handler;
+    size_t size = 0;
+    err = nvs_get_str(handler,key,NULL,&size);
+    if(err = ESP_OK){
+        char* value = malloc(size);
+        err = nvs_get_str(handler,key,value,&size);
+        if(err = ESP_OK){
+            return value;
+        }
+        free(value);
+    }
+}
 
 
 
