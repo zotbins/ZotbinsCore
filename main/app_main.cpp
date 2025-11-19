@@ -60,12 +60,15 @@ extern "C" void app_main(void)
 
     init_manager();
 
-    if (zb_wifi_is_connected()) {
+    if (zb_wifi_is_connected())
+    {
         client_connect();
     }
-    else {
+    else
+    {
         xTaskCreate(
-            [](void *) {
+            [](void *)
+            {
                 xEventGroupWaitBits(zb_wifi_eg, ZB_WIFI_CONNECTED_BIT, pdFALSE, pdTRUE, portMAX_DELAY);
                 client_connect();
                 vTaskDelete(nullptr);
