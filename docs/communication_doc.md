@@ -9,12 +9,12 @@ In order for a client (ESP32 microcontroller) to interact with the server, it ne
 
 - **aws.url** - Contains the MQTT broker endpoint address
 - **ca.crt (Certificate Authority Certificate)** - The root CA certificate used to verify the authenticity of the AWS server, ensuring you are connecting to a legitimate AWS endpoint
-- **client.crt (Client Certificate)** - your device’s unique public certificate that identifies and authenticates your specific device to the AWS server
+- **client.crt (Client Certificate)** - your device's unique public certificate that identifies and authenticates your specific device to the AWS server
 - **Client.key (Client Private Key)** -the private key corresponding to your client certificate. That proves your device actually owns the client certificate and enables encrypted communication.
 
 **Note:** In general, none of these credentials should be shared. They are a part of the.gitignore in ZotBinsCore. If you do not have the credentials or need a new policy message on the embedded channel, ping @chad on discord. Once you have the four files, you should paste them into ZotbinsCore\components\mqtt_client\credentials.
 
-<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/creds.png" alt="credentials">
+<img src="https://github.com/zotbins/ZotbinsCore/tree/main/docs/images/creds.png" alt="credentials">
 
 **AWS Policies**
 Each set of credentials is paired with a specific AWS policy. The AWS policy is a JSON document that defines what actions (permission) a client is allowed to perform when connected to the server. For example, device 1 and device 2 are able to connect and read from the server, but only device 1 is allowed to write to the server.
@@ -51,33 +51,33 @@ An example AWS policy (this is not the actual ZotBin policy):
 ### Using the ZotBins MQTT Server 
 There is client code on the micro controller, but it is also important to have access to the server. You can login to the server at this link: [AWS Management Console](https://aws.amazon.com/console/). You will be prompted with the following:
 
-<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/awsLogin.png" alt="AWS Login">
+<img src="https://github.com/zotbins/ZotbinsCore/tree/main/docs/images/awsLogin.png" alt="AWS Login">
 
 **Note:** If you need the login credentials message @chad in the embedded channel on discord
 
 Once you are logged into the AWS server navigate to IoT Core:
 
-<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/iotCore" alt="IoTCore">
+<img src="https://github.com/zotbins/ZotbinsCore/tree/main/docs/images/iotCore.png" alt="IoTCore">
 
 If you want to access the main console navigate to MQTT Test Client on the sidebar:
 
-<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/mqttClient.png" alt="MQTT Test Client">
+<img src="https://github.com/zotbins/ZotbinsCore/tree/main/docs/images/mqttClient.png" alt="MQTT Test Client">
 
 
 Now you have the main console open. It should look somewhat like the following:
 
-<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/mqttConsole.png" alt="MQTT Console">
+<img src="https://github.com/zotbins/ZotbinsCore/tree/main/docs/images/mqttConsole.png" alt="MQTT Console">
 
 
-Topics are hierarchical strings that act as message routing channels in AWS IoT Core’s MQTT-based pub/sub messaging system. The topic we use for most operations is called “binData.” This is where all the data from the ESP32 will be published.
+Topics are hierarchical strings that act as message routing channels in AWS IoT Core's MQTT-based pub/sub messaging system. The topic we use for most operations is called "binData." This is where all the data from the ESP32 will be published.
 
-You can subscribe to this topic by typing in “binData” or “#” (wildcard, catches everything) to the topic filter and clicking the subscribe button. If a message is published to the topic it looks like this:
+You can subscribe to this topic by typing in "binData" or "#" (wildcard, catches everything) to the topic filter and clicking the subscribe button. If a message is published to the topic it looks like this:
 
-<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/mqttSubscribe.png" alt="MQTT Subscribe">
+<img src="https://github.com/zotbins/ZotbinsCore/tree/main/docs/images/mqttSubscribe.png" alt="MQTT Subscribe">
 
-By subscribing to the topic, you can look at all the different messages that are received by the server. If you want to publish directly to a topic from the server (perhaps to test if the server can send a message to the client), you can swap to the at the top to “publish to a topic."
+By subscribing to the topic, you can look at all the different messages that are received by the server. If you want to publish directly to a topic from the server (perhaps to test if the server can send a message to the client), you can swap to the at the top to "publish to a topic."
 
-<img src="https://github.com/zotbins/ZotbinsCore/blob/onboarding-docs/docs/images/mqttPublish.png" alt="MQTT Publish">
+<img src="https://github.com/zotbins/ZotbinsCore/tree/main/docs/images/mqttPublish.png" alt="MQTT Publish">
 
 That is the main operation of API protocol from the side of the server. Here is some important information about the location.
 
@@ -279,7 +279,7 @@ char *serialize(float fullness, float weight, int usage) // Copied from oldzotbi
 We simplified most of the API systems after refactoring the entire codebase. Every other part of the pipeline, such as storing in the database and batch training, is handled by waste-rec/API. As of Fall 2025, we do not have real-time waste recognition fully designed yet.
 
 **Important Technical Limitations of MQTT**
-- MQTT is a text-only transfer protocol. For example, you can’t upload image files (you would have to encode the image in base64 and send it).
+- MQTT is a text-only transfer protocol. For example, you can't upload image files (you would have to encode the image in base64 and send it).
 - The max size of each MQTT message is 128kb. If the image encoding is too large you must break it up into chunks
 
 ## HTTP Communication
@@ -432,7 +432,7 @@ Bluetooth use is still under development. I implemented a very basic system that
 
 BLE only supports small-sized communication like text. It can not support large image files. We were thinking of implementing a Pokémon Go system where you can connect to local ZotBins when you visit them (a lot of potential security issues with this though).
 
-BLE will not come up on your Bluetooth device for your phone. In order to see it, you must install the Lightblue app on your phone. If you set it up correctly, you will see a connection called “ESP32” on your app.
+BLE will not come up on your Bluetooth device for your phone. In order to see it, you must install the Lightblue app on your phone. If you set it up correctly, you will see a connection called "ESP32" on your app.
 
 ## ESP-NOW Communication 
 ESP-NOW is a communication protocol that is specific to ESP32 Microcontrollers. ESP-NOW is implemented on some branches, but it is archived because it has not been properly ported to the new ZotBinsCore system.
