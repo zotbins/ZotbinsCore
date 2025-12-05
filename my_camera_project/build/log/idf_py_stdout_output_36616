@@ -1,0 +1,774 @@
+Command: C:\Users\Chadw\.espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe C:\Users\Chadw\esp\v5.5.1\esp-idf\tools/idf_monitor.py -p COM6 -b 115200 --toolchain-prefix xtensa-esp32-elf- --target esp32 --revision 0 C:\Users\Chadw\Documents\camera\my_camera_project\build\my_camera_project.elf C:\Users\Chadw\Documents\camera\my_camera_project\build\bootloader\bootloader.elf --force-color -m 'C:\Users\Chadw\.espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe' 'C:\Users\Chadw\esp\v5.5.1\esp-idf\tools\idf.py'
+ets Jul 2�ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:6380
+ho 0 tail 12 room 4
+load:0x40078000,len:15916
+load:0x40080400,len:3860
+entry 0x40080638
+[0;32mI (29) boot: ESP-IDF v5.5.1 2nd stage bootloader[0m
+[0;32mI (29) boot: compile time Nov 24 2025 16:48:29[0m
+[0;32mI (29) boot: Multicore bootloader[0m
+[0;32mI (31) boot: chip revision: v3.1[0m
+[0;32mI (33) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (37) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (41) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (44) boot: Enabling RNG early entropy source...[0m
+[0;32mI (49) boot: Partition Table:[0m
+[0;32mI (51) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (58) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (64) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (71) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (77) boot: End of partition table[0m
+[0;32mI (81) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=13c94h ( 81044) map[0m
+[0;32mI (116) esp_image: segment 1: paddr=00023cbc vaddr=3ffb0000 size=04c64h ( 19556) load[0m
+[0;32mI (123) esp_image: segment 2: paddr=00028928 vaddr=40080000 size=076f0h ( 30448) load[0m
+[0;32mI (135) esp_image: segment 3: paddr=00030020 vaddr=400d0020 size=28d10h (167184) map[0m
+[0;32mI (193) esp_image: segment 4: paddr=00058d38 vaddr=400876f0 size=0a1ech ( 41452) load[0m
+[0;32mI (209) esp_image: segment 5: paddr=00062f2c vaddr=50000000 size=00020h (    32) load[0m
+[0;32mI (218) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (218) boot: Disabling RNG early entropy source...[0m
+[0;32mI (229) quad_psram: This chip is ESP32-D0WD[0m
+[0;32mI (231) esp_psram: Found 8MB PSRAM device[0m
+[0;32mI (231) esp_psram: Speed: 40MHz[0m
+[0;32mI (231) esp_psram: PSRAM initialized, cache is in low/high (2-core) mode.[0m
+[0;33mW (237) esp_psram: Virtual address not enough for PSRAM, map as much as we can. 4MB is mapped[0m
+[0;32mI (245) cpu_start: Multicore app[0m
+[0;32mI (1153) esp_psram: SPI SRAM memory test OK[0m
+[0;32mI (1161) cpu_start: Pro cpu start user code[0m
+[0;32mI (1161) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (1161) app_init: Application information:[0m
+[0;32mI (1162) app_init: Project name:     my_camera_project[0m
+[0;32mI (1167) app_init: App version:      1[0m
+[0;32mI (1170) app_init: Compile time:     Dec  4 2025 12:38:26[0m
+[0;32mI (1175) app_init: ELF file SHA256:  af91923d3...[0m
+[0;32mI (1180) app_init: ESP-IDF:          v5.5.1[0m
+[0;32mI (1183) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (1187) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (1191) efuse_init: Chip rev:         v3.1[0m
+[0;32mI (1196) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (1202) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (1207) heap_init: At 3FFB5E98 len 0002A168 (168 KiB): DRAM[0m
+[0;32mI (1212) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (1218) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (1223) heap_init: At 400918DC len 0000E724 (57 KiB): IRAM[0m
+[0;32mI (1229) esp_psram: Adding pool of 4096K of PSRAM memory to heap allocator[0m
+[0;32mI (1237) spi_flash: detected chip: generic[0m
+[0;32mI (1239) spi_flash: flash io: dio[0m
+[0;33mW (1242) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (1255) main_task: Started on CPU0[0m
+[0;32mI (1265) main_task: Calling app_main()[0m
+[0;32mI (1265) cam: [0m
+
+
+[0;32mI (1265) cam: ========================================[0m
+[0;32mI (1265) cam:    ESP32 OV2640 DIAGNOSTIC SUITE[0m
+[0;32mI (1265) cam: ========================================[0m
+[0;32mI (1275) cam: [0m
+
+[0;32mI (1275) cam: [0m
+========================================
+[0;32mI (1275) cam:         PSRAM STATUS CHECK[0m
+[0;32mI (1285) cam: ========================================[0m
+[0;32mI (1285) cam: ✓ PSRAM initialized[0m
+[0;32mI (1285) cam:   Total: 8.00 MB[0m
+[0;32mI (1295) cam:   Free:  4.00 MB[0m
+[0;32mI (1295) cam: ========================================[0m
+
+[0;32mI (1305) cam: Initial free heap: 4483940 bytes[0m
+
+[0;32mI (1405) cam: Initializing camera...[0m
+[0;32mI (1405) cam_hal: cam init ok[0m
+[0;32mI (1405) sccb-ng: pin_sda 26 pin_scl 27[0m
+[0;32mI (1405) sccb-ng: sccb_i2c_port=1[0m
+[0;32mI (1415) camera: Camera PID=0x26 VER=0x42 MIDL=0x7f MIDH=0xa2[0m
+[0;32mI (1415) camera: Detected OV2640 camera[0m
+[0;32mI (1415) camera: Detected camera at address=0x30[0m
+[0;32mI (1495) cam_hal: PSRAM DMA mode disabled[0m
+[0;32mI (1495) cam_hal: buffer_size: 32768, half_buffer_size: 4096, node_buffer_size: 2048, node_cnt: 16, total_cnt: 3[0m
+[0;32mI (1495) cam_hal: Allocating 15360 Byte frame buffer in PSRAM[0m
+[0;32mI (1505) cam_hal: cam config ok[0m
+[0;32mI (1505) ov2640: Set PLL: clk_2x: 0, clk_div: 0, pclk_auto: 0, pclk_div: 8[0m
+[0;32mI (1585) cam: ✓ Camera detected: PID=0x26[0m
+[0;32mI (1585) ov2640: Set PLL: clk_2x: 0, clk_div: 0, pclk_auto: 0, pclk_div: 8[0m
+cam_hal: NO-SOI - JPEG start marker missing
+cam_hal: NO-SOI - JPEG start marker missing
+[0;32mI (1635) cam: ✓ Camera initialized[0m
+[0;32mI (1635) cam: [0m
+Free heap after camera init: 4428916 bytes
+
+[0;32mI (1635) cam: Diagnostic task started on core 1[0m
+
+[0;32mI (1635) cam: [0m
+========================================
+[0;32mI (1635) main_task: Returned from app_main()[0m
+[0;32mI (1645) cam:      CAMERA DIAGNOSTIC TESTS[0m
+[0;32mI (1645) cam: ========================================[0m
+
+[0;32mI (1655) cam: Waiting 3 seconds for camera stabilization...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (4655) cam: [0m
+--- Test 1: Basic Capture (QVGA, Q=10) ---
+[0;32mI (4655) cam:   Attempt 1...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (8655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (8655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (9655) cam:   Attempt 2...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (13655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (13655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (14655) cam:   Attempt 3...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (18655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (18655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (19655) cam:   Attempt 4...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (23655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (23655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (24655) cam:   Attempt 5...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (28655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (28655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (29655) cam: [0m
+--- Test 2: Quality Settings Test ---
+[0;32mI (29655) cam: [0m
+Testing Quality=10
+[0;32mI (30155) cam:   Attempt 1...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (34155) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (34155) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (35155) cam:   Attempt 2...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (39155) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (39155) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (40155) cam:   Attempt 3...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (44155) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (44155) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (45155) cam: [0m
+Testing Quality=15
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (45655) cam:   Attempt 1...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (49655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (49655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (50655) cam:   Attempt 2...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (54655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (54655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (55655) cam:   Attempt 3...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (59655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (59655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (60655) cam: [0m
+Testing Quality=20
+[0;32mI (61155) cam:   Attempt 1...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (65155) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (65155) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (66155) cam:   Attempt 2...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (70155) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (70155) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (71155) cam:   Attempt 3...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (75155) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (75155) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (76155) cam: [0m
+Testing Quality=25
+[0;32mI (76655) cam:   Attempt 1...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (80655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (80655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (81655) cam:   Attempt 2...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (85655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (85655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (86655) cam:   Attempt 3...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (90655) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (90655) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (91655) cam: [0m
+--- Test 3: Frame Size Test ---
+[0;32mI (91655) cam: [0m
+Testing QVGA (320x240)
+[0;32mI (91655) ov2640: Set PLL: clk_2x: 0, clk_div: 0, pclk_auto: 0, pclk_div: 8[0m
+[0;32mI (92695) cam:   Attempt 1...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (96695) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (96695) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (98195) cam:   Attempt 2...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (102195) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (102195) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (103695) cam:   Attempt 3...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (107695) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (107695) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (109195) cam: [0m
+Testing CIF (400x296)
+[0;32mI (109195) ov2640: Set PLL: clk_2x: 0, clk_div: 0, pclk_auto: 0, pclk_div: 8[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (110235) cam:   Attempt 1...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (114235) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (114235) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (115735) cam:   Attempt 2...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (119735) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (119735) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (121235) cam:   Attempt 3...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (125235) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (125235) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (126735) cam: [0m
+Testing VGA (640x480)
+[0;32mI (126735) ov2640: Set PLL: clk_2x: 0, clk_div: 0, pclk_auto: 0, pclk_div: 8[0m
+[0;32mI (127775) cam:   Attempt 1...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (131775) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (131775) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (133275) cam:   Attempt 2...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (137275) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (137275) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (138775) cam:   Attempt 3...[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (142775) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (142775) cam:     ✗ FAILED: esp_camera_fb_get() returned NULL[0m
+[0;32mI (144275) cam: [0m
+========================================
+[0;32mI (144275) cam:      DIAGNOSTIC TESTS COMPLETE[0m
+[0;32mI (144275) cam: ========================================[0m
+
+[0;32mI (144275) ov2640: Set PLL: clk_2x: 0, clk_div: 0, pclk_auto: 0, pclk_div: 8[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;32mI (144325) cam: [0m
+========================================
+[0;32mI (144325) cam:    STARTING CONTINUOUS CAPTURE[0m
+[0;32mI (144335) cam: ========================================[0m
+
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (148335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (148335) cam: Frame 1: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (154335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (154335) cam: Frame 2: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (160335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (160335) cam: Frame 3: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (166335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (166335) cam: Frame 4: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (172335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (172335) cam: Frame 5: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (178335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (178335) cam: Frame 6: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (184335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (184335) cam: Frame 7: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (190335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (190335) cam: Frame 8: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (196335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (196335) cam: Frame 9: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (202335) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (202335) cam: Frame 10: FAILED (NULL)[0m
+[0;32mI (202335) cam: [0m
+--- Statistics ---
+[0;32mI (202335) cam: Success: 0[0m
+[0;32mI (202335) cam: Failed:  10[0m
+[0;32mI (202335) cam: Rate:    0.0%[0m
+[0;32mI (202335) cam: Free heap: 4425028 bytes[0m
+[0;32mI (202345) cam: Free PSRAM: 4175344 bytes[0m
+
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (208345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (208345) cam: Frame 11: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (214345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (214345) cam: Frame 12: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (220345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (220345) cam: Frame 13: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (226345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (226345) cam: Frame 14: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (232345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (232345) cam: Frame 15: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (238345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (238345) cam: Frame 16: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (244345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (244345) cam: Frame 17: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (250345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (250345) cam: Frame 18: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (256345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (256345) cam: Frame 19: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (262345) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (262345) cam: Frame 20: FAILED (NULL)[0m
+[0;32mI (262345) cam: [0m
+--- Statistics ---
+[0;32mI (262345) cam: Success: 0[0m
+[0;32mI (262345) cam: Failed:  20[0m
+[0;32mI (262345) cam: Rate:    0.0%[0m
+[0;32mI (262345) cam: Free heap: 4425028 bytes[0m
+[0;32mI (262355) cam: Free PSRAM: 4175344 bytes[0m
+
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (268355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (268355) cam: Frame 21: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (274355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (274355) cam: Frame 22: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (280355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (280355) cam: Frame 23: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (286355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (286355) cam: Frame 24: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (292355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (292355) cam: Frame 25: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (298355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (298355) cam: Frame 26: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (304355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (304355) cam: Frame 27: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (310355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (310355) cam: Frame 28: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (316355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (316355) cam: Frame 29: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (322355) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (322355) cam: Frame 30: FAILED (NULL)[0m
+[0;32mI (322355) cam: [0m
+--- Statistics ---
+[0;32mI (322355) cam: Success: 0[0m
+[0;32mI (322355) cam: Failed:  30[0m
+[0;32mI (322355) cam: Rate:    0.0%[0m
+[0;32mI (322355) cam: Free heap: 4425028 bytes[0m
+[0;32mI (322365) cam: Free PSRAM: 4175344 bytes[0m
+
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (328365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (328365) cam: Frame 31: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (334365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (334365) cam: Frame 32: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (340365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (340365) cam: Frame 33: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (346365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (346365) cam: Frame 34: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (352365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (352365) cam: Frame 35: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (358365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (358365) cam: Frame 36: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (364365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (364365) cam: Frame 37: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (370365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (370365) cam: Frame 38: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (376365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (376365) cam: Frame 39: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (382365) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (382365) cam: Frame 40: FAILED (NULL)[0m
+[0;32mI (382365) cam: [0m
+--- Statistics ---
+[0;32mI (382365) cam: Success: 0[0m
+[0;32mI (382365) cam: Failed:  40[0m
+[0;32mI (382365) cam: Rate:    0.0%[0m
+[0;32mI (382365) cam: Free heap: 4425028 bytes[0m
+[0;32mI (382375) cam: Free PSRAM: 4175344 bytes[0m
+
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (388375) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (388375) cam: Frame 41: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (394375) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (394375) cam: Frame 42: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (400375) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (400375) cam: Frame 43: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (406375) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (406375) cam: Frame 44: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (412375) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (412375) cam: Frame 45: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (418375) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (418375) cam: Frame 46: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (424375) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (424375) cam: Frame 47: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (430375) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (430375) cam: Frame 48: FAILED (NULL)[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses

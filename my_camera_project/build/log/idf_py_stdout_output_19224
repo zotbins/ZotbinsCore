@@ -1,0 +1,53 @@
+Command: ninja flash
+[1/5] C:\Windows\system32\cmd.exe /C "cd /D C:\Users\Chadw\Documents\camera\my_camera_project\build\esp-idf\esptool_py && C:\Users\Chadw\.espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe C:/Users/Chadw/esp/v5.5.1/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Users/Chadw/Documents/camera/my_camera_project/build/partition_table/partition-table.bin C:/Users/Chadw/Documents/camera/my_camera_project/build/my_camera_project.bin"
+my_camera_project.bin binary size 0x51c30 bytes. Smallest app partition is 0x100000 bytes. 0xae3d0 bytes (68%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] C:\Windows\system32\cmd.exe /C "cd /D C:\Users\Chadw\Documents\camera\my_camera_project\build\bootloader\esp-idf\esptool_py && C:\Users\Chadw\.espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe C:/Users/Chadw/esp/v5.5.1/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 C:/Users/Chadw/Documents/camera/my_camera_project/build/bootloader/bootloader.bin"
+Bootloader binary size 0x6680 bytes. 0x980 bytes (8%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] C:\Windows\system32\cmd.exe /C "cd /D C:\Users\Chadw\esp\v5.5.1\esp-idf\components\esptool_py && C:\Users\Chadw\.espressif\tools\cmake\3.30.2\bin\cmake.exe -D IDF_PATH=C:/Users/Chadw/esp/v5.5.1/esp-idf -D SERIAL_TOOL=C:/Users/Chadw/.espressif/python_env/idf5.5_py3.11_env/Scripts/python.exe;;C:/Users/Chadw/esp/v5.5.1/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=C:/Users/Chadw/Documents/camera/my_camera_project/build -P C:/Users/Chadw/esp/v5.5.1/esp-idf/components/esptool_py/run_serial_tool.cmake"
+esptool.py --chip esp32 -p COM3 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 2MB 0x1000 bootloader/bootloader.bin 0x10000 my_camera_project.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.10.0
+Serial port COM3
+Connecting....
+Chip is ESP32-D0WD-V3 (revision v3.1)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+Crystal is 40MHz
+MAC: 78:42:1c:2b:68:fc
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00007fff...
+Flash will be erased from 0x00010000 to 0x00061fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 26240 bytes to 16488...
+Writing at 0x00001000... (50 %)
+Writing at 0x000075fa... (100 %)
+Wrote 26240 bytes (16488 compressed) at 0x00001000 in 0.6 seconds (effective 333.3 kbit/s)...
+Hash of data verified.
+Compressed 334896 bytes to 173995...
+Writing at 0x00010000... (9 %)
+Writing at 0x0001f50a... (18 %)
+Writing at 0x00028667... (27 %)
+Writing at 0x0002e83a... (36 %)
+Writing at 0x00034389... (45 %)
+Writing at 0x0003b279... (54 %)
+Writing at 0x00042c3c... (63 %)
+Writing at 0x0004945a... (72 %)
+Writing at 0x00050c98... (81 %)
+Writing at 0x00057b08... (90 %)
+Writing at 0x0005dcee... (100 %)
+Wrote 334896 bytes (173995 compressed) at 0x00010000 in 4.2 seconds (effective 637.0 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.0 seconds (effective 551.6 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...

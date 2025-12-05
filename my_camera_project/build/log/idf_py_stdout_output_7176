@@ -1,0 +1,92 @@
+Command: C:\Users\Chadw\.espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe C:\Users\Chadw\esp\v5.5.1\esp-idf\tools/idf_monitor.py -p COM6 -b 115200 --toolchain-prefix xtensa-esp32-elf- --target esp32 --revision 0 C:\Users\Chadw\Documents\camera\my_camera_project\build\my_camera_project.elf C:\Users\Chadw\Documents\camera\my_camera_project\build\bootloader\bootloader.elf --force-color -m 'C:\Users\Chadw\.espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe' 'C:\Users\Chadw\esp\v5.5.1\esp-idf\tools\idf.py'
+ets Jul 29�ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x12 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:6380
+ho 0 tail 12 room 4
+load:0x40078000,len:15916
+load:0x40080400,len:3860
+entry 0x40080638
+[0;32mI (29) boot: ESP-IDF v5.5.1 2nd stage bootloader[0m
+[0;32mI (29) boot: compile time Nov 24 2025 16:48:29[0m
+[0;32mI (29) boot: Multicore bootloader[0m
+[0;32mI (31) boot: chip revision: v3.1[0m
+[0;32mI (33) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (37) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (41) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (44) boot: Enabling RNG early entropy source...[0m
+[0;32mI (49) boot: Partition Table:[0m
+[0;32mI (51) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (58) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (64) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (71) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (77) boot: End of partition table[0m
+[0;32mI (81) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=13424h ( 78884) map[0m
+[0;32mI (115) esp_image: segment 1: paddr=0002344c vaddr=3ffb0000 size=04c64h ( 19556) load[0m
+[0;32mI (122) esp_image: segment 2: paddr=000280b8 vaddr=40080000 size=07f60h ( 32608) load[0m
+[0;32mI (135) esp_image: segment 3: paddr=00030020 vaddr=400d0020 size=2851ch (165148) map[0m
+[0;32mI (192) esp_image: segment 4: paddr=00058544 vaddr=40087f60 size=09818h ( 38936) load[0m
+[0;32mI (208) esp_image: segment 5: paddr=00061d64 vaddr=50000000 size=00020h (    32) load[0m
+[0;32mI (217) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (217) boot: Disabling RNG early entropy source...[0m
+[0;32mI (228) quad_psram: This chip is ESP32-D0WD[0m
+[0;32mI (229) esp_psram: Found 8MB PSRAM device[0m
+[0;32mI (230) esp_psram: Speed: 40MHz[0m
+[0;32mI (230) esp_psram: PSRAM initialized, cache is in low/high (2-core) mode.[0m
+[0;33mW (235) esp_psram: Virtual address not enough for PSRAM, map as much as we can. 4MB is mapped[0m
+[0;32mI (243) cpu_start: Multicore app[0m
+[0;32mI (1152) esp_psram: SPI SRAM memory test OK[0m
+[0;32mI (1160) cpu_start: Pro cpu start user code[0m
+[0;32mI (1160) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (1160) app_init: Application information:[0m
+[0;32mI (1160) app_init: Project name:     my_camera_project[0m
+[0;32mI (1165) app_init: App version:      1[0m
+[0;32mI (1168) app_init: Compile time:     Dec  4 2025 14:14:34[0m
+[0;32mI (1174) app_init: ELF file SHA256:  a4c45d3f9...[0m
+[0;32mI (1178) app_init: ESP-IDF:          v5.5.1[0m
+[0;32mI (1182) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (1186) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (1190) efuse_init: Chip rev:         v3.1[0m
+[0;32mI (1194) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (1200) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (1205) heap_init: At 3FFB5E98 len 0002A168 (168 KiB): DRAM[0m
+[0;32mI (1211) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (1216) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (1222) heap_init: At 40091778 len 0000E888 (58 KiB): IRAM[0m
+[0;32mI (1228) esp_psram: Adding pool of 4096K of PSRAM memory to heap allocator[0m
+[0;32mI (1235) spi_flash: detected chip: generic[0m
+[0;32mI (1237) spi_flash: flash io: dio[0m
+[0;33mW (1241) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (1254) main_task: Started on CPU0[0m
+[0;32mI (1264) main_task: Calling app_main()[0m
+[0;32mI (1264) cam: === ESP32 Camera Application ===[0m
+[0;32mI (1264) cam: Free heap: 4484168 bytes[0m
+[0;32mI (1364) cam: Initializing camera...[0m
+[0;32mI (1364) cam_hal: cam init ok[0m
+[0;32mI (1364) sccb-ng: pin_sda 26 pin_scl 27[0m
+[0;32mI (1364) sccb-ng: sccb_i2c_port=1[0m
+[0;32mI (1374) camera: Camera PID=0x26 VER=0x42 MIDL=0x7f MIDH=0xa2[0m
+[0;32mI (1374) camera: Detected OV2640 camera[0m
+[0;32mI (1374) camera: Detected camera at address=0x30[0m
+[0;32mI (1414) cam_hal: PSRAM DMA mode disabled[0m
+[0;32mI (1414) cam_hal: buffer_size: 32768, half_buffer_size: 4096, node_buffer_size: 2048, node_cnt: 16, total_cnt: 23[0m
+[0;32mI (1424) cam_hal: Allocating 96000 Byte frame buffer in PSRAM[0m
+[0;32mI (1424) cam_hal: Allocating 96000 Byte frame buffer in PSRAM[0m
+[0;32mI (1434) cam_hal: cam config ok[0m
+[0;32mI (1434) ov2640: Set PLL: clk_2x: 0, clk_div: 0, pclk_auto: 0, pclk_div: 8[0m
+[0;32mI (1484) ov2640: Set PLL: clk_2x: 0, clk_div: 0, pclk_auto: 0, pclk_div: 8[0m
+cam_hal: NO-SOI - JPEG start marker missing
+cam_hal: NO-SOI - JPEG start marker missing
+[0;32mI (2004) cam: Free heap after init: 4252432 bytes[0m
+[0;32mI (2004) cam: Camera task created[0m
+[0;32mI (2004) main_task: Returned from app_main()[0m
+[0;32mI (4004) cam: Starting frame capture...[0m
+[0;33mW (8004) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (8004) cam: Frame capture failed[0m
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+cam_hal: NO-SOI - JPEG start marker missing - 100 additional misses
+[0;33mW (14004) cam_hal: Failed to get frame: timeout[0m
+[1;31mE (14004) cam: Frame capture failed[0m
