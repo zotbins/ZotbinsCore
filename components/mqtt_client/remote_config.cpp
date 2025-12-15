@@ -2,7 +2,7 @@
 #include <nvs.h>
 #include <esp_err.h>
 #include <cJSON.h>
-
+#include <client_publish.hpp> 
 /*Need to figure out what is the topic to be subscribed to and everything 
   Also need to figure out security 
   Also would json be the best addition since I would need a library to parse that data?
@@ -24,7 +24,7 @@ Probably need some sort of configuration at the start?
 */
 
 
-esp_err_t set_value(const char* value, const char* key,){
+esp_err_t setNVS(const char* value, const char* key,){
     nvs_handle_t handler;
     esp_err_t err;
     err = nvs_open("config", NVS_READWRITE, &handler)
@@ -43,6 +43,13 @@ esp_err_t set_value(const char* value, const char* key,){
     return ESP_OK;
 }
 
+void setValues(){  
+    
+}
+
+
+
+
 /*
 Bare Bones of the Parsing Command
 not the most scalable thing in the world
@@ -53,6 +60,7 @@ esp_err_t parseCommand(const char* command){
     cJSON *json = cJSON_Parse(command);
     if(json == NULL){
         cJSON_Delete(json);
+        sendSignal("Invalid Command")
         return;
     }
     cJSON *location = cJSON_GetObjectItemCaseSensitive(json,"location");
@@ -71,28 +79,40 @@ esp_err_t parseCommand(const char* command){
     }
     if(cJSON_IsString(password) && password->valuestring!=NULL && password->valuestring!=""){
         set_value("password",location->valuestring);
-    }
+    }ß
     cJSON_Delete(json);
+    sendSignal("Succesfully Received Commandß")
     return ESP_OK;
 }
 
 /*
 get value function if required
 */
-const char* get_value_nvs(const char* key){
+esp_err_t get_value_nvs(const char* key,char* value,size_t size){
     nvs_handle_t handler;
     size_t size = 0;
-    err = nvs_get_str(handler,key,NULL,&size);
-    if(err = ESP_OK){
-        char* value = malloc(size);
-        err = nvs_get_str(handler,key,value,&size);
-        if(err = ESP_OK){
-            return value;
-        }
-        free(value);
+    err = nvs_open("config", NVS_READWRITE, &handler)
+    if(err!=ESP_OK){
+        return err;
     }
-}
+    err = nvs_get_str(handler,key,value,&size);
+    nvs_close(handler);
+    return err; 
+  }
 
+  /*
+  Function to send back a response to the server
+  This is optional, but it could just be an error check or something like that
+  */
+  void sendSignal(const char* payload){
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root,"response",*payload);
+    char* payload = cJSON_PrintUnformatted(root);
+    cJSON_Delete(root);
+    client_publish(payload);
+  }
+
+        
 
 
 
