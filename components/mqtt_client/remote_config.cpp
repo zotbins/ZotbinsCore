@@ -46,7 +46,7 @@ esp_err_t parseCommand(const char* command){
     cJSON *json = cJSON_Parse(command);
     if(json == NULL){
         cJSON_Delete(json);
-        sendSignal("Invalid Command")
+        sendSignal("Invalid Command");
         return;
     }
     cJSON *location = cJSON_GetObjectItemCaseSensitive(json,"location");
