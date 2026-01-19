@@ -3,10 +3,6 @@
 #include <esp_err.h>
 #include <cJSON.h>
 #include <client_publish.hpp> 
-/*Need to figure out what is the topic to be subscribed to and everything 
-  Also need to figure out security 
-  Also would json be the best addition since I would need a library to parse that data?
-*/
 
 /*
 Assuming a JSON command is sent like this:
@@ -19,12 +15,9 @@ Assuming a JSON command is sent like this:
 }
 */
 
-/*
-Probably need some sort of configuration at the start?
-*/
 
 
-esp_err_t setNVS(const char* value, const char* key,){
+esp_err_t setNVS(const char* value, const char* key){
     nvs_handle_t handler;
     esp_err_t err;
     err = nvs_open("config", NVS_READWRITE, &handler)
@@ -42,13 +35,6 @@ esp_err_t setNVS(const char* value, const char* key,){
     nvs_close(handler);
     return ESP_OK;
 }
-
-void setValues(){  
-    
-}
-
-
-
 
 /*
 Bare Bones of the Parsing Command
