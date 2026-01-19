@@ -20,7 +20,7 @@ Assuming a JSON command is sent like this:
 esp_err_t setNVS(const char* value, const char* key){
     nvs_handle_t handler;
     esp_err_t err;
-    err = nvs_open("config", NVS_READWRITE, &handler)
+    err = nvs_open("config", NVS_READWRITE, &handler);
     if(err!=ESP_OK){
         return err;
     }
@@ -55,29 +55,29 @@ esp_err_t parseCommand(const char* command){
     cJSON *password = cJSON_GetObjectItemCaseSensitive(json,"password");
     
     if(cJSON_IsString(location) && location->valuestring!=NULL && location->valuestring!=""){
-        set_value("location",location->valuestring);
+        setNVS("location",location->valuestring);
     }
     if(cJSON_IsString(name) && name->valuestring!=NULL && name->valuestring!=""){
-        set_value("name",location->valuestring);
+        setNVS("name",location->valuestring);
     }
     if(cJSON_IsString(ssid) && ssid->valuestring!=NULL && ssid->valuestring!=""){
-        set_value("ssid",ssid->valuestring);
+        setNVS("ssid",ssid->valuestring);
     }
     if(cJSON_IsString(password) && password->valuestring!=NULL && password->valuestring!=""){
-        set_value("password",location->valuestring);
-    }ß
+        setNVS("password",location->valuestring);
+    }
     cJSON_Delete(json);
-    sendSignal("Succesfully Received Commandß")
+    sendSignal("Succesfully Received Command");
     return ESP_OK;
 }
 
 /*
 get value function if required
 */
-esp_err_t get_value_nvs(const char* key,char* value,size_t size){
+esp_err_t get_value_nvs(const char* key,char* value,size_t* size){
     nvs_handle_t handler;
     size_t size = 0;
-    err = nvs_open("config", NVS_READWRITE, &handler)
+    err = nvs_open("config", NVS_READWRITE, &handler);
     if(err!=ESP_OK){
         return err;
     }
@@ -92,10 +92,10 @@ esp_err_t get_value_nvs(const char* key,char* value,size_t size){
   */
   void sendSignal(const char* payload){
     cJSON *root = cJSON_CreateObject();
-    cJSON_AddStringToObject(root,"response",*payload);
-    char* payload = cJSON_PrintUnformatted(root);
+    cJSON_AddStringToObject(root,"response",payload);
+    char* new_payload = cJSON_PrintUnformatted(root);
     cJSON_Delete(root);
-    client_publish(payload);
+    client_publish(new_payload);
   }
 
         
