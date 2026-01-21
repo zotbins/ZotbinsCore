@@ -10,4 +10,5 @@ idf_component_register(
     SRCS ultrasonic.c status.c
     INCLUDE_DIRS .
     REQUIRES ${req}
+    PRIV_REQUIRES publish
 )
