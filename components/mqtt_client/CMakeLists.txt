@@ -22,7 +22,7 @@ idf_component_register(SRCS "remote_config.cpp" "initialization.cpp" "client_con
                     INCLUDE_DIRS "include"
                     PRIV_INCLUDE_DIRS "credentials"
                     EMBED_TXTFILES ${AWS_EMBED}
-                    REQUIRES mqtt log esp_system esp_event esp_netif nvs_flash protocol_examples_common esp_hw_support freertos json
+                    REQUIRES mqtt log esp_system esp_event esp_netif nvs_flash protocol_examples_common esp_hw_support freertos json publish
                     )
 if(HAS_AWS_CREDENTIALS)
     target_compile_definitions("${COMPONENT_TARGET}" PUBLIC HAS_AWS_CREDENTIALS)

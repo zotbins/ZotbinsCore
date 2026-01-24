@@ -3,7 +3,7 @@
 #include <esp_err.h>
 #include <cJSON.h>
 #include <client_publish.hpp> 
-
+#include <string.h> 
 /*
 Assuming a JSON command is sent like this:
 {
@@ -16,6 +16,8 @@ Assuming a JSON command is sent like this:
 */
 
 
+
+void sendSignal(const char* payload);
 
 esp_err_t setNVS(const char* value, const char* key){
     nvs_handle_t handler;
@@ -47,23 +49,23 @@ esp_err_t parseCommand(const char* command){
     if(json == NULL){
         cJSON_Delete(json);
         sendSignal("Invalid Command");
-        return;
+        return ESP_FAIL;
     }
     cJSON *location = cJSON_GetObjectItemCaseSensitive(json,"location");
     cJSON *name = cJSON_GetObjectItemCaseSensitive(json,"name");
     cJSON *ssid = cJSON_GetObjectItemCaseSensitive(json,"ssid");
     cJSON *password = cJSON_GetObjectItemCaseSensitive(json,"password");
     
-    if(cJSON_IsString(location) && location->valuestring!=NULL && location->valuestring!=""){
+    if(cJSON_IsString(location) && location->valuestring!=NULL && strlen(location->valuestring)>0){
         setNVS("location",location->valuestring);
     }
-    if(cJSON_IsString(name) && name->valuestring!=NULL && name->valuestring!=""){
-        setNVS("name",location->valuestring);
+    if(cJSON_IsString(name) && name->valuestring!=NULL && strlen(name->valuestring)>0){
+        setNVS("name",name->valuestring);
     }
-    if(cJSON_IsString(ssid) && ssid->valuestring!=NULL && ssid->valuestring!=""){
+    if(cJSON_IsString(ssid) && ssid->valuestring!=NULL && strlen(ssid->valuestring)>0){
         setNVS("ssid",ssid->valuestring);
     }
-    if(cJSON_IsString(password) && password->valuestring!=NULL && password->valuestring!=""){
+    if(cJSON_IsString(password) && password->valuestring!=NULL && strlen(password->valuestring)>0){
         setNVS("password",location->valuestring);
     }
     cJSON_Delete(json);
@@ -74,7 +76,9 @@ esp_err_t parseCommand(const char* command){
 /*
 get value function if required
 */
+/*
 esp_err_t get_value_nvs(const char* key,char* value,size_t* size){
+    
     nvs_handle_t handler;
     size_t size = 0;
     err = nvs_open("config", NVS_READWRITE, &handler);
@@ -85,6 +89,8 @@ esp_err_t get_value_nvs(const char* key,char* value,size_t* size){
     nvs_close(handler);
     return err; 
   }
+*/
+
 
   /*
   Function to send back a response to the server
