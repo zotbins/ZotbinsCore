@@ -18,11 +18,12 @@ else()
     set(AWS_EMBED "")
 endif()
 
-idf_component_register(SRCS "initialization.cpp" "client_connect.cpp"
+idf_component_register(SRCS "initialization.cpp" "client_connect.cpp" "remote_config.cpp"
                     INCLUDE_DIRS "include"
                     PRIV_INCLUDE_DIRS "credentials"
                     EMBED_TXTFILES ${AWS_EMBED}
-                    REQUIRES mqtt log esp_system esp_event esp_netif nvs_flash protocol_examples_common esp_hw_support freertos
+                    REQUIRES mqtt log esp_system esp_event esp_netif nvs_flash protocol_examples_common esp_hw_support freertos json
+                    PRIV_REQUIRES publish
                     )
 if(HAS_AWS_CREDENTIALS)
     target_compile_definitions("${COMPONENT_TARGET}" PUBLIC HAS_AWS_CREDENTIALS)
