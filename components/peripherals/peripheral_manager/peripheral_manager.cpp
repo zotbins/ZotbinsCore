@@ -50,11 +50,11 @@ const uint8_t DEVICE_ADDR = 0x20;
 void init_manager(void)
 {
 
-    // Initialize i2cdev subsystem (creates port mutexes and internal state)
+    // Initialize i2cdev subsystem (creates port mutexes and internal state) must only be initialized ONCE
     i2cdev_init();
 
-    // Initialize empty devie, will break without
-    mcp23x17_t mcp23017_device = {};
+    // Initialize empty device (make static so descriptor persists)
+    static mcp23x17_t mcp23017_device = {};
 
     // I2C address, requires A0, A1, A2 tied to ground on device
     uint8_t mcp23017_addr = DEVICE_ADDR;
@@ -64,8 +64,8 @@ void init_manager(void)
     // mcp23017_device.cfg.sda_pullup_en = 1; // enable internal SDA pull-up
     // mcp23017_device.cfg.scl_pullup_en = 1; // enable internal SCL pull-up
 
-    // Initialize I2C line (SDA=12, SCL=14) (SDA is first)
-    esp_err_t err = mcp23x17_init_desc(&mcp23017_device, mcp23017_addr, I2C_NUM_0, GPIO_NUM_12, GPIO_NUM_14);
+    // Initialize I2C line (SDA=13, SCL=14) (SDA is first) - wrover dev 01 02 board
+    esp_err_t err = mcp23x17_init_desc(&mcp23017_device, mcp23017_addr, I2C_NUM_0, GPIO_NUM_13, GPIO_NUM_14);
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "mcp23x17_init_desc failed: %s", esp_err_to_name(err));
@@ -76,7 +76,7 @@ void init_manager(void)
 
     // 1 is input, 0 is output
     // Set pin (GPA0) to input (0x0001)
-    err = mcp23x17_port_set_mode(&mcp23017_device, 0xFFFF & GPA0);
+    err = mcp23x17_port_set_mode(&mcp23017_device, 0xFFFF & GPB1);
     if (err != ESP_OK)
     {
         ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %s", esp_err_to_name(err));
@@ -87,46 +87,34 @@ void init_manager(void)
         ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %" PRIu16, val);
     }
 
-    // Set pullup resistors on pins
-    err = mcp23x17_port_set_pullup(&mcp23017_device, 0xFFFF & GPA0);
-    if (err != ESP_OK)
-    {
-        ESP_LOGW(TAG, "mcp23x17_port_set_pullup returned %s", esp_err_to_name(err));
-    }
-    else
-    {
-        mcp23x17_port_get_pullup(&mcp23017_device, &val);
-        ESP_LOGW(TAG, "mcp23x17_port_set_pullup returned %" PRIu16, val);
-    }
+    // uint16_t value;
 
-    uint16_t value;
-
-    /* Read instructions for gpio expander. TODO */
-    while (1)
-    {
-        vTaskDelay(100 / portTICK_PERIOD_MS);
-        err = mcp23x17_port_read(&mcp23017_device, &value);
-        if (err == ESP_OK)
-        {
-            ESP_LOGI(TAG, "port value=0x%04x", value);
-        }
-        else
-        {
-            ESP_LOGE(TAG, "mcp23x17_port_read failed: %s", esp_err_to_name(err));
-        }
-    }
+    // /* Temporary read to test breakbeam on GPB1 */
+    // while (1)
+    // {
+    //     vTaskDelay(100 / portTICK_PERIOD_MS);
+    //     err = mcp23x17_port_read(&mcp23017_device, &value);
+    //     if (err == ESP_OK)
+    //     {
+    //         ESP_LOGI(TAG, "port value=0x%04x", value);
+    //     }
+    //     else
+    //     {
+    //         ESP_LOGE(TAG, "mcp23x17_port_read failed: %s", esp_err_to_name(err));
+    //     }
+    // }
 
     // Initialize sensors
-    esp_err_t hx711_status = init_hx711();
+    // esp_err_t hx711_status = init_hx711(); // TODO: gpio implementation
     esp_err_t hcsr04_status = init_hcsr04();
     init_breakbeam(); // TODO: change return value to esp_err_t
 
     manager_eg = xEventGroupCreate(); // Create the event group to store sensor event bits---for example, when the breakbeam is tripped, or when the servo has finished moving.
 
-    if (init_servo() == ESP_OK)
-    {
-        servo_set_angle(0);
-    }
+    // if (init_servo() == ESP_OK)
+    // {
+    //     servo_set_angle(0);
+    // }
 
     xTaskCreate(
         run_manager,          /* Task function. */
