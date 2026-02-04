@@ -31,8 +31,7 @@ esp_err_t init_hcsr04(mcp23x17_t *dev, uint8_t trigger, uint8_t echo)
     hcsr04 = {
         .dev = dev,
         .trigger_pin = trigger,
-        .echo_pin = echo
-    };
+        .echo_pin = echo};
 
     esp_err_t hcsr04_device_status = ultrasonic_init(&hcsr04);
 
@@ -52,8 +51,8 @@ float get_fullness(void)
 {
     uint32_t distance;
     float fullness;
-    ultrasonic_measure_cm(&hcsr04, MAX_DISTANCE, &distance);      // TODO: convert to percentage
-    fullness = 100.0 - (distance / MAX_DISTANCE * 100.0); // Convert distance to fullness percentage
+    ultrasonic_measure_cm(&hcsr04, MAX_DISTANCE, &distance); // TODO: convert to percentage
+    fullness = 100.0 - (distance / MAX_DISTANCE * 100.0);    // Convert distance to fullness percentage
 
     if (fullness > 100.0 && fullness < 110.0)
     { // Likely a sensor measurement error, cap at 100%

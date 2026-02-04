@@ -48,13 +48,12 @@ esp_err_t init_breakbeam(mcp23x17_t *dev, uint8_t breakbeam, gpio_num_t interrup
         .mode = GPIO_MODE_INPUT,
         .pull_up_en = GPIO_PULLUP_ENABLE,
         .pull_down_en = GPIO_PULLDOWN_DISABLE,
-        .intr_type = GPIO_INTR_NEGEDGE
-    };
+        .intr_type = GPIO_INTR_NEGEDGE};
 
     // Init breakbeam on gpio expander
     mcp23x17_set_mode(dev, breakbeam, MCP23X17_GPIO_INPUT);
     mcp23x17_set_interrupt(dev, breakbeam, MCP23X17_INT_LOW_EDGE); // interrupt on falling edge
-    mcp23x17_set_int_out_mode(dev, MCP23X17_OPEN_DRAIN); // open-drain interrupt output
+    mcp23x17_set_int_out_mode(dev, MCP23X17_OPEN_DRAIN);           // open-drain interrupt output
 
     esp_err_t err;
 

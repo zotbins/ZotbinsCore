@@ -333,7 +333,8 @@ esp_err_t mcp23x17_free_desc_spi(mcp23x17_t *dev);
      * @param intr Interrupt mode
      * @return `ESP_OK` on success
      */
-    esp_err_t mcp23x17_set_interrupt(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_intr_t intr);;
+    esp_err_t mcp23x17_set_interrupt(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_intr_t intr);
+    ;
 
 #ifdef __cplusplus
 }
