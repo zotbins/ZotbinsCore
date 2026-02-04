@@ -333,39 +333,7 @@ esp_err_t mcp23x17_free_desc_spi(mcp23x17_t *dev);
      * @param intr Interrupt mode
      * @return `ESP_OK` on success
      */
-    esp_err_t mcp23x17_set_interrupt(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_intr_t intr);
-
-    ////////////////////////////////////////////////////////////////////// added helpers
-
-    /**
-     * @brief Set GPIO pin direction
-     */
-    esp_err_t mcp23x17_set_direction(mcp23x17_t *dev, uint8_t pin, bool is_output);
-
-    /**
-     * @brief Write GPIO pin level
-     */
-    esp_err_t mcp_gpio_write(mcp23x17_t *dev, uint8_t pin, bool level);
-
-    /**
-     * @brief Read GPIO pin level
-     */
-    esp_err_t mcp_gpio_read(mcp23x17_t *dev, uint8_t pin, bool *level);
-
-    /**
-     * @brief Enable or disable interrupt mirroring on INTA and INTB pins
-     *
-     * When enabled, the INTB pin will mirror the state of the INTA pin.
-     * This means that if either port generates an interrupt, both INT pins will be activated.
-     * When disabled, INTA and INTB will operate independently, each reflecting the interrupt status of their respective ports.
-     *
-     * @param dev Pointer to device descriptor
-     * @param enable `true` to enable interrupt mirroring, `false` to disable
-     * @return `ESP_OK` on success
-     */
-    esp_err_t mcp_gpio_mirror_interrupts(mcp23x17_t *dev, bool enable);
-
-    /////////////////////////////////////////////////////////////////////
+    esp_err_t mcp23x17_set_interrupt(mcp23x17_t *dev, uint8_t pin, mcp23x17_gpio_intr_t intr);;
 
 #ifdef __cplusplus
 }

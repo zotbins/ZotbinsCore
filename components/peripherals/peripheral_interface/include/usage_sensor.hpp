@@ -5,6 +5,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include "freertos/event_groups.h"
+#include "mcp23x17.h"
 
 extern EventGroupHandle_t manager_eg;
 
@@ -12,7 +13,7 @@ extern EventGroupHandle_t manager_eg;
  * @brief Configures breakbeam sensor pins and installs ISR handler.
  *
  */
-void init_breakbeam(void);
+esp_err_t init_breakbeam(mcp23x17_t *dev, uint8_t breakbeam, gpio_num_t interrupt);
 
 /**
  * @brief Gets the total number of times the breakbeam has been triggered.

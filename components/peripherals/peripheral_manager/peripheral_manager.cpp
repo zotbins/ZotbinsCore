@@ -23,29 +23,19 @@
 #include "events.hpp"
 #include "mcp23x17.h"
 
-#define GPA0 0x0001
-#define GPA1 0x0002
-#define GPA2 0x0004
-#define GPA3 0x0008
-#define GPA4 0x0010
-#define GPA5 0x0020
-#define GPA6 0x0040
-#define GPA7 0x0080
-#define GPB0 0x0100
-#define GPB1 0x0200
-#define GPB2 0x0400
-#define GPB3 0x0800
-#define GPB4 0x1000
-#define GPB5 0x2000
-#define GPB6 0x4000
-#define GPB7 0x8000
-
 static const char *TAG = "peripheral_manager"; // Tag for ESP logging
 static TaskHandle_t manager_handle = nullptr;  // Task handle for the peripheral manager task
 
 EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors have finished collecting data.
 
-const uint8_t DEVICE_ADDR = 0x20;
+static mcp23x17_t mcp23017_device = {}; // MCP23017 device descriptor
+
+const uint8_t MCP23X17_DEV_ADDR = 0x20; // address for all pins tied to ground
+
+const uint8_t PIN_TRIGGER = 2; // GPIO pin for HC-SR04 trigger
+const uint8_t PIN_ECHO = 8;    // GPIO pin for HC-SR04 echo
+const uint8_t PIN_BREAKBEAM = 9; // GPIO pin for breakbeam sensor
+const gpio_num_t PIN_INTERRUPT = GPIO_NUM_15; // GPIO pin for breakbeam interrupt
 
 void init_manager(void)
 {
@@ -53,68 +43,22 @@ void init_manager(void)
     // Initialize i2cdev subsystem (creates port mutexes and internal state) must only be initialized ONCE
     i2cdev_init();
 
-    // Initialize empty device (make static so descriptor persists)
-    static mcp23x17_t mcp23017_device = {};
-
-    // I2C address, requires A0, A1, A2 tied to ground on device
-    uint8_t mcp23017_addr = DEVICE_ADDR;
-
-    /* External pullups preferred since internal pullups are 3.3v, 5v required for 1MHz on I2C. Therefore, keep the pullups disabled. 10kohm pullups work */
-
-    // mcp23017_device.cfg.sda_pullup_en = 1; // enable internal SDA pull-up
-    // mcp23017_device.cfg.scl_pullup_en = 1; // enable internal SCL pull-up
-
-    // Initialize I2C line (SDA=13, SCL=14) (SDA is first) - wrover dev 01 02 board
-    esp_err_t err = mcp23x17_init_desc(&mcp23017_device, mcp23017_addr, I2C_NUM_0, GPIO_NUM_13, GPIO_NUM_14);
+    // Initialize I2C line (SDA=13, SCL=14) (SDA is first in parameters) - Up to date for WROVER-DEV_01_02
+    esp_err_t err = mcp23x17_init_desc(&mcp23017_device, MCP23X17_DEV_ADDR, I2C_NUM_0, GPIO_NUM_13, GPIO_NUM_14);
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "mcp23x17_init_desc failed: %s", esp_err_to_name(err));
         return;
     }
 
-    uint16_t val;
-
-    // 1 is input, 0 is output
-    // Set pin (GPA0) to input (0x0001)
-    err = mcp23x17_port_set_mode(&mcp23017_device, 0xFFFF & GPB1);
-    if (err != ESP_OK)
-    {
-        ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %s", esp_err_to_name(err));
-    }
-    else
-    {
-        mcp23x17_port_get_pullup(&mcp23017_device, &val);
-        ESP_LOGW(TAG, "mcp23x17_port_set_mode returned %" PRIu16, val);
-    }
-
-    // uint16_t value;
-
-    // /* Temporary read to test breakbeam on GPB1 */
-    // while (1)
-    // {
-    //     vTaskDelay(100 / portTICK_PERIOD_MS);
-    //     err = mcp23x17_port_read(&mcp23017_device, &value);
-    //     if (err == ESP_OK)
-    //     {
-    //         ESP_LOGI(TAG, "port value=0x%04x", value);
-    //     }
-    //     else
-    //     {
-    //         ESP_LOGE(TAG, "mcp23x17_port_read failed: %s", esp_err_to_name(err));
-    //     }
-    // }
+    // TODO: bypass I2C limitations with interrupt INTB
 
     // Initialize sensors
-    // esp_err_t hx711_status = init_hx711(); // TODO: gpio implementation
-    esp_err_t hcsr04_status = init_hcsr04();
-    init_breakbeam(); // TODO: change return value to esp_err_t
+    esp_err_t hx711_status = init_hx711();
+    esp_err_t hcsr04_status = init_hcsr04(&mcp23017_device, PIN_TRIGGER, PIN_ECHO); // trigger pin 2, echo pin 8
+    esp_err_t breakbeam_status = init_breakbeam(&mcp23017_device, PIN_BREAKBEAM, PIN_INTERRUPT); // breakbeam pin 1, interrupt on GPIO 15
 
     manager_eg = xEventGroupCreate(); // Create the event group to store sensor event bits---for example, when the breakbeam is tripped, or when the servo has finished moving.
-
-    // if (init_servo() == ESP_OK)
-    // {
-    //     servo_set_angle(0);
-    // }
 
     xTaskCreate(
         run_manager,          /* Task function. */
@@ -131,34 +75,23 @@ static void run_manager(void *arg)
 
     ESP_LOGI(TAG, "Peripheral manager started!");
 
-    // Servo parameters
-    uint32_t last_usage = get_usage_count();
-    bool gate_open = false;
-    TickType_t open_since = 0;
-    constexpr TickType_t kHoldMs = 600;
+    // Check initial states, for debug and clearing interrupt
+    uint32_t gpio_state;
 
     while (1)
     {
-        xEventGroupWaitBits(manager_eg, BIT0, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
+        ESP_LOGI(TAG, "Breakbeam is broken; attemping to clear interrupt");
+        while(gpio_get_level(PIN_INTERRUPT) == 0) {
+            vTaskDelay(pdMS_TO_TICKS(1000)); // wait for interrupt to clear
+            mcp23x17_get_level(&mcp23017_device, PIN_BREAKBEAM, &gpio_state);
+        }
+        xEventGroupClearBits(manager_eg, BIT0); // Clear the interrupt state event bit
+        xEventGroupWaitBits(manager_eg, BIT0, pdFALSE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
 
         // Collect sensor data---add additional sensors here as needed
         float weight = get_weight();
         float fullness = get_fullness();
         uint32_t usage = get_usage_count();
-
-        if (usage != last_usage)
-        { // Instructs servo to open bin
-            servo_set_angle(90);
-            gate_open = true;
-            open_since = xTaskGetTickCount();
-            last_usage = usage;
-        }
-
-        if (gate_open && (xTaskGetTickCount() - open_since) >= pdMS_TO_TICKS(kHoldMs))
-        { // Instructs servo to close bin
-            servo_set_angle(0);
-            gate_open = false;
-        }
 
         // Publish data
         publish_payload(fullness, weight, usage);
