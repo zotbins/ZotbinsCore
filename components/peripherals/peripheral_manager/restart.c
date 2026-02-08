@@ -1,34 +1,58 @@
 #include "esp_err.h"
 #include "esp_system.h"
- 
+#include "client_publish.hpp"
 
-#define restartFlag (1<<0);
-
-EventGroupHandle_t restartGroup;
-void restartTask(){
-
-}   
-/*
-add an ISR
-ISR sets the bit
-once the bit is check check if the restart flag is yes or no
-if it is yes
-call restart function and restart
-*/
-
-void updateRestart(void){
-    BaseType_t HigherPriorityTaskWoken;
-    HigherPriorityTaskWoken = pdFALSE;
-    xEventGroupSetBitsFromISR(
+#define systemFlag (1<<0);
+#define serverFlag (1<<0);
+EventGroupHandle_t restartGroup = xEventGroupCreate();
+void restartTask(EventGroupHandle_t restartGroup){
+    for(;;){
+    /*
+    This Waits for the restart to be sent by the server
+    */
+    xEventGroupWaitBits(
         restartGroup,
-        restartFlag,
-        &HigherPriorityTaskWoken
+        serverFlag,
+        pdTrue,
+        pdTrue,
+        portMAX_DELAY       
     );
-    portYIELD_FROM_ISR(HigherPriorityTaskWoken);
+    /*This waits for the system to be available*/
+    xEventGroupWaitBits(
+        restartGroup,
+        systemFlag,
+        pdTrue,
+        pdTrue,
+        portMAX_DELAY
+    );
+    restart();
+    }
+}   
 
+void updateRestart(int requirement,EventGroupHandle_t restartGroup){    
+    if(requirement == 0){
+    xEventGroupSetBits(
+        restartGroup,
+        systemFlag
+    );
+    }
+    elif(requirement == 1){
+    xEventGroupSetBits(
+        restartGroup,
+        systemFlag
+    );
+    }
 }
 
-esp_err_t restart(){    
-
+void restart(){
+    /*Send message to Server and Restart*/
+    client_publish("System is Restarting...");
+    esp_restart();
 }
 
+void receiveServer(EventGroupHandle_t restartGroup){
+    xEventGroupSetBits(
+        restartGroup,
+        serverFlag
+    );
+}

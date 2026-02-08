@@ -65,7 +65,7 @@ static void run_manager(void *arg)
     while (1)
     {
         xEventGroupWaitBits(manager_eg, USAGE_EVENT_BIT, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
-
+         
         xEventGroupSetBits(manager_eg, MANAGER_STATUS_EVENT_BIT); // Indicate that the peripheral manager is running
 
         // Collect sensor data---add additional sensors here as needed
