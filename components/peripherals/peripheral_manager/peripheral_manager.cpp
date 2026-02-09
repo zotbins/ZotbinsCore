@@ -65,7 +65,7 @@ static void run_manager(void *arg)
 
     while (1)
     {
-        updateRestart(0,restartGroup);
+        
         xEventGroupWaitBits(manager_eg, USAGE_EVENT_BIT, pdTRUE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
         updateRestart(1,restartGroup);
         xEventGroupSetBits(manager_eg, MANAGER_STATUS_EVENT_BIT); // Indicate that the peripheral manager is running
@@ -92,6 +92,7 @@ static void run_manager(void *arg)
         // Publish data
         publish_payload(fullness, weight, usage);
         xEventGroupClearBits(manager_eg, MANAGER_STATUS_EVENT_BIT); // Indicate that the peripheral manager is stopped
+        updateRestart(0,restartGroup);
     }
 }
 
