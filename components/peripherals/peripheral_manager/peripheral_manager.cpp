@@ -15,46 +15,84 @@
 #include "servo.hpp"
 #include "usage_sensor.hpp"
 #include "weight_sensor.hpp"
-
-#include "peripheral_manager.hpp"
-#include "client_publish.hpp"
-#include "esp_log.h"
 #include "serialize.hpp"
 #include "events.hpp"
 #include "mcp23x17.h"
 
+#include "peripheral_manager.hpp"
+#include "pin_assignments.hpp"
+
+#include "client_publish.hpp"
+#include "esp_log.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/event_groups.h"
+
 static const char *TAG = "peripheral_manager"; // Tag for ESP logging
 static TaskHandle_t manager_handle = nullptr;  // Task handle for the peripheral manager task
 
+/*
+ 
+PERIPHERAL MANAGER EVENT GROUP NOTES
+
+BIT0 - Interrupt event
+BIT1 - 
+
+Need assignment:
+- Ultrasonic reading is pending
+- Breakbeam is held low (blocked)
+- Offline / online (?) may go in a different event group
+- GPIO expander is initialized
+- I2C is initialized
+- Time sensitive task is currently being executed, other I2C transactions should be paused or queued
+ 
+*/
 EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors have finished collecting data.
 
 static mcp23x17_t mcp23017_device = {}; // MCP23017 device descriptor
-
 const uint8_t MCP23X17_DEV_ADDR = 0x20; // address for all pins tied to ground
-
-const uint8_t PIN_TRIGGER = 2;                // GPIO pin for HC-SR04 trigger
-const uint8_t PIN_ECHO = 8;                   // GPIO pin for HC-SR04 echo
-const uint8_t PIN_BREAKBEAM = 9;              // GPIO pin for breakbeam sensor
-const gpio_num_t PIN_INTERRUPT = GPIO_NUM_15; // GPIO pin for breakbeam interrupt
 
 void init_manager(void)
 {
-
     // Initialize i2cdev subsystem (creates port mutexes and internal state) must only be initialized ONCE
     i2cdev_init();
 
-    // Initialize I2C line (SDA=13, SCL=14) (SDA is first in parameters) - Up to date for WROVER-DEV_01_02
-    esp_err_t err = mcp23x17_init_desc(&mcp23017_device, MCP23X17_DEV_ADDR, I2C_NUM_0, GPIO_NUM_13, GPIO_NUM_14);
+    // Initialize mcp23017 device descriptor
+    esp_err_t err = mcp23x17_init_desc(&mcp23017_device, MCP23X17_DEV_ADDR, I2C_NUM_0, PIN_SDA, PIN_SCL);
     if (err != ESP_OK)
     {
         ESP_LOGE(TAG, "mcp23x17_init_desc failed: %s", esp_err_to_name(err));
         return;
     }
 
-    // TODO: bypass I2C limitations with interrupt INTB
+    /* MCP23017 interrupt config */
+    esp_err_t err;
+    ESP_LOGI(TAG, "Initializing usage sensor interrupt...");
+    err = gpio_config(&PIN_INTERRUPT_CONFIG);
+    if (err != ESP_OK)
+    {
+        ESP_LOGW(TAG, "Failed to configure GPIO interrupt: %s", esp_err_to_name(err));
+        return err;
+    }
+    ESP_LOGI(TAG, "Installing ISR service...");
+    err = gpio_install_isr_service(0);
+    if (err != ESP_OK)
+    {
+        ESP_LOGW(TAG, "Failed to install ISR service: %s", esp_err_to_name(err));
+        return err;
+    }
+    ESP_LOGI(TAG, "Adding ISR handler...");
+    err = gpio_isr_handler_add(PIN_INTERRUPT, mcp23017_isr_handler, NULL);
+    if (err != ESP_OK)
+    {
+        ESP_LOGW(TAG, "Failed to add ISR handler: %s", esp_err_to_name(err));
+        return err;
+    }
+    ESP_LOGI(TAG, "MCP23017 interrupt initialized!");
+    /* END MCP23017 interrupt config */
 
     // Initialize sensors
-    esp_err_t hx711_status = init_hx711();
+    esp_err_t hx711_status = init_hx711(&mcp23017_device, PIN_DATA, PIN_CLOCK); // Needs additional parameters in definition. move pin defitions into manager
     esp_err_t hcsr04_status = init_hcsr04(&mcp23017_device, PIN_TRIGGER, PIN_ECHO);              // trigger pin 2, echo pin 8
     esp_err_t breakbeam_status = init_breakbeam(&mcp23017_device, PIN_BREAKBEAM, PIN_INTERRUPT); // breakbeam pin 1, interrupt on GPIO 15
 
@@ -72,7 +110,6 @@ void init_manager(void)
 
 static void run_manager(void *arg)
 {
-
     ESP_LOGI(TAG, "Peripheral manager started!");
 
     // Check initial states, for debug and clearing interrupt
@@ -80,6 +117,7 @@ static void run_manager(void *arg)
 
     while (1)
     {
+        // This is going to get changed in order to offload time waiting while breakbeam is held low, rather clear the bit if a breakbeam rising edge interrupt triggered it.
         ESP_LOGI(TAG, "Breakbeam is broken; attemping to clear interrupt");
         while (gpio_get_level(PIN_INTERRUPT) == 0)
         {
@@ -89,13 +127,13 @@ static void run_manager(void *arg)
         xEventGroupClearBits(manager_eg, BIT0);                                // Clear the interrupt state event bit
         xEventGroupWaitBits(manager_eg, BIT0, pdFALSE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
 
-        // Collect sensor data---add additional sensors here as needed
-        float weight = get_weight();
-        float fullness = get_fullness();
-        uint32_t usage = get_usage_count();
+        // // Collect sensor data---add additional sensors here as needed
+        // float weight = get_weight();
+        // float fullness = get_fullness();
+        // uint32_t usage = get_usage_count();
 
-        // Publish data
-        publish_payload(fullness, weight, usage);
+        // // Publish data
+        // publish_payload(fullness, weight, usage);
     }
 }
 
@@ -103,4 +141,21 @@ static void publish_payload(float fullness, float weight, int usage)
 {                                                       // TODO: allow variable number of sensor data parameters
     char *payload = serialize(fullness, weight, usage); // Serialize data as JSON string
     client_publish(payload);                            // Publish data to MQTT broker
+}
+
+void IRAM_ATTR mcp23017_isr_handler(void *arg)
+{
+    BaseType_t xHigherPriorityTaskWoken, xResult; // from https://www.freertos.org/Documentation/02-Kernel/04-API-references/12-Event-groups-or-flags/06-xEventGroupSetBitsFromISR
+
+    xHigherPriorityTaskWoken = pdFALSE; // Must be initialized to pdFALSE.
+
+    // Add some control flow here; ex. if the interrupt was triggered while BIT0 was already set, then queue something. (LOW PRIOITY TODO)
+
+    xResult = xEventGroupSetBitsFromISR(manager_eg, BIT0, &xHigherPriorityTaskWoken); // Signal the manager task that an interrupt has occured
+
+    if (xResult != pdFAIL)
+    {
+        // If unblocked task is higher priority than the daemon task, request an immediate context switch
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken); // Allows context switch wihtout waiting for the next tick.
+    }
 }

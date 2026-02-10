@@ -8,7 +8,7 @@
  *
  * @return esp_err_t
  */
-esp_err_t init_hx711(void);
+esp_err_t init_hx711(mcp23x17_t *mcp23017_device, uint8_t data_pin, uint8_t clock_pin); // Needs additional parameters in definition. move pin defitions into manager
 
 /**
  * @brief Queries the HX711 weight sensor for weight in grams. NEEDS TO BE CALIBRATED
