@@ -36,11 +36,10 @@ static TaskHandle_t manager_handle = nullptr;  // Task handle for the peripheral
 PERIPHERAL MANAGER EVENT GROUP NOTES
 
 BIT0 - Interrupt event
-BIT1 - 
+BIT1 - Breakbeam state
 
 Need assignment:
 - Ultrasonic reading is pending
-- Breakbeam is held low (blocked)
 - Offline / online (?) may go in a different event group
 - GPIO expander is initialized
 - I2C is initialized
@@ -51,6 +50,25 @@ EventGroupHandle_t manager_eg = nullptr; // Event group to signal when sensors h
 
 static mcp23x17_t mcp23017_device = {}; // MCP23017 device descriptor
 const uint8_t MCP23X17_DEV_ADDR = 0x20; // address for all pins tied to ground
+static volatile int64_t timestamp = 0; // Timestamp of the most recent interrupt, in microseconds. Used for debugging and potentially for deciding whether to queue interrupts.
+
+void IRAM_ATTR mcp23017_isr_handler(void *arg) // Needs to timestamp every interrupt
+{
+    BaseType_t xHigherPriorityTaskWoken, xResult; // from https://www.freertos.org/Documentation/02-Kernel/04-API-references/12-Event-groups-or-flags/06-xEventGroupSetBitsFromISR
+
+    xHigherPriorityTaskWoken = pdFALSE; // Must be initialized to pdFALSE.
+    xResult = xEventGroupSetBitsFromISR(manager_eg, BIT0, &xHigherPriorityTaskWoken); // Signal the manager task that an interrupt has occured
+
+    timestamp = esp_timer_get_time();
+
+    // Add some control flow here; ex. if the interrupt was triggered while BIT0 was already set, then queue something. (LOW PRIOITY TODO)
+
+    if (xResult != pdFAIL)
+    {
+        // If unblocked task is higher priority than the daemon task, request an immediate context switch
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken); // Allows context switch wihtout waiting for the next tick.
+    }
+}
 
 void init_manager(void)
 {
@@ -117,15 +135,8 @@ static void run_manager(void *arg)
 
     while (1)
     {
-        // This is going to get changed in order to offload time waiting while breakbeam is held low, rather clear the bit if a breakbeam rising edge interrupt triggered it.
-        ESP_LOGI(TAG, "Breakbeam is broken; attemping to clear interrupt");
-        while (gpio_get_level(PIN_INTERRUPT) == 0)
-        {
-            vTaskDelay(pdMS_TO_TICKS(1000)); // wait for interrupt to clear
-            mcp23x17_get_level(&mcp23017_device, PIN_BREAKBEAM, &gpio_state);
-        }
-        xEventGroupClearBits(manager_eg, BIT0);                                // Clear the interrupt state event bit
         xEventGroupWaitBits(manager_eg, BIT0, pdFALSE, pdTRUE, portMAX_DELAY); // Wait for the breakbeam to be tripped, then collect sensor data.
+        /* Check interrupt flag register, then read capture register and extract value of pin that caused interrupt. Then decide if it was ultrasonic, etc. */
 
         // // Collect sensor data---add additional sensors here as needed
         // float weight = get_weight();
@@ -141,21 +152,4 @@ static void publish_payload(float fullness, float weight, int usage)
 {                                                       // TODO: allow variable number of sensor data parameters
     char *payload = serialize(fullness, weight, usage); // Serialize data as JSON string
     client_publish(payload);                            // Publish data to MQTT broker
-}
-
-void IRAM_ATTR mcp23017_isr_handler(void *arg)
-{
-    BaseType_t xHigherPriorityTaskWoken, xResult; // from https://www.freertos.org/Documentation/02-Kernel/04-API-references/12-Event-groups-or-flags/06-xEventGroupSetBitsFromISR
-
-    xHigherPriorityTaskWoken = pdFALSE; // Must be initialized to pdFALSE.
-
-    // Add some control flow here; ex. if the interrupt was triggered while BIT0 was already set, then queue something. (LOW PRIOITY TODO)
-
-    xResult = xEventGroupSetBitsFromISR(manager_eg, BIT0, &xHigherPriorityTaskWoken); // Signal the manager task that an interrupt has occured
-
-    if (xResult != pdFAIL)
-    {
-        // If unblocked task is higher priority than the daemon task, request an immediate context switch
-        portYIELD_FROM_ISR(xHigherPriorityTaskWoken); // Allows context switch wihtout waiting for the next tick.
-    }
 }
