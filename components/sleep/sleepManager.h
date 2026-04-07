@@ -1,8 +1,12 @@
 #pragma once
 
-#include <stdbool.h>
-#include <stdint.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 void sleep_manager_init(void);
-void sleep_manager_task(void *arg);
 void record_breakbeam_activity(void);
+
+#ifdef __cplusplus
+}
+#endif
