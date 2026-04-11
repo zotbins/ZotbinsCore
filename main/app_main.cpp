@@ -30,6 +30,11 @@
 
 static const char *TAG = "app_main"; // Tag for ESP logging
 
+extern "C" {
+    #include "sleepManager.h"
+    #include "power_sleep.h"
+}
+
 extern "C" void app_main(void)
 {
     ESP_LOGI(TAG, "[APP] Startup..");
@@ -49,11 +54,21 @@ extern "C" void app_main(void)
     ESP_ERROR_CHECK(example_connect());
     ESP_LOGI(TAG, "Connected to AP");
 
+    //pacific timezone setup for sleep manager
+    power_sleep_set_timezone_pacific();
+    ESP_LOGI(TAG, "Set timezone to Pacific for sleep manager");
+
+
+
     // System initialization event group initialization
     extern EventGroupHandle_t sys_init_eg; // sys_init_eg is defined in initialization.cpp and must exist for the lifetime of the MQTT program
     initialize();                          // create the event group, from initialization.cpp. Other initialization conditions can be added if needed.
 
-    // Connect client to MQTT broker
+    // Sleep manager
+    sleep_manager_init();
+    ESP_LOGI(TAG, "Sleep manager initialized");
+
+    // Connect client to MQTT broker 
     client_connect();
 
     // Wait for MQTT connection to be established
@@ -65,4 +80,6 @@ extern "C" void app_main(void)
     ESP_LOGI(TAG, "System initialization complete, initializing peripheral manager...");
     init_manager();
     ESP_LOGI(TAG, "Peripheral manager initialized!");
+
+
 }
