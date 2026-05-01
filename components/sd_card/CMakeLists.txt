@@ -1,8 +1,8 @@
 idf_component_register( 
     SRCS 
-        "app_main.cpp"
+        "sdcard.c"
         "camera_sd.c"
-
+        
     INCLUDE_DIRS 
         "."
 
@@ -18,7 +18,7 @@ idf_component_register(
         nvs_flash
 
         # --- NEW for camera + SD ---
-        esp_camera
-        esp_vfs_fat
+        esp32-camera
+        fatfs
         sdmmc
 )
