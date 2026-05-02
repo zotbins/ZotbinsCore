@@ -18,7 +18,7 @@ idf_component_register(
         nvs_flash
 
         # --- NEW for camera + SD ---
-        esp32_camera
+        esp_camera
         esp_vfs_fat
         sdmmc
 )
