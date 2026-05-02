@@ -1,8 +1,6 @@
 idf_component_register( 
     SRCS 
         "app_main.cpp"
-        "sleepManager.c" 
-        "power_sleep.c"
         "camera_sd.c"
 
     INCLUDE_DIRS 
@@ -20,7 +18,7 @@ idf_component_register(
         nvs_flash
 
         # --- NEW for camera + SD ---
-        esp_camera
+        esp32_camera
         esp_vfs_fat
         sdmmc
 )
