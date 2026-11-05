@@ -1,0 +1,9 @@
+# settings this project actually depends on, esp-idf builds the full sdkconfig from this if sdkconfig ever gets deleted
+# (idea from my teammate's camera_snapshot project, way easier to read than the giant sdkconfig)
+
+# the frame buffers live in psram so psram has to be on
+CONFIG_SPIRAM=y
+
+# same as my teammate's: if psram isnt found the board still boots and the code drops to 320x240
+# the wrover on the new board always has psram so if that happens the code logs it as an error
+CONFIG_SPIRAM_IGNORE_NOTFOUND=y
