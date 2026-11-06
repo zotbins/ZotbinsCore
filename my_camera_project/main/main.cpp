@@ -1,4 +1,4 @@
-// main.cpp, camera test for the new zotbins board (aurnob's board, J5 camera header)
+// main.cpp, camera test for the new zotbins board (aurnob's board)
 //
 // what this program does:
 //   - turns on the OV2640, throws away the first few frames so the picture can settle
@@ -14,8 +14,6 @@
 //      VSYNC marks the start of a frame and HREF is high while a row of good data is coming out
 //   4. the driver uses DMA to copy those bytes into a frame buffer in psram, then i read it from there
 //
-// history of this file:
-//  
 //   - stuff i kept from my version: pin checks when it compiles, sending every 5th photo to the laptop,
 //     and the send loop that pauses so the watchdog doesnt go off
 //
